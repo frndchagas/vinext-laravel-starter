@@ -245,6 +245,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ValidationProblem'
+        '429':
+          description: Client error
+          headers:
+            Retry-After:
+              required: false
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
       tags:
         - Auth
       requestBody:
@@ -1253,6 +1264,9 @@ components:
           type: string
         email:
           type: string
+        current_password:
+          type: string
+          description: Required when the email address changes.
     ValidationProblem:
       type: object
       required:

@@ -784,10 +784,18 @@ export type forgotPasswordResponse422 = {
   status: 422;
 };
 
+export type forgotPasswordResponse429 = {
+  data: Problem;
+  status: 429;
+};
+
 export type forgotPasswordResponseSuccess = forgotPasswordResponse200 & {
   headers: Headers;
 };
-export type forgotPasswordResponseError = forgotPasswordResponse422 & {
+export type forgotPasswordResponseError = (
+  | forgotPasswordResponse422
+  | forgotPasswordResponse429
+) & {
   headers: Headers;
 };
 
@@ -810,7 +818,7 @@ export const forgotPassword = async (
 };
 
 export const getForgotPasswordMutationOptions = <
-  TError = ValidationProblem,
+  TError = ValidationProblem | Problem,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -847,9 +855,9 @@ export const getForgotPasswordMutationOptions = <
 
 export type ForgotPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof forgotPassword>>>;
 export type ForgotPasswordMutationBody = ForgotPasswordBody;
-export type ForgotPasswordMutationError = ValidationProblem;
+export type ForgotPasswordMutationError = ValidationProblem | Problem;
 
-export const useForgotPassword = <TError = ValidationProblem, TContext = unknown>(
+export const useForgotPassword = <TError = ValidationProblem | Problem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof forgotPassword>>,

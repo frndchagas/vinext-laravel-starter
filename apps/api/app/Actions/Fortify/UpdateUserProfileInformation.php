@@ -3,6 +3,8 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Notifications\EmailAddressChanged;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -17,6 +19,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update(User $user, array $input): void
     {
+        $emailChanged = array_key_exists('email', $input) && $input['email'] !== $user->email;
+
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -26,9 +30,17 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->getKey()),
             ],
+            'current_password' => [
+                Rule::requiredIf($emailChanged),
+                'nullable',
+                'string',
+                'current_password:web',
+            ],
+        ], [
+            'current_password.current_password' => __('The provided password does not match your current password.'),
         ])->validateWithBag('updateProfileInformation');
 
-        if ($input['email'] !== $user->email) {
+        if ($emailChanged) {
             $this->updateVerifiedUser($user, $input);
 
             return;
@@ -45,12 +57,15 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     private function updateVerifiedUser(User $user, array $input): void
     {
+        $previousEmail = $user->email;
+
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
         ])->save();
 
+        Notification::route('mail', $previousEmail)->notify(new EmailAddressChanged);
         $user->sendEmailVerificationNotification();
     }
 }

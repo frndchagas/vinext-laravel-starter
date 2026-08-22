@@ -103,6 +103,12 @@ const ForgotPasswordResponse422 = zod.object({
   detail: zod.string().optional(),
   errors: zod.object({}).catchall(zod.array(zod.string())),
 });
+const ForgotPasswordResponse429 = zod.object({
+  type: zod.string(),
+  title: zod.string(),
+  status: zod.number().int().min(-2147483648).max(2147483647),
+  detail: zod.string().optional(),
+});
 const LoginResponse422 = zod.object({
   type: zod.string(),
   title: zod.string(),
@@ -425,6 +431,7 @@ export const responseContracts = [
     responses: {
       200: ForgotPasswordResponse,
       422: ForgotPasswordResponse422,
+      429: ForgotPasswordResponse429,
     },
   },
   {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureCorrelationId;
+use App\Http\Middleware\ThrottlePasswordReset;
 use App\Http\Middleware\ThrottleRegistration;
 use App\Support\ProblemDetails;
 use Illuminate\Foundation\Application;
@@ -24,7 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
         $middleware->redirectGuestsTo('/login');
         $middleware->api(append: EnsureCorrelationId::class);
-        $middleware->web(append: [EnsureCorrelationId::class, ThrottleRegistration::class]);
+        $middleware->web(append: [
+            EnsureCorrelationId::class,
+            ThrottleRegistration::class,
+            ThrottlePasswordReset::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

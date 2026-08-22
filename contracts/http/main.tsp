@@ -95,6 +95,8 @@ model AuthCapabilities {
 model UpdateProfileRequest {
   name: string;
   email: string;
+  @doc("Required when the email address changes.")
+  current_password?: string;
 }
 
 model UpdatePasswordRequest {
@@ -174,7 +176,7 @@ namespace Auth {
   }): {
     @statusCode statusCode: 200;
     @body body: StatusMessage;
-  } | ValidationErrorResponse;
+  } | ValidationErrorResponse | TooManyRequestsResponse;
 
   @operationId("resetPassword")
   @route("/reset-password")

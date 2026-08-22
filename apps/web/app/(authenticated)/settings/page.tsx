@@ -7,7 +7,6 @@ import {
   disableTwoFactor,
   getGetMeQueryKey,
   getGetRecoveryCodesQueryKey,
-  logout,
   regenerateRecoveryCodes,
   useConfirmTwoFactor,
   useEnableTwoFactor,
@@ -25,6 +24,7 @@ import { useAuthenticatedUser } from "@/components/authenticated-shell";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { PasswordActionDialog } from "@/components/ui/password-action-dialog";
+import { disconnectEcho } from "@/lib/echo";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
 import { useHydrated } from "@/lib/use-hydrated";
@@ -50,6 +50,7 @@ export default function SettingsPage() {
   const enableMutation = useEnableTwoFactor();
   const confirmTwoFactorMutation = useConfirmTwoFactor();
   const [profileMessage, setProfileMessage] = useState<string>();
+  const [profileEmail, setProfileEmail] = useState(me.email);
   const [twoFactorMessage, setTwoFactorMessage] = useState<string>();
   const [twoFactorPasswordError, setTwoFactorPasswordError] = useState<string>();
   const [recoveryPasswordError, setRecoveryPasswordError] = useState<string>();
@@ -60,6 +61,7 @@ export default function SettingsPage() {
   const qrQuery = useGetTwoFactorQrCode({ query: { enabled: setupActive } });
   const secretQuery = useGetTwoFactorSecretKey({ query: { enabled: setupActive } });
   const recoveryQuery = useGetRecoveryCodes({ query: { enabled: showRecoveryCodes } });
+  const changingEmail = profileEmail.trim().toLowerCase() !== me.email.toLowerCase();
 
   async function startTwoFactorSetup(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -90,15 +92,22 @@ export default function SettingsPage() {
     event.preventDefault();
     setProfileMessage(undefined);
     const form = new FormData(event.currentTarget);
+    const email = formValue(form, "email");
 
     profileMutation.mutate(
-      { data: { name: formValue(form, "name"), email: formValue(form, "email") } },
+      {
+        data: {
+          name: formValue(form, "name"),
+          email,
+          ...(changingEmail ? { current_password: formValue(form, "current_password") } : {}),
+        },
+      },
       {
         onSuccess: async (response) => {
           if (response.status !== 200) return;
           setProfileMessage("Profile updated.");
           await queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
-          if (formValue(form, "email") !== me?.email) router.push("/verify-email");
+          if (changingEmail) router.push("/verify-email");
         },
       },
     );
@@ -117,10 +126,10 @@ export default function SettingsPage() {
         },
       },
       {
-        onSuccess: async (response) => {
+        onSuccess: (response) => {
           if (response.status === 200) {
-            await logout();
-            queryClient.removeQueries({ queryKey: getGetMeQueryKey() });
+            disconnectEcho();
+            queryClient.clear();
             window.location.assign("/login?password_updated=1");
           }
         },
@@ -237,7 +246,7 @@ export default function SettingsPage() {
           Profile
         </h2>
         <p className="mt-1 text-sm text-pretty text-muted-foreground">
-          Changing the email address requires verification again.
+          Changing the email address requires your current password and verification again.
         </p>
         <form
           className="mt-5 flex flex-col gap-4"
@@ -253,13 +262,24 @@ export default function SettingsPage() {
           />
           <Field
             autoComplete="email"
-            defaultValue={me.email}
             errors={profileErrors["email"]}
             label="Email"
             name="email"
+            onChange={(event) => setProfileEmail(event.target.value)}
             required
             type="email"
+            value={profileEmail}
           />
+          {changingEmail ? (
+            <Field
+              autoComplete="current-password"
+              errors={profileErrors["current_password"]}
+              label="Current password"
+              name="current_password"
+              required
+              type="password"
+            />
+          ) : null}
           <div className="flex items-center gap-3">
             <Button disabled={!hydrated || profileMutation.isPending} type="submit">
               {profileMutation.isPending ? "Saving…" : "Save profile"}
