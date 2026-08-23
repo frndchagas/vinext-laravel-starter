@@ -8,4 +8,6 @@
 export interface UpdateProfileRequest {
   name: string;
   email: string;
+  /** Required when the email address changes. */
+  current_password?: string;
 }

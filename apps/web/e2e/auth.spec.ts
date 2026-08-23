@@ -112,6 +112,7 @@ test("update account settings and complete the two-factor recovery flow", async 
   test.setTimeout(120_000);
 
   const uniqueEmail = `e2e-settings-${Date.now()}@example.com`;
+  const updatedEmail = `updated-${uniqueEmail}`;
   const originalPassword = "settings-original-password";
   const newPassword = "settings-updated-password";
 
@@ -123,9 +124,12 @@ test("update account settings and complete the two-factor recovery flow", async 
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.reload();
   await expect(page.getByRole("button", { name: "Dark" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Save profile" })).toBeEnabled();
+  await expectNoAccessibilityViolations(page);
   await page.getByRole("button", { name: "Light" }).click();
   await expect(page.locator("html")).not.toHaveClass(/dark/);
   await expect(page.getByRole("button", { name: "Save profile" })).toBeEnabled();
+  await page.waitForTimeout(200);
   await expectNoAccessibilityViolations(page);
 
   const profileSection = page.locator("section").filter({
@@ -134,6 +138,22 @@ test("update account settings and complete the two-factor recovery flow", async 
   await profileSection.getByLabel("Name").fill("Updated E2E User");
   await profileSection.getByRole("button", { name: "Save profile" }).click();
   await expect(profileSection.getByText("Profile updated.")).toBeVisible();
+  await expect(profileSection.getByRole("button", { name: "Save profile" })).toBeEnabled();
+  await expect(page.locator("header").getByText("Updated E2E User", { exact: true })).toBeVisible();
+
+  await profileSection.getByLabel("Email").fill(updatedEmail);
+  await profileSection.getByLabel("Current password").fill("wrong-password");
+  await profileSection.getByRole("button", { name: "Save profile" }).click();
+  await expect(profileSection.getByText(/does not match/i)).toBeVisible();
+
+  await profileSection.getByLabel("Current password").fill(originalPassword);
+  await profileSection.getByRole("button", { name: "Save profile" }).click();
+  await expect(page).toHaveURL(/\/verify-email$/, { timeout: 20_000 });
+
+  const updatedVerificationLink = await findVerificationLink(updatedEmail);
+  await page.goto(updatedVerificationLink);
+  await expect(page).toHaveURL(/\/dashboard\?verified=1$/, { timeout: 20_000 });
+  await page.getByRole("link", { name: "Settings" }).click();
 
   const passwordSection = page.locator("section").filter({
     has: page.getByRole("heading", { name: "Password" }),
@@ -144,7 +164,7 @@ test("update account settings and complete the two-factor recovery flow", async 
   await passwordSection.getByRole("button", { name: "Update password" }).click();
   await expect(page).toHaveURL(/\/login\?password_updated=1$/);
   await expect(page.getByText("Password updated. Sign in again.")).toBeVisible();
-  await page.getByLabel("Email").fill(uniqueEmail);
+  await page.getByLabel("Email").fill(updatedEmail);
   await page.getByLabel("Password").fill(newPassword);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
@@ -169,8 +189,10 @@ test("update account settings and complete the two-factor recovery flow", async 
 
   await page.getByRole("link", { name: "Dashboard", exact: true }).click();
   await page.getByRole("button", { name: "Sign out" }).click();
-  await page.getByLabel("Email").fill(uniqueEmail);
+  await expect(page).toHaveURL(/\/login$/);
+  await page.getByLabel("Email").fill(updatedEmail);
   await page.getByLabel("Password").fill(newPassword);
+  await expect(page.getByRole("button", { name: "Sign in" })).toBeEnabled();
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await expect(page).toHaveURL(/\/two-factor-challenge$/);

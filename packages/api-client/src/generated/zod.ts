@@ -167,6 +167,7 @@ export const UpdatePasswordResponse = zod.unknown();
 export const UpdateProfileBody = zod.object({
   name: zod.string(),
   email: zod.string(),
+  current_password: zod.string().optional().describe("Required when the email address changes."),
 });
 
 export const UpdateProfileResponse = zod.unknown();
