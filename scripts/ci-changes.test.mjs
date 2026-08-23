@@ -77,6 +77,13 @@ describe("classifyChanges", () => {
     });
   });
 
+  test("scans the PHP image when its dependency graph changes", () => {
+    expect(classifyChanges(["apps/api/composer.lock"])).toMatchObject({
+      production: true,
+      docker: true,
+    });
+  });
+
   test("rebuilds the distribution when a consumer asset changes", () => {
     expect(classifyChanges(["scripts/distribution/README.md"])).toEqual({
       integration: false,
@@ -91,6 +98,17 @@ describe("classifyChanges", () => {
 
   test("rebuilds the distribution when its contract verifier changes", () => {
     expect(classifyChanges(["scripts/contracts-check.mjs"])).toMatchObject({ distribution: true });
+  });
+
+  test("rebuilds the distribution when transformed production scripts change", () => {
+    expect(classifyChanges(["scripts/production-smoke.sh"])).toMatchObject({
+      distribution: true,
+      production: true,
+    });
+    expect(classifyChanges(["scripts/coolify-compose.mjs"])).toMatchObject({
+      distribution: true,
+      production: true,
+    });
   });
 
   test("rebuilds the distribution when its publisher changes", () => {

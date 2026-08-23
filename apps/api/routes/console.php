@@ -16,14 +16,14 @@ DevCommands::except('vite');
 Schedule::command('tasks:reconcile')
     ->everyMinute()
     ->onOneServer()
-    ->withoutOverlapping();
+    ->withoutOverlapping(5);
 
 Schedule::command('horizon:snapshot')
     ->everyFiveMinutes()
     ->onOneServer()
-    ->withoutOverlapping();
+    ->withoutOverlapping(10);
 
 Schedule::command('queue:prune-failed --hours=168')
     ->daily()
     ->onOneServer()
-    ->withoutOverlapping();
+    ->withoutOverlapping(60);
