@@ -44,7 +44,7 @@ const patterns = {
     /^apps\/api\/public\//,
     /^apps\/web\/e2e\/helpers\.ts$/,
     /^infra\/docker\//,
-    /^scripts\/(build-distribution\.mjs|contracts-check(?:\.test)?\.mjs|distribution-smoke\.sh|packagist-sync(?:\.test)?\.mjs|sync-distribution\.sh|distribution\/)/,
+    /^scripts\/(build-distribution\.mjs|contracts-check(?:\.test)?\.mjs|coolify-compose\.mjs|distribution-smoke\.sh|packagist-sync(?:\.test)?\.mjs|production-smoke\.sh|sync-distribution\.sh|distribution\/)/,
   ],
   production: [
     /^\.dockerignore$/,
@@ -64,6 +64,7 @@ const patterns = {
     /^\.dockerignore$/,
     /^\.github\/dependabot\.yml$/,
     /^\.env\.production\.example$/,
+    /^apps\/api\/composer\.(json|lock)$/,
     /^compose\.(production|coolify)(\.local)?\.yaml$/,
     /^infra\/docker\//,
   ],

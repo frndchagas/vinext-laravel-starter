@@ -16,11 +16,11 @@ Set unique values for `APP_KEY`, `POSTGRES_PASSWORD`, `REVERB_APP_KEY` and `REVE
 
 The example logs mail instead of sending it. Configure a real SMTP provider, including `MAIL_SCHEME`, before setting `FEATURE_REGISTRATION=true` or enabling password reset for users. Public registration defaults to disabled.
 
-`/up` proves that Laravel can serve a request. `/ready` also checks the configured database and cache. Use `/ready` to decide whether a deployment should receive traffic; do not restart PHP merely because an external dependency is temporarily unavailable.
+`/up` proves that Laravel can serve a request. `/ready` also checks the configured database and cache. Both endpoints are stateless and do not issue session or CSRF cookies. Use `/ready` to decide whether a deployment should receive traffic; do not restart PHP merely because an external dependency is temporarily unavailable.
 
 ## Local production smoke
 
-The automated smoke builds every image, starts the complete production topology, applies migrations, sends a Task through Horizon and restores a PostgreSQL backup into a new database:
+The automated smoke builds every image and starts the full production topology. It applies migrations, sends one Task through Horizon, inserts an orphaned Task for scheduler recovery and restores a PostgreSQL backup into a new database:
 
 ```bash
 bun run test:production

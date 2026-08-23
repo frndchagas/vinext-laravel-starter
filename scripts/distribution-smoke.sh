@@ -11,30 +11,34 @@ composer_cache=$(composer config --global cache-dir --absolute)
 dev_pid=""
 dev_project="vinext-distribution-dev-${GITHUB_RUN_ID:-$$}-${GITHUB_RUN_ATTEMPT:-1}"
 
-cleanup() {
-    set +e
-
+stop_dev_stack() {
     if [[ -n "$dev_pid" ]]; then
-        kill -TERM -- "-$dev_pid" 2>/dev/null
+        kill -TERM -- "-$dev_pid" 2>/dev/null || kill -TERM "$dev_pid" 2>/dev/null || true
 
         for _ in {1..50}; do
-            if ! kill -0 -- "-$dev_pid" 2>/dev/null; then
+            if ! kill -0 "$dev_pid" 2>/dev/null; then
                 break
             fi
             sleep 0.1
         done
 
-        kill -KILL -- "-$dev_pid" 2>/dev/null
-        wait "$dev_pid" 2>/dev/null
+        kill -KILL -- "-$dev_pid" 2>/dev/null || kill -KILL "$dev_pid" 2>/dev/null || true
+        wait "$dev_pid" 2>/dev/null || true
+        dev_pid=""
     fi
 
     if [[ -d "$install_dir" ]]; then
         (
             cd "$install_dir"
             docker compose --project-name "$dev_project" down --volumes --remove-orphans
-        )
+        ) || true
     fi
+}
 
+cleanup() {
+    set +e
+
+    stop_dev_stack
     rm -rf "$distribution_dir" "$sync_target" "$install_parent" "$composer_home"
 }
 
@@ -116,64 +120,88 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
         "$(find database/migrations -type f -name '*.php' | wc -l | tr -d ' ')"
 )
 
-port_base=""
 seed=${GITHUB_RUN_ID:-$RANDOM}
-
-for attempt in {1..20}; do
-    candidate=$((20000 + (seed + attempt * 97) % 39000))
-
-    # PHP receives this program literally.
-    # shellcheck disable=SC2016
-    if php -r '
-        $base = (int) $argv[1];
-        for ($port = $base; $port < $base + 8; $port++) {
-            $socket = @stream_socket_server("tcp://127.0.0.1:{$port}");
-            if ($socket === false) exit(1);
-            fclose($socket);
-        }
-    ' "$candidate"; then
-        port_base=$candidate
-        break
-    fi
-done
-
-if [[ -z "$port_base" ]]; then
-    echo 'Could not find eight free ports for the installed application.' >&2
-    exit 1
-fi
-
-export COMPOSE_PROJECT_NAME="$dev_project"
-export WEB_PUBLIC_PORT=$port_base
-export WEB_PORT=$((port_base + 1))
-export API_PORT=$((port_base + 2))
-export REVERB_PORT=$((port_base + 3))
-export POSTGRES_PORT=$((port_base + 4))
-export REDIS_PORT=$((port_base + 5))
-export MAILPIT_SMTP_PORT=$((port_base + 6))
-export MAILPIT_HTTP_PORT=$((port_base + 7))
+ready=false
 
 cd "$install_dir"
 app_key_before=$(sed -n 's/^APP_KEY=//p' .env)
 
-if command -v setsid >/dev/null 2>&1; then
-    setsid composer run dev >distribution-dev.log 2>&1 &
-else
-    perl -e 'use POSIX qw(setsid); setsid(); exec @ARGV' \
-        composer run dev >distribution-dev.log 2>&1 &
-fi
-dev_pid=$!
+for launch_attempt in {1..3}; do
+    port_base=""
 
-ready=false
-for _ in {1..60}; do
-    if curl --fail --silent "http://127.0.0.1:$WEB_PUBLIC_PORT/up" >/dev/null; then
-        ready=true
+    for port_attempt in {1..20}; do
+        candidate=$((20000 + (seed + launch_attempt * 5003 + port_attempt * 97) % 9000))
+
+        # PHP receives this program literally.
+        # shellcheck disable=SC2016
+        if php -r '
+            $base = (int) $argv[1];
+            for ($port = $base; $port < $base + 8; $port++) {
+                $socket = @stream_socket_server("tcp://127.0.0.1:{$port}");
+                if ($socket === false) exit(1);
+                fclose($socket);
+            }
+        ' "$candidate"; then
+            port_base=$candidate
+            break
+        fi
+    done
+
+    if [[ -z "$port_base" ]]; then
+        continue
+    fi
+
+    export COMPOSE_PROJECT_NAME="$dev_project"
+    export WEB_PUBLIC_PORT=$port_base
+    export WEB_PORT=$((port_base + 1))
+    export API_PORT=$((port_base + 2))
+    export REVERB_PORT=$((port_base + 3))
+    export POSTGRES_PORT=$((port_base + 4))
+    export REDIS_PORT=$((port_base + 5))
+    export MAILPIT_SMTP_PORT=$((port_base + 6))
+    export MAILPIT_HTTP_PORT=$((port_base + 7))
+
+    if command -v setsid >/dev/null 2>&1; then
+        setsid composer run dev >distribution-dev.log 2>&1 &
+    else
+        perl -e 'use POSIX qw(setsid); setsid(); exec @ARGV' \
+            composer run dev >distribution-dev.log 2>&1 &
+    fi
+    dev_pid=$!
+    process_exited=false
+
+    for _ in {1..60}; do
+        if curl --connect-timeout 1 --fail --max-time 2 --silent \
+            "http://127.0.0.1:$WEB_PUBLIC_PORT/up" >/dev/null; then
+            ready=true
+            break
+        fi
+
+        if ! kill -0 "$dev_pid" 2>/dev/null; then
+            process_exited=true
+            break
+        fi
+
+        sleep 2
+    done
+
+    if [[ "$ready" == true ]]; then
         break
     fi
-    sleep 2
+
+    if [[ "$process_exited" != true ]]; then
+        break
+    fi
+
+    stop_dev_stack
 done
 
 if [[ "$ready" != true ]]; then
-    sed -n '1,320p' distribution-dev.log >&2
+    if [[ -f distribution-dev.log ]]; then
+        sed -n '1,320p' distribution-dev.log >&2
+    else
+        echo 'Could not find eight free ports for the installed application.' >&2
+    fi
     exit 1
 fi
 
@@ -183,6 +211,7 @@ if [[ -z "$app_key_before" || "$app_key_after" != "$app_key_before" ]]; then
     exit 1
 fi
 
-curl --fail --silent --show-error "http://127.0.0.1:$WEB_PUBLIC_PORT/" >/dev/null
+curl --connect-timeout 2 --fail --max-time 10 --silent --show-error \
+    "http://127.0.0.1:$WEB_PUBLIC_PORT/" >/dev/null
 
 echo "Laravel Installer distribution smoke passed."
