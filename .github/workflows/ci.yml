@@ -41,6 +41,7 @@ jobs:
           bun test
           scripts/ci-changes.test.mjs
           scripts/ci-policy.test.mjs
+          scripts/build-distribution.test.mjs
           scripts/contracts-check.test.mjs
           scripts/packagist-sync.test.mjs
           scripts/trivy-ignore.test.mjs

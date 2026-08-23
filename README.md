@@ -12,9 +12,23 @@ The starter provides same-origin sessions, profile and password settings, option
 
 Vinext is still in beta and the React Compiler integration is experimental. CI verifies local setup, browser behavior, a fresh template snapshot and the production container topology.
 
-## Quickstart
+## Create an application
 
-Requirements: Bun 1.4+, Node.js 24+, PHP 8.3+, Composer 2.10, Docker Compose and Git.
+Requirements: Bun 1.4+, Node.js 24+, PHP 8.3+, Composer 2.10, Laravel Installer 5.31+, Docker Compose and Git.
+
+```bash
+laravel new my-app --using=frndchagas/vinext-laravel-starter --phpunit --bun --no-boost
+cd my-app
+composer run dev
+```
+
+Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The Tasks page demonstrates queued processing and private realtime updates.
+
+The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is the consumer-safe snapshot behind Packagist. Its repository becomes the GitHub Template after the first consumer-safe release is published and verified. Applications receive their own history and no updater.
+
+## Develop the source
+
+Clone this repository only when contributing to the starter or inspecting its release tooling:
 
 ```bash
 git clone https://github.com/frndchagas/vinext-laravel-starter.git
@@ -24,31 +38,23 @@ bun run bootstrap
 bun run dev
 ```
 
-Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The Tasks page demonstrates queued processing and private realtime updates.
-
-Stable releases are also available through the Laravel installer:
-
-```bash
-laravel new my-app --using=frndchagas/vinext-laravel-starter --phpunit --bun --no-boost
-```
-
-See [Getting started](docs/getting-started.md) for the expected services, shutdown steps and first validation.
+See [Source development](docs/getting-started.md) for the expected services, shutdown steps and first validation.
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `bun run bootstrap` | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
-| `bun run dev` | Start Caddy dependencies, Vinext, Laravel, Horizon and Reverb |
-| `bun run check` | Format check, lint, types, unit tests and Vinext build |
-| `bun run contracts:check` | Validate HTTP and realtime contracts and detect generated drift |
-| `bun run audit` | Check dependency deduplication and advisories |
-| `bun run test:e2e` | Run the Playwright browser journeys |
-| `bun run test:production` | Build and exercise the production containers |
-| `bun run test:template` | Create and verify a fresh template snapshot |
-| `bun run infra:down` | Stop local Docker infrastructure without deleting volumes |
-| `bun run db:backup -- backup.dump` | Create a private PostgreSQL custom-format backup |
-| `bun run db:restore -- backup.dump restored_database` | Restore into a new PostgreSQL database |
+| Command                                               | Purpose                                                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `bun run bootstrap`                                   | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
+| `bun run dev`                                         | Start Caddy dependencies, Vinext, Laravel, Horizon and Reverb                       |
+| `bun run check`                                       | Format check, lint, types, unit tests and Vinext build                              |
+| `bun run contracts:check`                             | Validate HTTP and realtime contracts and detect generated drift                     |
+| `bun run audit`                                       | Check dependency deduplication and advisories                                       |
+| `bun run test:e2e`                                    | Run the Playwright browser journeys                                                 |
+| `bun run test:production`                             | Build and exercise the production containers                                        |
+| `bun run test:template`                               | Create and verify a fresh template snapshot                                         |
+| `bun run infra:down`                                  | Stop local Docker infrastructure without deleting volumes                           |
+| `bun run db:backup -- backup.dump`                    | Create a private PostgreSQL custom-format backup                                    |
+| `bun run db:restore -- backup.dump restored_database` | Restore into a new PostgreSQL database                                              |
 
 ## Documentation
 

@@ -46,6 +46,24 @@ trap cleanup EXIT
 
 rmdir "$distribution_dir"
 bun run scripts/build-distribution.mjs "$distribution_dir"
+test ! -e "$distribution_dir/node_modules"
+
+archive_overrides=(
+    'scripts/distribution/AGENTS.md|AGENTS.md'
+    'scripts/distribution/CONTEXT.md|CONTEXT.md'
+    'scripts/distribution/CONTRIBUTING.md|CONTRIBUTING.md'
+    'scripts/distribution/README.md|README.md'
+    'scripts/distribution/SECURITY.md|SECURITY.md'
+    'scripts/distribution/ci.yml|.github/workflows/ci.yml'
+    'scripts/distribution/development.md|docs/development.md'
+    'scripts/distribution/docs-README.md|docs/README.md'
+    'scripts/distribution/getting-started.md|docs/getting-started.md'
+)
+for override in "${archive_overrides[@]}"; do
+    source_path=${override%%|*}
+    output_path=${override#*|}
+    git show "HEAD:$source_path" | cmp - "$distribution_dir/$output_path"
+done
 
 mkdir -p "$sync_target/.git"
 printf 'replacement\n' > "$sync_target/.source-tag"
@@ -99,18 +117,83 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     test -f .github/dependabot.yml
     test ! -e .github/workflows/publish-distribution.yml
     test ! -e scripts/build-distribution.mjs
+    test ! -e scripts/build-distribution.test.mjs
     test ! -e scripts/ci-policy.mjs
     test ! -e scripts/ci-policy.test.mjs
     test ! -e scripts/packagist-sync.mjs
     test ! -e scripts/packagist-sync.test.mjs
     test ! -e scripts/trivy-ignore.test.mjs
+    test ! -e docs/adr
+    test ! -e docs/distribution.md
+    test ! -e docs/incubation.md
     grep --quiet '^WEB_PUBLIC_PORT=13000$' .env.example
-    grep --quiet '^## Laravel API instructions$' AGENTS.md
+    grep --quiet '^## Laravel instructions$' AGENTS.md
+    grep --quiet '`app`, `routes`, `database` and `tests`' AGENTS.md
+    test "$(cat CLAUDE.md)" = '@AGENTS.md'
+    grep --quiet 'The application owner is responsible' SECURITY.md
+    grep --quiet '\.source-tag.*\.source-commit' SECURITY.md
     grep --quiet 'new URL("../../../", import.meta.url)' apps/web/e2e/helpers.ts
     if grep --quiet 'git clone https://github.com/frndchagas/vinext-laravel-starter' README.md; then
         echo 'Consumer README sends the User back through starter installation.' >&2
         exit 1
     fi
+
+    expected_markdown_files=(
+        AGENTS.md
+        CLAUDE.md
+        CONTEXT.md
+        CONTRIBUTING.md
+        README.md
+        SECURITY.md
+        apps/web/AGENTS.md
+        apps/web/CLAUDE.md
+        apps/web/README.md
+        docs/README.md
+        docs/api-conventions.md
+        docs/architecture.md
+        docs/async-workflow.md
+        docs/authentication.md
+        docs/customizing.md
+        docs/deployment.md
+        docs/development.md
+        docs/getting-started.md
+        docs/troubleshooting.md
+    )
+    expected_markdown=$(printf '%s\n' "${expected_markdown_files[@]}")
+    actual_markdown=$(find . \
+        \( -path './apps/web/dist' -o -path './node_modules' -o -path './vendor' \) -prune -o \
+        -type f -name '*.md' -print | sed 's#^\./##' | sort)
+    if [[ "$actual_markdown" != "$expected_markdown" ]]; then
+        echo 'Distribution Markdown does not match the consumer allowlist.' >&2
+        diff <(printf '%s\n' "$expected_markdown") <(printf '%s\n' "$actual_markdown") >&2 || true
+        exit 1
+    fi
+
+    for forbidden in \
+        'apps/api' \
+        'working-dir the repository root' \
+        'cd the repository root' \
+        'release:check' \
+        'publish-distribution' \
+        'Packagist' \
+        'incubat' \
+        'GitHub Actions always runs' \
+        'On pull requests, oasdiff compares' \
+        'canonical release CI scans every production image'; do
+        for markdown in "${expected_markdown_files[@]}"; do
+            if grep --ignore-case --fixed-strings -- "$forbidden" "$markdown"; then
+                echo "Consumer Markdown contains maintainer-only or invalid text: $forbidden" >&2
+                exit 1
+            fi
+        done
+    done
+
+    docs_words=$(find docs -type f -name '*.md' -exec cat {} + | wc -w | tr -d ' ')
+    if ((docs_words > 5000)); then
+        echo "Consumer documentation exceeds 5000 words: $docs_words" >&2
+        exit 1
+    fi
+
     bun ci
     bun run config:check
     bun run contracts:check

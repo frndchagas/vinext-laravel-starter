@@ -1,6 +1,6 @@
 # Distribution
 
-The GitHub template is the source repository. Stable releases also publish a generated Laravel-root repository to Packagist as `frndchagas/vinext-laravel-starter`.
+The source repository contains maintainer tooling and the canonical release history. Stable releases publish a consumer-safe Laravel-root snapshot to `frndchagas/vinext-laravel-starter-distribution`, which Packagist exposes as `frndchagas/vinext-laravel-starter`. After the first consumer-safe tag is published and verified, that generated repository replaces the source as the GitHub Template so both installation paths start from the same tree.
 
 ```bash
 laravel new my-app \
@@ -12,7 +12,7 @@ laravel new my-app \
 
 The extra flags keep the starter's PHPUnit, Bun, and agent setup intact. Applications receive a snapshot and own their code; there is no starter updater.
 
-Each distribution tag contains `.source-tag` and `.source-commit`. They identify the exact tag and commit in the source repository. The generated application replaces maintainer automation with a lightweight consumer CI and Dependabot configuration. Its README starts from the installed application instead of sending the User back through starter installation.
+Each distribution tag contains `.source-tag` and `.source-commit`. They identify the exact tag and commit in the source repository. The generated application replaces maintainer automation and governance with a lightweight consumer CI, Dependabot configuration, application-owned security guidance and an allowlist of technical documentation. Its README starts from the installed application instead of sending the User back through starter installation.
 
 Source CI creates a local Composer repository and invokes the current pinned Laravel Installer with the documented `--using`, `--phpunit`, `--bun` and `--no-boost` flags. The installed application migrates SQLite, checks contract drift, runs the PHP and TypeScript gates, builds Vinext and exercises the production topology.
 

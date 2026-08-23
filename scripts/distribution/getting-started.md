@@ -48,4 +48,4 @@ bun run infra:down
 
 Docker volumes are preserved. Use `docker compose down --volumes` only when you intend to delete local PostgreSQL and Redis data.
 
-Continue with [Customize the starter](customizing.md). If setup fails, use [Troubleshooting](troubleshooting.md).
+Continue with [Customize the application](customizing.md). If setup fails, use [Troubleshooting](troubleshooting.md).
