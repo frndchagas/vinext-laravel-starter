@@ -2,8 +2,6 @@
 
 The GitHub template is the source repository. Stable releases also publish a generated Laravel-root repository to Packagist as `frndchagas/vinext-laravel-starter`.
 
-That package keeps the legacy identifier until the coordinated v1 rename described in ADR 0012. The source tree already uses the Vinext Laravel Starter product name.
-
 ```bash
 laravel new my-app \
   --using=frndchagas/vinext-laravel-starter \
@@ -18,14 +16,10 @@ Each distribution tag contains `.source-tag` and `.source-commit`. They identify
 
 Source CI creates a local Composer repository and invokes the current pinned Laravel Installer with the documented `--using`, `--phpunit`, `--bun` and `--no-boost` flags. The installed application migrates SQLite, checks contract drift, runs the PHP and TypeScript gates, builds Vinext and exercises the production topology.
 
-Maintainers publish only through a stable GitHub release. The release workflow generates the flattened tree and pushes the matching release tag to the distribution repository, which Packagist indexes.
+Maintainers publish only through a stable GitHub release. The release workflow generates the flattened tree, pushes the matching release tag to the distribution repository and requests a Packagist update. It succeeds only after Packagist maps that tag to the exact distribution commit.
 
 ## Release preflight
 
-Run the preflight from a clean, synchronized `main` checkout after its complete CI succeeds:
+Run `bun run release:check -- TAG` from a clean, synchronized `main` checkout after its complete CI succeeds, replacing `TAG` with the next unused `vMAJOR.MINOR.PATCH` value.
 
-```bash
-bun run release:check -- v1.0.0
-```
-
-The command rejects reused or non-SemVer tags and prints the annotated-tag and GitHub Release commands. The publisher independently requires the exact tagged SHA to have one successful full `main` push workflow. It serializes all releases and pushes the distribution commit and tag atomically.
+The command rejects reused or non-SemVer tags and prints the annotated-tag and GitHub Release commands. The publisher independently requires the exact tagged SHA to have one successful full `main` push workflow with every required job present. It serializes all releases, pushes the distribution commit and tag atomically, and verifies the public Packagist metadata before finishing. The protected `distribution` environment stores the deploy key and a Packagist SAFE token; the MAIN token is not used.

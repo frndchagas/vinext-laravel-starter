@@ -260,6 +260,8 @@ try {
     "scripts/ci-policy.test.mjs",
     "scripts/distribution",
     "scripts/distribution-smoke.sh",
+    "scripts/packagist-sync.mjs",
+    "scripts/packagist-sync.test.mjs",
     "scripts/release-preflight.sh",
     "scripts/sync-distribution.sh",
     "scripts/template-smoke.sh",

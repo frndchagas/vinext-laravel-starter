@@ -44,7 +44,7 @@ const patterns = {
     /^apps\/api\/public\//,
     /^apps\/web\/e2e\/helpers\.ts$/,
     /^infra\/docker\//,
-    /^scripts\/(build-distribution\.mjs|contracts-check(?:\.test)?\.mjs|distribution-smoke\.sh|sync-distribution\.sh|distribution\/)/,
+    /^scripts\/(build-distribution\.mjs|contracts-check(?:\.test)?\.mjs|distribution-smoke\.sh|packagist-sync(?:\.test)?\.mjs|sync-distribution\.sh|distribution\/)/,
   ],
   production: [
     /^\.dockerignore$/,
@@ -75,6 +75,7 @@ const controlPlanePaths = [
   /^\.github\/workflows\/ci\.yml$/,
   /^scripts\/ci-changes(?:\.test)?\.mjs$/,
   /^scripts\/ci-policy(?:\.test)?\.mjs$/,
+  /^scripts\/packagist-sync(?:\.test)?\.mjs$/,
   /^scripts\/verify-main-ci\.sh$/,
   /^scripts\/release-preflight\.sh$/,
 ];
