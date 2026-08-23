@@ -3,14 +3,21 @@ FROM composer:2.10.2 AS vendor
 WORKDIR /app
 
 COPY apps/api/composer.json apps/api/composer.lock ./
-RUN composer install \
-    --no-dev \
-    --no-interaction \
-    --no-progress \
-    --no-scripts \
-    --optimize-autoloader \
-    --ignore-platform-req=ext-pcntl \
-    --prefer-dist
+RUN set -eu; \
+    install_dependencies() { \
+        composer install \
+            --no-dev \
+            --no-interaction \
+            --no-progress \
+            --no-scripts \
+            --optimize-autoloader \
+            --ignore-platform-req=ext-pcntl \
+            --prefer-dist; \
+    }; \
+    install_dependencies || { \
+        sleep 5; \
+        install_dependencies; \
+    }
 
 COPY apps/api ./
 RUN composer dump-autoload \
