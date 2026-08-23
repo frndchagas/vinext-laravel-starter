@@ -3,4 +3,4 @@
 Status: accepted.
 Implementation: complete.
 
-The supported production reference must include security headers, coherent health and readiness checks, executable PostgreSQL dump and restore scripts, an automated restore round-trip in nightly and release gates, and a recipe for external managed PostgreSQL and Redis. It remains a regular Compose deployment without a zero-downtime guarantee, full observability platform or automated disaster-recovery system.
+The supported production reference must fail closed on unknown Host authorities, restrict WebSockets to the canonical host, include coherent health and readiness checks, and prove the standalone browser path. Executable PostgreSQL dump and restore scripts, an automated restore round-trip, and a managed-service recipe complete the baseline. It remains a regular Compose deployment without a zero-downtime guarantee, full observability platform or automated disaster-recovery system.

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useAuthenticatedUser } from "@/components/authenticated-shell";
-import { disconnectEcho, getEcho } from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
 
 type RealtimeStatus = "connecting" | "connected" | "unavailable";
 
@@ -20,7 +20,6 @@ export default function DashboardPage() {
 
     return () => {
       echo.leave(`users.${me.id}`);
-      disconnectEcho();
     };
   }, [me.id]);
 

@@ -35,7 +35,7 @@ x-api-environment: &api-environment
   REDIS_HOST: ${REDIS_HOST:-redis}
   REDIS_PASSWORD: ${REDIS_PASSWORD:-null}
   REDIS_PORT: ${REDIS_PORT:-6379}
-  REVERB_ALLOWED_ORIGINS: ${APP_HOST:?Set APP_HOST}
+  REVERB_ALLOWED_ORIGINS: ${REVERB_ALLOWED_ORIGINS:-${APP_HOST:?Set APP_HOST}}
   REVERB_APP_ID: ${REVERB_APP_ID:?Set REVERB_APP_ID}
   REVERB_APP_KEY: ${REVERB_APP_KEY:?Set REVERB_APP_KEY}
   REVERB_APP_SECRET: ${REVERB_APP_SECRET:?Set REVERB_APP_SECRET}
@@ -51,6 +51,7 @@ x-api-environment: &api-environment
   TASK_RECONCILE_BATCH_SIZE: ${TASK_RECONCILE_BATCH_SIZE:-100}
   TASK_RECONCILE_PROCESSING_AFTER_SECONDS: ${TASK_RECONCILE_PROCESSING_AFTER_SECONDS:-600}
   TASK_RECONCILE_QUEUED_AFTER_SECONDS: ${TASK_RECONCILE_QUEUED_AFTER_SECONDS:-60}
+  TASK_SIMULATED_DELAY_MS: ${TASK_SIMULATED_DELAY_MS:-0}
 
 x-api-runtime: &api-runtime
   <<: *api-image
@@ -69,6 +70,7 @@ services:
       dockerfile: infra/docker/proxy/Dockerfile
     image: vinext-laravel-starter-proxy:${IMAGE_TAG:-local}
     environment:
+      APP_HOST: ${APP_HOST:?Set APP_HOST}
       APP_URL: ${APP_URL:?Set APP_URL}
       LEGACY_APP_HOST: ${LEGACY_APP_HOST:-legacy.invalid}
     depends_on:

@@ -8,34 +8,39 @@
 }
 
 :8080 {
-	@legacy host {$LEGACY_APP_HOST:legacy.invalid}
-	redir @legacy {$APP_URL}{uri} permanent
+	route {
+		@legacy host {$LEGACY_APP_HOST:legacy.invalid}
+		redir @legacy {$APP_URL}{uri} permanent
 
-	header {
-		-Access-Control-Allow-Credentials
-		-Access-Control-Allow-Headers
-		-Access-Control-Allow-Methods
-		-Access-Control-Allow-Origin
-		-Server
-		-X-Powered-By
-		Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' ws: wss:; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-		Permissions-Policy "camera=(), geolocation=(), microphone=()"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		X-Frame-Options "DENY"
-	}
+		@unexpected expression `{http.request.hostport}.lowerAscii() != "{$APP_HOST}".lowerAscii()`
+		respond @unexpected 421
 
-	@api path /api/* /sanctum/* /up /ready
-	handle @api {
-		reverse_proxy api:8080
-	}
+		header {
+			-Access-Control-Allow-Credentials
+			-Access-Control-Allow-Headers
+			-Access-Control-Allow-Methods
+			-Access-Control-Allow-Origin
+			-Server
+			-X-Powered-By
+			Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' ws://{$APP_HOST} wss://{$APP_HOST}; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+			Permissions-Policy "camera=(), geolocation=(), microphone=()"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			X-Content-Type-Options "nosniff"
+			X-Frame-Options "DENY"
+		}
 
-	handle_path /ws/* {
-		reverse_proxy reverb:8080
-	}
+		@api path /api/* /sanctum/* /up /ready
+		handle @api {
+			reverse_proxy api:8080
+		}
 
-	handle {
-		reverse_proxy web:3000
+		handle_path /ws/* {
+			reverse_proxy reverb:8080
+		}
+
+		handle {
+			reverse_proxy web:3000
+		}
 	}
 }

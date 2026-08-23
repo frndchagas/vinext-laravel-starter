@@ -12,7 +12,8 @@
     "lint": "oxlint --type-aware --deny-warnings .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:production": "playwright test --config playwright.production.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
