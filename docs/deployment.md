@@ -59,6 +59,6 @@ The production proxy sets CSP, HSTS, clickjacking, MIME-sniffing, referrer and b
 
 ## Container scan policy
 
-Trivy blocks fixable high and critical findings in application images, Redis and PostgreSQL operating-system packages. The official PostgreSQL image currently bundles `gosu` built with an older Go standard library. Those library findings stay visible as a nonblocking step until the official image is rebuilt or reachability can be justified; they are not silently ignored or marked unaffected without evidence.
+The canonical release CI scans every production image with Trivy and blocks fixable high and critical findings. The official PostgreSQL image bundles `gosu` with an older Go standard library, but its [upstream binary scan](https://github.com/tianon/gosu/actions/runs/32607173744) found no reachable vulnerable symbols. The corresponding exceptions apply only to that binary and package version, expire on September 30, 2026, and do not permit new findings.
 
 Coolify recreates services in a regular Docker Compose deployment. This reference does not claim zero downtime. Roll back by selecting the previous source tag and redeploying it; do not roll back the database unless the migration has an explicit reversal plan.

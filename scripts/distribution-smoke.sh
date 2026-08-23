@@ -103,6 +103,7 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     test ! -e scripts/ci-policy.test.mjs
     test ! -e scripts/packagist-sync.mjs
     test ! -e scripts/packagist-sync.test.mjs
+    test ! -e scripts/trivy-ignore.test.mjs
     grep --quiet '^WEB_PUBLIC_PORT=13000$' .env.example
     grep --quiet '^## Laravel API instructions$' AGENTS.md
     grep --quiet 'new URL("../../../", import.meta.url)' apps/web/e2e/helpers.ts

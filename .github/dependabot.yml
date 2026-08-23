@@ -95,13 +95,28 @@ updates:
       timezone: America/Fortaleza
     open-pull-requests-limit: 5
     groups:
-      docker-patch:
+      docker-minor-and-patch:
         patterns:
           - "*"
         update-types:
+          - minor
           - patch
     ignore:
       - dependency-name: "*"
         update-types:
           - version-update:semver-major
+      - dependency-name: caddy
+        update-types:
+          - version-update:semver-minor
+      - dependency-name: composer
+        update-types:
+          - version-update:semver-minor
+      - dependency-name: golang
+        update-types:
+          - version-update:semver-minor
+      - dependency-name: oven/bun
+        update-types:
+          - version-update:semver-minor
+      - dependency-name: php
+        update-types:
           - version-update:semver-minor

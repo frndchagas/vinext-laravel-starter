@@ -49,6 +49,7 @@ const patterns = {
   production: [
     /^\.dockerignore$/,
     /^\.github\/dependabot\.yml$/,
+    /^\.trivyignore\.yaml$/,
     /^\.env\.production\.example$/,
     /^apps\/api\/(app|bootstrap|config|database|public|routes)\//,
     /^apps\/api\/composer\.(json|lock)$/,
@@ -63,6 +64,7 @@ const patterns = {
   docker: [
     /^\.dockerignore$/,
     /^\.github\/dependabot\.yml$/,
+    /^\.trivyignore\.yaml$/,
     /^\.env\.production\.example$/,
     /^apps\/api\/composer\.(json|lock)$/,
     /^compose\.(production|coolify)(\.local)?\.yaml$/,
@@ -77,6 +79,7 @@ const controlPlanePaths = [
   /^scripts\/ci-changes(?:\.test)?\.mjs$/,
   /^scripts\/ci-policy(?:\.test)?\.mjs$/,
   /^scripts\/packagist-sync(?:\.test)?\.mjs$/,
+  /^scripts\/trivy-ignore\.test\.mjs$/,
   /^scripts\/verify-main-ci\.sh$/,
   /^scripts\/release-preflight\.sh$/,
 ];

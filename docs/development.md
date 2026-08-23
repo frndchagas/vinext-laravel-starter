@@ -51,7 +51,7 @@ Lefthook is intentionally smaller. Pre-commit runs format checks and uses Gitlea
 
 Tests never call a real external provider. The starter has no AI provider in the current release.
 
-Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose manifest each week. Major dependency updates and Docker runtime-line changes remain manual; automated Docker pull requests are patch-only and must pass the production gate.
+Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose manifest each week. Major updates remain manual. Minor updates to PHP, Go, Composer, Bun and Caddy also require a coordinated change; other Docker minor and patch updates must pass the production gate.
 
 ## Frontend baseline
 

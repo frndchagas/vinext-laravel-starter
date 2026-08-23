@@ -217,7 +217,7 @@ services:
       retries: 12
 
   redis:
-    image: redis:7.4.10-alpine3.21
+    image: redis:7.4.11-alpine3.21
     command: ["redis-server", "--appendonly", "yes"]
     restart: unless-stopped
     volumes:

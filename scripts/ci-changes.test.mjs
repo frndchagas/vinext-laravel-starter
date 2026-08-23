@@ -34,6 +34,7 @@ describe("classifyChanges", () => {
       "scripts/ci-policy.test.mjs",
       "scripts/packagist-sync.mjs",
       "scripts/packagist-sync.test.mjs",
+      "scripts/trivy-ignore.test.mjs",
       "scripts/verify-main-ci.sh",
       "scripts/release-preflight.sh",
     ]) {
@@ -73,6 +74,10 @@ describe("classifyChanges", () => {
       distribution: true,
       production: true,
       breaking: false,
+      docker: true,
+    });
+    expect(classifyChanges([".trivyignore.yaml"])).toMatchObject({
+      production: true,
       docker: true,
     });
   });
