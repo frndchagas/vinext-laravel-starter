@@ -1,10 +1,15 @@
 import SiLaravel from "@icons-pack/react-simple-icons/icons/SiLaravel";
 import SiPostgresql from "@icons-pack/react-simple-icons/icons/SiPostgresql";
 import { AppWindow, Braces } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { createHomeMetadata } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
+
+const repositoryUrl = "https://github.com/frndchagas/vinext-laravel-starter";
 
 const decisions = [
   {
@@ -13,7 +18,7 @@ const decisions = [
     title: "One source of identity",
   },
   {
-    description: "TypeSpec generates OpenAPI, query hooks and mocks.",
+    description: "TypeSpec emits OpenAPI; Orval generates Fetch, Query, Zod and MSW artifacts.",
     number: "02",
     title: "Contracts before clients",
   },
@@ -86,6 +91,7 @@ function StackNode({ accent = false, className, icon, label }: StackNodeProps) {
 }
 
 export const revalidate = 300;
+export const metadata: Metadata = createHomeMetadata();
 
 export default function Home() {
   return (
@@ -119,8 +125,8 @@ export default function Home() {
               <a className="text-sm font-medium hover:text-primary" href="#decisions">
                 Baseline
               </a>
-              <a className="text-sm font-medium hover:text-primary" href="#run-locally">
-                Run locally
+              <a className="text-sm font-medium hover:text-primary" href="#install">
+                Install
               </a>
             </nav>
 
@@ -164,22 +170,24 @@ export default function Home() {
                     className: "h-12 rounded-none bg-primary px-6 text-primary-foreground",
                     size: "lg",
                   })}
-                  href="#architecture"
+                  href={repositoryUrl}
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  View architecture
-                  <span aria-hidden="true">→</span>
+                  View on GitHub
+                  <span aria-hidden="true">↗</span>
                 </a>
-                <a
+                <Link
                   className={buttonVariants({
                     className: "h-12 rounded-none border-foreground/60 px-6",
                     size: "lg",
                     variant: "outline",
                   })}
-                  href="#run-locally"
+                  href="/login"
                 >
-                  Run locally
+                  Sign in
                   <span aria-hidden="true">→</span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -239,14 +247,16 @@ export default function Home() {
 
             <div
               className="relative grid gap-4 bg-foreground px-5 py-5 text-background sm:grid-cols-[1fr_auto] sm:items-center sm:px-8"
-              id="run-locally"
+              id="install"
             >
-              <code className="font-mono text-sm sm:text-base">
-                <span className="mr-3 text-primary">›</span>bun run check
+              <code className="overflow-x-auto font-mono text-xs whitespace-nowrap sm:text-sm">
+                <span className="mr-3 text-primary">›</span>
+                laravel new my-app --using=frndchagas/vinext-laravel-starter --phpunit --bun
+                --no-boost
               </code>
               <span className="flex items-center gap-2 text-sm">
                 <span aria-hidden="true" className="size-2 bg-primary" />
-                One command, objective gates
+                Owned snapshot, no updater
               </span>
             </div>
           </aside>
@@ -329,11 +339,11 @@ export default function Home() {
           <p>Independent community project. MIT licensed.</p>
           <a
             className="font-medium text-foreground hover:text-primary"
-            href="https://github.com/cloudflare/vinext"
+            href={repositoryUrl}
             rel="noreferrer"
             target="_blank"
           >
-            Explore Vinext <span aria-hidden="true">↗</span>
+            View the repository <span aria-hidden="true">↗</span>
           </a>
         </footer>
       </main>

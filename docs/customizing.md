@@ -29,6 +29,8 @@ bun run contracts:build
 
 Copy the root `.env.example` and change ports there. The development command propagates those values to Docker, host processes and Caddy upstreams. Laravel application settings live in `apps/api/.env`; never commit either file.
 
+`APP_NAME`, `APP_DESCRIPTION` and `APP_URL` drive page titles, canonical URLs and social cards. New deployments default to `APP_INDEXABLE=false`; enable it only when the public root page is ready for search engines. Authenticated routes remain `noindex`.
+
 Production secrets do not belong in either example file. Generate unique Laravel and Reverb keys in the deployment environment.
 
 ## Replace the reference flow
