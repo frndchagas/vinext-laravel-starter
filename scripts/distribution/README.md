@@ -18,16 +18,17 @@ Open the application at `http://localhost:13000` and Mailpit at `http://localhos
 
 ## Main commands
 
-| Command                   | Purpose                                                                |
-| ------------------------- | ---------------------------------------------------------------------- |
-| `bun run bootstrap`       | Prepare dependencies, infrastructure, the application key and database |
-| `bun run dev`             | Start the development stack after bootstrap                            |
-| `bun run check`           | Run formatting checks, lint, types, unit tests and the Vinext build    |
-| `bun run contracts:check` | Validate contracts and detect generated artifact drift                 |
-| `bun run audit`           | Check dependency deduplication and security advisories                 |
-| `bun run test:e2e`        | Run the Playwright browser journeys                                    |
-| `bun run test:production` | Build and exercise the production containers                           |
-| `bun run infra:down`      | Stop local infrastructure without deleting volumes                     |
+| Command                           | Purpose                                                                |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `bun run bootstrap`               | Prepare dependencies, infrastructure, the application key and database |
+| `bun run dev`                     | Start the development stack after bootstrap                            |
+| `bun run check`                   | Run formatting checks, lint, types, unit tests and the Vinext build    |
+| `bun run contracts:check`         | Validate contracts and detect generated artifact drift                 |
+| `bun run audit`                   | Check dependency deduplication and security advisories                 |
+| `bun run test:e2e`                | Run the Playwright browser journeys                                    |
+| `bun run test:production`         | Build and exercise the production containers                           |
+| `bun run test:production:browser` | Exercise the standalone containers in Chromium                         |
+| `bun run infra:down`              | Stop local infrastructure without deleting volumes                     |
 
 Start by reading [Customize the application](docs/customizing.md), then use the [architecture](docs/architecture.md) and [deployment](docs/deployment.md) guides as references.
 

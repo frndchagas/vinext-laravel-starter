@@ -10,15 +10,16 @@ Laravel owns identity, authorization, persisted domain state, queues and broadca
 
 `package.json` is the executable source of truth.
 
-| Command                   | Purpose                                                                             |
-| ------------------------- | ----------------------------------------------------------------------------------- |
-| `bun run bootstrap`       | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
-| `bun run dev`             | Start Caddy dependencies plus Vinext, Laravel, Horizon and Reverb                   |
-| `bun run check`           | Format check, lint, types, unit tests and Vinext build                              |
-| `bun run contracts:check` | Validate contracts and detect generated HTTP or realtime drift                      |
-| `bun run audit`           | Check deduplication and dependency advisories                                       |
-| `bun run test:e2e`        | Run browser journeys against the development stack                                  |
-| `bun run test:production` | Build and exercise the production containers                                        |
+| Command                           | Purpose                                                                             |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| `bun run bootstrap`               | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
+| `bun run dev`                     | Start Caddy dependencies plus Vinext, Laravel, Horizon and Reverb                   |
+| `bun run check`                   | Format check, lint, types, unit tests and Vinext build                              |
+| `bun run contracts:check`         | Validate contracts and detect generated HTTP or realtime drift                      |
+| `bun run audit`                   | Check deduplication and dependency advisories                                       |
+| `bun run test:e2e`                | Run browser journeys against the development stack                                  |
+| `bun run test:production`         | Build and exercise the production containers                                        |
+| `bun run test:production:browser` | Exercise the standalone containers in Chromium                                      |
 
 Bun 1.4 runs independent workspace scripts in parallel. Contract generation stays sequential because TypeSpec writes the OpenAPI input consumed by Orval.
 

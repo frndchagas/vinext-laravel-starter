@@ -10,14 +10,15 @@ Laravel owns identity, authorization, persisted domain state, queues and broadca
 
 `package.json` is the executable source of truth. The main commands are:
 
-| Command | Purpose |
-| --- | --- |
-| `bun run bootstrap` | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
-| `bun run dev` | Start Caddy dependencies plus Vinext, Laravel, Horizon and Reverb |
-| `bun run check` | Format check, lint, types, unit tests and Vinext build |
-| `bun run contracts:check` | Validate contracts and detect generated HTTP or realtime drift |
-| `bun run audit` | Check deduplication and dependency advisories |
-| `bun run test:e2e` | Run the browser journeys against the development stack |
+| Command                           | Purpose                                                                             |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| `bun run bootstrap`               | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
+| `bun run dev`                     | Start Caddy dependencies plus Vinext, Laravel, Horizon and Reverb                   |
+| `bun run check`                   | Format check, lint, types, unit tests and Vinext build                              |
+| `bun run contracts:check`         | Validate contracts and detect generated HTTP or realtime drift                      |
+| `bun run audit`                   | Check deduplication and dependency advisories                                       |
+| `bun run test:e2e`                | Run the browser journeys against the development stack                              |
+| `bun run test:production:browser` | Exercise the standalone containers in Chromium                                      |
 
 Bun 1.4 runs independent workspace scripts in parallel. Contract generation stays sequential because TypeSpec writes the OpenAPI input consumed by Orval.
 
@@ -42,7 +43,7 @@ GitHub Actions always runs the fast verification, dependency and secret checks o
 - serial Chromium E2E for auth, mail, queues and reconnection;
 - a fresh template snapshot with isolated ports, migrations, contracts, build and proxy smoke tests;
 - a flattened package installed through the real Laravel Installer, followed by its consumer and production gates;
-- production image builds followed by migrations, readiness, security-header checks, a session flow, queued Task processing and a PostgreSQL restore round-trip;
+- production image builds followed by migrations, readiness, canonical-host checks, a Chromium session over standalone Node/Caddy/Reverb, queued Task processing and a PostgreSQL restore round-trip;
 - Trivy scans fixable high and critical vulnerabilities in the application, proxy, Redis and PostgreSQL runtime images when Docker inputs change and on every complete run;
 - Gitleaks, dependency review and OpenAPI breaking-change detection;
 - GitHub CodeQL default setup outside the repository workflow.

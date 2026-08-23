@@ -40,6 +40,6 @@ USER caddy
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=6 \
-    CMD ["wget", "--quiet", "--spider", "http://127.0.0.1:8080/up"]
+    CMD wget --quiet --spider --header "Host: $APP_HOST" http://127.0.0.1:8080/up
 
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

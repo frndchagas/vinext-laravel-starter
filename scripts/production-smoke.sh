@@ -34,7 +34,13 @@ export PRODUCTION_PORT="$production_port"
 export REVERB_APP_ID=starter
 export REVERB_APP_KEY=smoke-key
 export REVERB_APP_SECRET=smoke-secret
+export REVERB_ALLOWED_ORIGINS=127.0.0.1
 export SESSION_SECURE_COOKIE=false
+if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
+    export TASK_SIMULATED_DELAY_MS=2000
+else
+    export TASK_SIMULATED_DELAY_MS=0
+fi
 export COMPOSE_PROJECT_NAME="$project_name"
 export COMPOSE_FILE="compose.production.yaml:compose.production.local.yaml"
 
@@ -204,6 +210,25 @@ if [[ "$legacy_redirect" != "301 $APP_URL/legacy/path?from=smoke" ]]; then
     echo "Legacy host redirect was $legacy_redirect." >&2
     exit 1
 fi
+
+unexpected_host_status=$(curl --silent --show-error --output /dev/null \
+    --header 'Host: unexpected.example.invalid' \
+    --write-out '%{http_code}' \
+    "$APP_URL/")
+if [[ "$unexpected_host_status" != 421 ]]; then
+    echo "Unexpected Host returned $unexpected_host_status; expected 421." >&2
+    exit 1
+fi
+
+missing_port_status=$(curl --silent --show-error --output /dev/null \
+    --header 'Host: 127.0.0.1' \
+    --write-out '%{http_code}' \
+    "$APP_URL/")
+if [[ "$missing_port_status" != 421 ]]; then
+    echo "Host without the configured port returned $missing_port_status; expected 421." >&2
+    exit 1
+fi
+
 capabilities=$(
     curl --fail --silent --show-error "$APP_URL/api/v1/auth/capabilities"
 )
@@ -225,6 +250,25 @@ grep --ignore-case --quiet '^Referrer-Policy: strict-origin-when-cross-origin' "
 grep --ignore-case --quiet '^Strict-Transport-Security: max-age=31536000; includeSubDomains' "$headers_file"
 grep --ignore-case --quiet '^X-Content-Type-Options: nosniff' "$headers_file"
 grep --ignore-case --quiet '^X-Frame-Options: DENY' "$headers_file"
+
+content_security_policy=$(
+    awk '
+        tolower($0) ~ /^content-security-policy:/ {
+            sub(/^[^:]*:[[:space:]]*/, "");
+            sub(/\r$/, "");
+            print;
+            exit;
+        }
+    ' "$headers_file"
+)
+if [[ "$content_security_policy" != *"connect-src 'self' ws://$APP_HOST wss://$APP_HOST;"* ]]; then
+    echo "The CSP does not restrict WebSockets to APP_HOST." >&2
+    exit 1
+fi
+if [[ "$content_security_policy" == *"connect-src 'self' ws: wss:;"* ]]; then
+    echo "The CSP still allows WebSockets to arbitrary hosts." >&2
+    exit 1
+fi
 
 if grep --ignore-case --quiet '^Server:' "$headers_file"; then
     echo "The public proxy exposed an upstream Server header." >&2
@@ -333,6 +377,13 @@ done
 if [[ "$task_completed" != true ]]; then
     echo "Task $task_id did not complete through Horizon." >&2
     exit 1
+fi
+
+if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
+    E2E_BASE_URL="$APP_URL" \
+        E2E_PRODUCTION_EMAIL=smoke@example.invalid \
+        E2E_PRODUCTION_PASSWORD=smoke-password \
+        bun run --filter web test:e2e:production
 fi
 
 reconciled_task_id=$(

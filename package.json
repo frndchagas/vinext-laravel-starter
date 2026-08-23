@@ -29,6 +29,7 @@
     "test": "bun run --parallel --if-present --filter '*' test",
     "test:e2e": "bun run --filter web test:e2e",
     "test:production": "bash scripts/production-smoke.sh",
+    "test:production:browser": "PRODUCTION_BROWSER_SMOKE=true bash scripts/production-smoke.sh",
     "test:template": "bash scripts/template-smoke.sh",
     "test:distribution": "bash scripts/distribution-smoke.sh",
     "release:check": "bash scripts/release-preflight.sh",
