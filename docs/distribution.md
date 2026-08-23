@@ -1,6 +1,6 @@
 # Distribution
 
-The source repository contains maintainer tooling and the canonical release history. Stable releases publish a consumer-safe Laravel-root snapshot to `frndchagas/vinext-laravel-starter-distribution`. That generated repository is the GitHub Template and the source used by Packagist as `frndchagas/vinext-laravel-starter`, so both installation paths start from the same tree.
+The source repository contains maintainer tooling and the canonical release history. Stable releases publish a consumer-safe Laravel-root snapshot to `frndchagas/vinext-laravel-starter-distribution`, which Packagist exposes as `frndchagas/vinext-laravel-starter`. After the first consumer-safe tag is published and verified, that generated repository replaces the source as the GitHub Template so both installation paths start from the same tree.
 
 ```bash
 laravel new my-app \

@@ -24,7 +24,7 @@ composer run dev
 
 Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The Tasks page demonstrates queued processing and private realtime updates.
 
-The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is also the GitHub Template. Both paths create the same consumer-safe snapshot with its own history and no updater.
+The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is the consumer-safe snapshot behind Packagist. Its repository becomes the GitHub Template after the first consumer-safe release is published and verified. Applications receive their own history and no updater.
 
 ## Develop the source
 

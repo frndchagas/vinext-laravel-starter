@@ -252,7 +252,7 @@ try {
   delete packageJson.scripts["test:template"];
   delete packageJson.scripts["release:check"];
   write("package.json", `${JSON.stringify(packageJson, null, 2)}\n`);
-  run("bun", ["install", "--ignore-scripts"], outputRoot);
+  run("bun", ["install", "--lockfile-only", "--ignore-scripts"], outputRoot);
 
   replace("infra/docker/api/Dockerfile", [
     [
@@ -370,6 +370,7 @@ try {
 
   for (const path of [
     "scripts/build-distribution.mjs",
+    "scripts/build-distribution.test.mjs",
     "scripts/ci-changes.mjs",
     "scripts/ci-changes.test.mjs",
     "scripts/ci-policy.mjs",

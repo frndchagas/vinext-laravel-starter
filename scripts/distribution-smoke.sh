@@ -46,11 +46,24 @@ trap cleanup EXIT
 
 rmdir "$distribution_dir"
 bun run scripts/build-distribution.mjs "$distribution_dir"
+test ! -e "$distribution_dir/node_modules"
 
-if grep --quiet 'sourceRoot.*scripts/distribution' scripts/build-distribution.mjs; then
-    echo 'Distribution overrides can read the working tree instead of the archived commit.' >&2
-    exit 1
-fi
+archive_overrides=(
+    'scripts/distribution/AGENTS.md|AGENTS.md'
+    'scripts/distribution/CONTEXT.md|CONTEXT.md'
+    'scripts/distribution/CONTRIBUTING.md|CONTRIBUTING.md'
+    'scripts/distribution/README.md|README.md'
+    'scripts/distribution/SECURITY.md|SECURITY.md'
+    'scripts/distribution/ci.yml|.github/workflows/ci.yml'
+    'scripts/distribution/development.md|docs/development.md'
+    'scripts/distribution/docs-README.md|docs/README.md'
+    'scripts/distribution/getting-started.md|docs/getting-started.md'
+)
+for override in "${archive_overrides[@]}"; do
+    source_path=${override%%|*}
+    output_path=${override#*|}
+    git show "HEAD:$source_path" | cmp - "$distribution_dir/$output_path"
+done
 
 mkdir -p "$sync_target/.git"
 printf 'replacement\n' > "$sync_target/.source-tag"
@@ -104,6 +117,7 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     test -f .github/dependabot.yml
     test ! -e .github/workflows/publish-distribution.yml
     test ! -e scripts/build-distribution.mjs
+    test ! -e scripts/build-distribution.test.mjs
     test ! -e scripts/ci-policy.mjs
     test ! -e scripts/ci-policy.test.mjs
     test ! -e scripts/packagist-sync.mjs

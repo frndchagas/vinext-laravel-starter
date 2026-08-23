@@ -29,7 +29,7 @@ Open the application at `http://localhost:13000` and Mailpit at `http://localhos
 | `bun run test:production` | Build and exercise the production containers                           |
 | `bun run infra:down`      | Stop local infrastructure without deleting volumes                     |
 
-Start by reading [Customize the starter](docs/customizing.md), then use the [architecture](docs/architecture.md) and [deployment](docs/deployment.md) guides as references.
+Start by reading [Customize the application](docs/customizing.md), then use the [architecture](docs/architecture.md) and [deployment](docs/deployment.md) guides as references.
 
 ## Source
 
