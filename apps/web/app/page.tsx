@@ -6,10 +6,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
-import { createHomeMetadata } from "@/lib/site-config";
+import { createHomeMetadata, getSiteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
-
-const repositoryUrl = "https://github.com/frndchagas/vinext-laravel-starter";
 
 const decisions = [
   {
@@ -94,6 +92,8 @@ export const revalidate = 300;
 export const metadata: Metadata = createHomeMetadata();
 
 export default function Home() {
+  const repositoryUrl = getSiteConfig().repositoryUrl;
+
   return (
     <>
       <a
@@ -165,18 +165,31 @@ export default function Home() {
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  className={buttonVariants({
-                    className: "h-12 rounded-none bg-primary px-6 text-primary-foreground",
-                    size: "lg",
-                  })}
-                  href={repositoryUrl}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  View on GitHub
-                  <span aria-hidden="true">↗</span>
-                </a>
+                {repositoryUrl ? (
+                  <a
+                    className={buttonVariants({
+                      className: "h-12 rounded-none bg-primary px-6 text-primary-foreground",
+                      size: "lg",
+                    })}
+                    href={repositoryUrl.href}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    View on GitHub
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <a
+                    className={buttonVariants({
+                      className: "h-12 rounded-none bg-primary px-6 text-primary-foreground",
+                      size: "lg",
+                    })}
+                    href="#install"
+                  >
+                    View installation
+                    <span aria-hidden="true">→</span>
+                  </a>
+                )}
                 <Link
                   className={buttonVariants({
                     className: "h-12 rounded-none border-foreground/60 px-6",
@@ -337,14 +350,20 @@ export default function Home() {
           id="license"
         >
           <p>Independent community project. MIT licensed.</p>
-          <a
-            className="font-medium text-foreground hover:text-primary"
-            href={repositoryUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            View the repository <span aria-hidden="true">↗</span>
-          </a>
+          {repositoryUrl ? (
+            <a
+              className="font-medium text-foreground hover:text-primary"
+              href={repositoryUrl.href}
+              rel="noreferrer"
+              target="_blank"
+            >
+              View the repository <span aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <a className="font-medium text-foreground hover:text-primary" href="#install">
+              Installation <span aria-hidden="true">↑</span>
+            </a>
+          )}
         </footer>
       </main>
     </>

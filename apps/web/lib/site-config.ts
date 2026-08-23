@@ -4,8 +4,6 @@ const defaultName = "Vinext Laravel Starter";
 const defaultDescription =
   "A Laravel and Vinext foundation for coding agents, with typed contracts, queues and realtime.";
 const defaultUrl = "http://localhost:13000";
-const socialImagePath = "/opengraph-image.jpg";
-const socialImageAlt = "Vinext Laravel Starter Tasks screen";
 
 type SiteEnvironment = Record<string, string | undefined>;
 
@@ -13,7 +11,8 @@ export type SiteConfig = {
   description: string;
   indexable: boolean;
   name: string;
-  socialImage: URL;
+  repositoryUrl: URL | null;
+  socialImage: URL | null;
   url: URL;
 };
 
@@ -38,6 +37,17 @@ function applicationUrl(value: string | undefined) {
   return url;
 }
 
+function optionalUrl(value: string | undefined, base?: URL) {
+  if (!value?.trim()) return null;
+
+  const url = new URL(value.trim(), base);
+  if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) {
+    throw new Error("Optional public URLs must use HTTP(S) without credentials.");
+  }
+
+  return url;
+}
+
 export function getSiteConfig(environment: SiteEnvironment = process.env): SiteConfig {
   const url = applicationUrl(environment.APP_URL);
 
@@ -45,30 +55,33 @@ export function getSiteConfig(environment: SiteEnvironment = process.env): SiteC
     description: text(environment.APP_DESCRIPTION, defaultDescription),
     indexable: environment.APP_INDEXABLE?.trim().toLowerCase() === "true",
     name: text(environment.APP_NAME, defaultName),
-    socialImage: new URL(socialImagePath, url),
+    repositoryUrl: optionalUrl(environment.APP_REPOSITORY_URL),
+    socialImage: optionalUrl(environment.APP_SOCIAL_IMAGE, url),
     url,
   };
 }
 
 function socialMetadata(site: SiteConfig) {
-  const image = {
-    alt: socialImageAlt,
-    height: 630,
-    url: site.socialImage,
-    width: 1200,
-  };
+  const image = site.socialImage
+    ? {
+        alt: `${site.name} application preview`,
+        height: 630,
+        url: site.socialImage,
+        width: 1200,
+      }
+    : undefined;
 
   return {
     openGraph: {
       description: site.description,
-      images: [image],
+      ...(image ? { images: [image] } : {}),
       title: site.name,
       type: "website" as const,
     },
     twitter: {
-      card: "summary_large_image" as const,
+      card: image ? ("summary_large_image" as const) : ("summary" as const),
       description: site.description,
-      images: [image],
+      ...(image ? { images: [image] } : {}),
       title: site.name,
     },
   };

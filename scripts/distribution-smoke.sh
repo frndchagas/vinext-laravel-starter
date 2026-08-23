@@ -123,10 +123,14 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     test ! -e scripts/packagist-sync.mjs
     test ! -e scripts/packagist-sync.test.mjs
     test ! -e scripts/trivy-ignore.test.mjs
+    test ! -e apps/web/app/opengraph-image.jpg
+    test ! -e apps/web/app/opengraph-image.alt.txt
     test ! -e docs/adr
     test ! -e docs/distribution.md
     test ! -e docs/incubation.md
     grep --quiet '^WEB_PUBLIC_PORT=13000$' .env.example
+    grep --quiet '^APP_REPOSITORY_URL=$' .env.example
+    grep --quiet '^APP_SOCIAL_IMAGE=$' .env.example
     grep --quiet '^## Laravel instructions$' AGENTS.md
     grep --quiet '`app`, `routes`, `database` and `tests`' AGENTS.md
     test "$(cat CLAUDE.md)" = '@AGENTS.md'

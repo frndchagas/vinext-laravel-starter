@@ -9,8 +9,10 @@ describe("site configuration", () => {
 
     expect(site.url.href).toBe("http://localhost:13000/");
     expect(site.indexable).toBe(false);
-    expect(site.socialImage.href).toBe("http://localhost:13000/opengraph-image.jpg");
+    expect(site.repositoryUrl).toBeNull();
+    expect(site.socialImage).toBeNull();
     expect(root.robots).toEqual({ follow: false, index: false });
+    expect(root.twitter).toMatchObject({ card: "summary" });
     expect(createRobots({}).rules).toEqual({ disallow: "/", userAgent: "*" });
   });
 
@@ -19,6 +21,8 @@ describe("site configuration", () => {
       APP_DESCRIPTION: "A configured application.",
       APP_INDEXABLE: "true",
       APP_NAME: "Example product",
+      APP_REPOSITORY_URL: "https://github.com/example/product",
+      APP_SOCIAL_IMAGE: "/opengraph-image.jpg",
       APP_URL: "https://example.com",
     };
     const metadata = createHomeMetadata(environment);
@@ -41,6 +45,10 @@ describe("site configuration", () => {
       },
     });
     expect(createRobots(environment).rules).toEqual({ allow: "/", userAgent: "*" });
+    expect(getSiteConfig(environment)).toMatchObject({
+      repositoryUrl: new URL("https://github.com/example/product"),
+      socialImage: new URL("https://example.com/opengraph-image.jpg"),
+    });
   });
 
   it("rejects an APP_URL that cannot be a canonical origin", () => {

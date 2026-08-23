@@ -12,7 +12,7 @@ cp .env.production.example .env.production
 
 Set unique values for `APP_KEY`, `POSTGRES_PASSWORD`, `REVERB_APP_KEY` and `REVERB_APP_SECRET`. `APP_URL` includes the public scheme and host. `APP_HOST` contains only the host, plus a port when the public URL uses one.
 
-Set `APP_DESCRIPTION` for metadata and keep `APP_INDEXABLE=false` on previews or private products. Only the public root page becomes indexable when the flag is true; authenticated routes stay out of search results. The generated canonical and social image URLs use `APP_URL`.
+Set `APP_DESCRIPTION` for metadata and keep `APP_INDEXABLE=false` on previews or private products. Only the public root page becomes indexable when the flag is true; authenticated routes stay out of search results. `APP_REPOSITORY_URL` and `APP_SOCIAL_IMAGE` are optional and empty in generated applications. Relative social-image paths become absolute through `APP_URL`.
 
 `LEGACY_APP_HOST` is optional. Set it to one previous hostname to return a permanent redirect to `APP_URL`; the proxy preserves the path and query. Leave it unset when no redirect is needed.
 

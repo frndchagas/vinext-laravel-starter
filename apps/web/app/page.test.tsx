@@ -1,10 +1,16 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import Home from "./page";
 
 describe("starter home", () => {
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllEnvs();
+  });
+
   it("presents the architecture and the baseline decisions", () => {
+    vi.stubEnv("APP_REPOSITORY_URL", "https://github.com/frndchagas/vinext-laravel-starter");
     render(<Home />);
 
     expect(
@@ -34,5 +40,16 @@ describe("starter home", () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByText("Owned snapshot, no updater")).toBeInTheDocument();
+  });
+
+  it("keeps a generated application independent from the starter repository", () => {
+    vi.stubEnv("APP_REPOSITORY_URL", "");
+    render(<Home />);
+
+    expect(screen.queryByRole("link", { name: "View on GitHub" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View installation" })).toHaveAttribute(
+      "href",
+      "#install",
+    );
   });
 });
