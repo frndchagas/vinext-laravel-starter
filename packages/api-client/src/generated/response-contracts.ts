@@ -22,354 +22,472 @@ import {
 } from "./zod";
 
 const EmptyResponse = zod.undefined();
-const ListAdminUsersResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ListAdminUsersResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdateAdminUserRoleResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdateAdminUserRoleResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdateAdminUserRoleResponse404 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdateAdminUserRoleResponse409 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  code: zod.string(),
-});
-const UpdateAdminUserRoleResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const ResendEmailVerificationResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ResendEmailVerificationResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const VerifyEmailResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const VerifyEmailResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const VerifyEmailResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ForgotPasswordResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const ForgotPasswordResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const LoginResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const LoginResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const LogoutResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const RegisterResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const RegisterResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const RegisterResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ResetPasswordResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const CompleteTwoFactorChallengeResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const CompleteTwoFactorChallengeResponse429 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const DeleteCurrentUserResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const DeleteCurrentUserResponse409 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  code: zod.string(),
-});
-const DeleteCurrentUserResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const ConfirmPasswordResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ConfirmPasswordResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const GetPasswordConfirmationStatusResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ConfirmTwoFactorResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ConfirmTwoFactorResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const ConfirmTwoFactorResponse423 = zod.object({
-  message: zod.string(),
-});
-const UpdatePasswordResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdatePasswordResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const UpdateProfileResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const UpdateProfileResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const EnableTwoFactorResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const EnableTwoFactorResponse423 = zod.object({
-  message: zod.string(),
-});
-const DisableTwoFactorResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const DisableTwoFactorResponse423 = zod.object({
-  message: zod.string(),
-});
-const GetTwoFactorQrCodeResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTwoFactorQrCodeResponse423 = zod.object({
-  message: zod.string(),
-});
-const GetRecoveryCodesResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetRecoveryCodesResponse423 = zod.object({
-  message: zod.string(),
-});
-const RegenerateRecoveryCodesResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const RegenerateRecoveryCodesResponse423 = zod.object({
-  message: zod.string(),
-});
-const GetTwoFactorSecretKeyResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTwoFactorSecretKeyResponse404 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTwoFactorSecretKeyResponse423 = zod.object({
-  message: zod.string(),
-});
-const GetMeResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const CreateTaskResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const CreateTaskResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const CreateTaskResponse409 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  code: zod.string(),
-});
-const CreateTaskResponse422 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-  errors: zod.object({}).catchall(zod.array(zod.string())),
-});
-const ListTasksResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const ListTasksResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTaskResponse401 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTaskResponse403 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
-const GetTaskResponse404 = zod.object({
-  type: zod.string(),
-  title: zod.string(),
-  status: zod.number().int().min(-2147483648).max(2147483647),
-  detail: zod.string().optional(),
-});
+const ListAdminUsersResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ListAdminUsersResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdateAdminUserRoleResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdateAdminUserRoleResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdateAdminUserRoleResponse404 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdateAdminUserRoleResponse409 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    code: zod.string(),
+  })
+  .strict();
+const UpdateAdminUserRoleResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const ResendEmailVerificationResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ResendEmailVerificationResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const VerifyEmailResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const VerifyEmailResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const VerifyEmailResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ForgotPasswordResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const ForgotPasswordResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const LoginResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const LoginResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const LogoutResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const RegisterResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const RegisterResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const RegisterResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ResetPasswordResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const CompleteTwoFactorChallengeResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const CompleteTwoFactorChallengeResponse429 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const DeleteCurrentUserResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const DeleteCurrentUserResponse409 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    code: zod.string(),
+  })
+  .strict();
+const DeleteCurrentUserResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const ConfirmPasswordResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ConfirmPasswordResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const GetPasswordConfirmationStatusResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ConfirmTwoFactorResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ConfirmTwoFactorResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const ConfirmTwoFactorResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const UpdatePasswordResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdatePasswordResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const UpdateProfileResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const UpdateProfileResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const EnableTwoFactorResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const EnableTwoFactorResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const DisableTwoFactorResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const DisableTwoFactorResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const GetTwoFactorQrCodeResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTwoFactorQrCodeResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const GetRecoveryCodesResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetRecoveryCodesResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const RegenerateRecoveryCodesResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const RegenerateRecoveryCodesResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const GetTwoFactorSecretKeyResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTwoFactorSecretKeyResponse404 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTwoFactorSecretKeyResponse423 = zod
+  .object({
+    message: zod.string(),
+  })
+  .strict();
+const GetMeResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const CreateTaskResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const CreateTaskResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const CreateTaskResponse409 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    code: zod.string(),
+  })
+  .strict();
+const CreateTaskResponse422 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+    errors: zod.object({}).catchall(zod.array(zod.string())),
+  })
+  .strict();
+const ListTasksResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const ListTasksResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTaskResponse401 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTaskResponse403 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
+const GetTaskResponse404 = zod
+  .object({
+    type: zod.string(),
+    title: zod.string(),
+    status: zod.number().int().min(-2147483648).max(2147483647),
+    detail: zod.string().optional(),
+  })
+  .strict();
 
 export const responseContracts = [
   {

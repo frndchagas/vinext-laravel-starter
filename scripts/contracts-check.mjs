@@ -5,6 +5,7 @@ import { lstatSync, readFileSync, readdirSync, readlinkSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
 export const GENERATED_CONTRACT_PATHS = [
+  "contracts/http/generated",
   "contracts/http/openapi",
   "contracts/realtime/generated",
   "packages/api-client/src/generated",

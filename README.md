@@ -41,7 +41,7 @@ See [Getting started](docs/getting-started.md) for the expected services, shutdo
 | `bun run bootstrap` | Install locked dependencies, start infrastructure, migrate and seed canonical roles |
 | `bun run dev` | Start Caddy dependencies, Vinext, Laravel, Horizon and Reverb |
 | `bun run check` | Format check, lint, types, unit tests and Vinext build |
-| `bun run contracts:check` | Validate AsyncAPI and detect generated HTTP drift |
+| `bun run contracts:check` | Validate HTTP and realtime contracts and detect generated drift |
 | `bun run audit` | Check dependency deduplication and advisories |
 | `bun run test:e2e` | Run the Playwright browser journeys |
 | `bun run test:production` | Build and exercise the production containers |

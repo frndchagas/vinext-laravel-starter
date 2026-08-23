@@ -53,6 +53,17 @@ function rejectUnsupportedKeywords(schema, supported) {
   }
 }
 
+function isNeverSchema(schema) {
+  return (
+    schema !== null &&
+    typeof schema === "object" &&
+    Object.keys(schema).length === 1 &&
+    schema.not !== null &&
+    typeof schema.not === "object" &&
+    Object.keys(schema.not).length === 0
+  );
+}
+
 function zodExpression(input) {
   const schema = dereference(input);
 
@@ -151,7 +162,9 @@ function zodExpression(input) {
     let object = `zod.object({\n${properties.join("\n")}\n})`;
     const additionalProperties = schema.additionalProperties ?? schema.unevaluatedProperties;
 
-    if (additionalProperties === false) object += ".strict()";
+    if (additionalProperties === false || isNeverSchema(additionalProperties)) {
+      object += ".strict()";
+    }
     else if (additionalProperties === true) object += ".passthrough()";
     else if (additionalProperties && typeof additionalProperties === "object") {
       object += `.catchall(${zodExpression(additionalProperties)})`;

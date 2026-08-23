@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { RegisterBody } from "../generated/zod";
 import { validateContractResponse } from "./validate-response";
 
 describe("validateContractResponse", () => {
@@ -33,6 +34,58 @@ describe("validateContractResponse", () => {
         permissions: [],
       }),
     ).toThrow(/getMe returned an invalid 200 response.*email_verified/);
+  });
+
+  it("rejects undocumented response fields", () => {
+    expect(() =>
+      validateContractResponse("GET", "/api/v1/me", 200, {
+        id: "user-id",
+        name: "User",
+        email: "user@example.com",
+        email_verified: true,
+        two_factor_enabled: false,
+        two_factor_confirmed: false,
+        roles: [],
+        permissions: [],
+        unexpected_secret: "must not cross the boundary",
+      }),
+    ).toThrow(/getMe returned an invalid 200 response.*unexpected_secret/);
+
+    expect(() =>
+      validateContractResponse("GET", "/api/v1/tasks/task-id", 200, {
+        id: "task-id",
+        input: "contract",
+        output: { word_count: 1, reversed: "tcartnoc", unexpected: true },
+        state: "completed",
+        version: 3,
+        error_code: null,
+        correlation_id: "correlation-id",
+        started_at: "2026-08-21T12:00:00Z",
+        finished_at: "2026-08-21T12:01:00Z",
+        created_at: "2026-08-21T11:59:00Z",
+      }),
+    ).toThrow(/getTask returned an invalid 200 response.*output.unexpected/);
+
+    expect(() =>
+      validateContractResponse("GET", "/api/v1/me", 401, {
+        type: "about:blank",
+        title: "Unauthorized",
+        status: 401,
+        unexpected: true,
+      }),
+    ).toThrow(/getMe returned an invalid 401 response.*unexpected/);
+  });
+
+  it("keeps request bodies open to match Laravel input handling", () => {
+    expect(() =>
+      RegisterBody.parse({
+        name: "User",
+        email: "user@example.com",
+        password: "secret-password",
+        password_confirmation: "secret-password",
+        product_specific_field: "allowed for consumers",
+      }),
+    ).not.toThrow();
   });
 
   it("rejects an undocumented status", () => {

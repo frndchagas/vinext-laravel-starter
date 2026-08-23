@@ -4,7 +4,7 @@ These rules apply to every application endpoint exposed through the generated cl
 
 ## Addressing and types
 
-- Application routes use `/api/v1`.
+- Application routes use `/api/v1`; the current OpenAPI document reports contract version 1.0.0.
 - Resource IDs are opaque strings backed by UUIDv7.
 - Dates use ISO 8601 UTC values.
 - Money uses integer minor units and a separate currency code.
@@ -27,6 +27,6 @@ Realtime messages never replace the read API. A client can rebuild current state
 
 ## Compatibility
 
-HTTP changes begin in TypeSpec and include regenerated OpenAPI and client artifacts. On pull requests, oasdiff compares the proposed document with the target branch. This is not a comparison with the latest tagged release.
+HTTP changes begin in TypeSpec and include regenerated OpenAPI, route-surface metadata and client artifacts. PHP tests compare contracted methods and paths with Laravel in both directions. On pull requests, oasdiff compares the proposed document with the target branch. This is not a comparison with the latest tagged release.
 
 Protocol endpoints owned by Sanctum, Fortify or Echo may be invoked by infrastructure instead of a generated product hook. Document each exception in [Authentication](authentication.md).
