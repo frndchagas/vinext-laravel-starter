@@ -265,6 +265,7 @@ try {
     "scripts/release-preflight.sh",
     "scripts/sync-distribution.sh",
     "scripts/template-smoke.sh",
+    "scripts/trivy-ignore.test.mjs",
     "scripts/verify-main-ci.sh",
   ]) {
     rmSync(join(outputRoot, path), { recursive: true, force: true });

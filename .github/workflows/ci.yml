@@ -43,6 +43,7 @@ jobs:
           scripts/ci-policy.test.mjs
           scripts/contracts-check.test.mjs
           scripts/packagist-sync.test.mjs
+          scripts/trivy-ignore.test.mjs
 
       - name: Select affected gates
         id: classify
@@ -383,9 +384,8 @@ jobs:
           vuln-type: os
           skip-setup-trivy: true
 
-      - name: Report PostgreSQL bundled binary findings
+      - name: Scan PostgreSQL bundled binary
         if: needs.changes.outputs.docker == 'true'
-        continue-on-error: true
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: vinext-laravel-starter-postgres:smoke-${{ github.run_id }}-${{ github.run_attempt }}
@@ -393,6 +393,7 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
           vuln-type: library
+          trivyignores: .trivyignore.yaml
           skip-setup-trivy: true
 
   gitleaks:
