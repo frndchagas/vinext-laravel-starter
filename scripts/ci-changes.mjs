@@ -71,8 +71,20 @@ const patterns = {
 
 const globalPaths = [/^bun\.lock$/, /^package\.json$/];
 
+const controlPlanePaths = [
+  /^\.github\/workflows\/ci\.yml$/,
+  /^scripts\/ci-changes(?:\.test)?\.mjs$/,
+  /^scripts\/ci-policy(?:\.test)?\.mjs$/,
+  /^scripts\/verify-main-ci\.sh$/,
+  /^scripts\/release-preflight\.sh$/,
+];
+
 export function classifyChanges(paths, forceFull = false) {
-  const result = Object.fromEntries(ALL_GATES.map((gate) => [gate, forceFull]));
+  const runEveryGate =
+    forceFull || paths.some((path) => controlPlanePaths.some((pattern) => pattern.test(path)));
+  const result = Object.fromEntries(ALL_GATES.map((gate) => [gate, runEveryGate]));
+
+  if (runEveryGate) return result;
 
   for (const path of paths) {
     if (globalPaths.some((pattern) => pattern.test(path))) {

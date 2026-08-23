@@ -3,8 +3,8 @@ import { describe, expect, test } from "bun:test";
 import { classifyChanges } from "./ci-changes.mjs";
 
 describe("classifyChanges", () => {
-  test("keeps documentation and Actions-only pull requests fast", () => {
-    expect(classifyChanges(["docs/development.md", ".github/workflows/ci.yml"])).toEqual({
+  test("keeps documentation-only pull requests fast", () => {
+    expect(classifyChanges(["docs/development.md"])).toEqual({
       integration: false,
       e2e: false,
       template: false,
@@ -13,6 +13,30 @@ describe("classifyChanges", () => {
       breaking: false,
       docker: false,
     });
+  });
+
+  test("runs every gate when CI control-plane files change", () => {
+    const expected = {
+      integration: true,
+      e2e: true,
+      template: true,
+      distribution: true,
+      production: true,
+      breaking: true,
+      docker: true,
+    };
+
+    for (const path of [
+      ".github/workflows/ci.yml",
+      "scripts/ci-changes.mjs",
+      "scripts/ci-changes.test.mjs",
+      "scripts/ci-policy.mjs",
+      "scripts/ci-policy.test.mjs",
+      "scripts/verify-main-ci.sh",
+      "scripts/release-preflight.sh",
+    ]) {
+      expect(classifyChanges([path])).toEqual(expected);
+    }
   });
 
   test("selects application gates without unrelated packaging smokes", () => {

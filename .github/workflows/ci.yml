@@ -37,7 +37,11 @@ jobs:
           bun-version: 1.4.0
 
       - name: Test path classification
-        run: bun test scripts/ci-changes.test.mjs scripts/contracts-check.test.mjs
+        run: >-
+          bun test
+          scripts/ci-changes.test.mjs
+          scripts/ci-policy.test.mjs
+          scripts/contracts-check.test.mjs
 
       - name: Select affected gates
         id: classify
@@ -441,10 +445,10 @@ jobs:
       - dependency-review
     runs-on: ubuntu-latest
     steps:
-      - name: Require selected gates
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Require the event-specific CI policy
         env:
-          RESULTS: ${{ toJson(needs) }}
-        run: |
-          jq --exit-status \
-            'all(.[]; .result == "success" or .result == "skipped")' \
-            <<< "$RESULTS" > /dev/null
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_NEEDS: ${{ toJson(needs) }}
+        run: node scripts/ci-policy.mjs needs

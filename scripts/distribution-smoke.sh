@@ -95,6 +95,8 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     test -f .github/dependabot.yml
     test ! -e .github/workflows/publish-distribution.yml
     test ! -e scripts/build-distribution.mjs
+    test ! -e scripts/ci-policy.mjs
+    test ! -e scripts/ci-policy.test.mjs
     grep --quiet '^WEB_PUBLIC_PORT=13000$' .env.example
     grep --quiet '^## Laravel API instructions$' AGENTS.md
     grep --quiet 'new URL("../../../", import.meta.url)' apps/web/e2e/helpers.ts
