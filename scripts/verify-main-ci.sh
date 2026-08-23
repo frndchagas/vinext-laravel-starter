@@ -20,21 +20,32 @@ runs=$(
         --field per_page=100
 )
 
-run_url=$(
-    jq --raw-output \
+run=$(
+    jq --compact-output \
         --arg commit "$source_commit" \
         '[.workflow_runs[] | select(
             .head_sha == $commit
             and .head_branch == "main"
             and .event == "push"
             and .conclusion == "success"
-        )][0].html_url // empty' \
+        )][0] | if . == null then empty else {id, url: .html_url} end' \
         <<<"$runs"
 )
 
-if [[ -z "$run_url" ]]; then
+if [[ -z "$run" ]]; then
     echo "No successful full main CI run exists for $source_commit." >&2
     exit 1
 fi
+
+run_id=$(jq --raw-output '.id' <<<"$run")
+run_url=$(jq --raw-output '.url' <<<"$run")
+jobs=$(
+    gh api --method GET \
+        "repos/$repository/actions/runs/$run_id/jobs" \
+        --field filter=latest \
+        --field per_page=100
+)
+
+node scripts/ci-policy.mjs main-jobs <<<"$jobs"
 
 echo "Full main CI passed for $source_commit: $run_url"

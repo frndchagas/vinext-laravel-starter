@@ -256,6 +256,8 @@ try {
     "scripts/build-distribution.mjs",
     "scripts/ci-changes.mjs",
     "scripts/ci-changes.test.mjs",
+    "scripts/ci-policy.mjs",
+    "scripts/ci-policy.test.mjs",
     "scripts/distribution",
     "scripts/distribution-smoke.sh",
     "scripts/release-preflight.sh",
