@@ -37,7 +37,7 @@ export REVERB_APP_SECRET=smoke-secret
 export REVERB_ALLOWED_ORIGINS=127.0.0.1
 export SESSION_SECURE_COOKIE=false
 if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
-    export TASK_SIMULATED_DELAY_MS=2000
+    export TASK_SIMULATED_DELAY_MS=5000
 else
     export TASK_SIMULATED_DELAY_MS=0
 fi
