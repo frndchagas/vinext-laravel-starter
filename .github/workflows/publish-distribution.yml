@@ -3,6 +3,12 @@ name: Publish distribution
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable release tag (vMAJOR.MINOR.PATCH)
+        required: true
+        type: string
 
 permissions:
   actions: read
@@ -13,15 +19,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  packagist:
-    if: github.repository == 'frndchagas/vinext-laravel-starter' && github.event.release.prerelease == false
+  distribution:
+    if: >-
+      github.repository == 'frndchagas/vinext-laravel-starter' &&
+      github.event_name == 'release' &&
+      github.event.release.prerelease == false
     environment: distribution
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      commit: ${{ steps.distribution.outputs.commit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
@@ -47,11 +59,6 @@ jobs:
           git merge-base --is-ancestor "$source_commit" origin/main
           bash scripts/verify-main-ci.sh "$source_commit"
           printf 'commit=%s\n' "$source_commit" >> "$GITHUB_OUTPUT"
-
-      - name: Verify the Packagist credential
-        env:
-          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
-        run: test -n "$PACKAGIST_SAFE_TOKEN"
 
       - name: Build the Laravel-root distribution
         env:
@@ -107,9 +114,111 @@ jobs:
           git push --atomic origin main "$SOURCE_TAG"
           printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+  publish-packagist:
+    if: >-
+      github.repository == 'frndchagas/vinext-laravel-starter' &&
+      github.event_name == 'release' &&
+      github.event.release.prerelease == false
+    needs: distribution
+    environment: packagist
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify the Packagist credential
+        env:
+          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
+        run: test -n "$PACKAGIST_SAFE_TOKEN"
+
       - name: Update and verify Packagist
         env:
-          DISTRIBUTION_COMMIT: ${{ steps.distribution.outputs.commit }}
+          DISTRIBUTION_COMMIT: ${{ needs.distribution.outputs.commit }}
           PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
           SOURCE_TAG: ${{ github.event.release.tag_name }}
+        run: node scripts/packagist-sync.mjs "$SOURCE_TAG" "$DISTRIBUTION_COMMIT"
+
+  verify_packagist_repair:
+    if: >-
+      github.repository == 'frndchagas/vinext-laravel-starter' &&
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      distribution_commit: ${{ steps.distribution.outputs.commit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify the existing stable release
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TAG: ${{ inputs.tag }}
+        run: |
+          [[ "$SOURCE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]
+          test "$GITHUB_REF" = refs/heads/main
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git cat-file -t "refs/tags/${SOURCE_TAG}")" = tag
+
+          source_commit=$(git rev-parse "${SOURCE_TAG}^{commit}")
+          git fetch origin main
+          git merge-base --is-ancestor "$source_commit" origin/main
+
+          release_json=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${SOURCE_TAG}")
+          jq --exit-status --arg tag "$SOURCE_TAG" \
+            '(.tag_name == $tag)
+             and (.draft == false)
+             and (.prerelease == false)
+             and (.immutable == true)' \
+            <<< "$release_json" >/dev/null
+
+          bash scripts/verify-main-ci.sh "$source_commit"
+          printf 'commit=%s\n' "$source_commit" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the existing distribution tag
+        id: distribution
+        env:
+          SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
+          SOURCE_TAG: ${{ inputs.tag }}
+        run: |
+          git clone --no-checkout \
+            https://github.com/frndchagas/vinext-laravel-starter-distribution.git \
+            "$RUNNER_TEMP/distribution-repository"
+          cd "$RUNNER_TEMP/distribution-repository"
+
+          test "$(git cat-file -t "refs/tags/${SOURCE_TAG}")" = tag
+          distribution_commit=$(git rev-parse "${SOURCE_TAG}^{commit}")
+          git merge-base --is-ancestor "$distribution_commit" origin/main
+          test "$(git show "${SOURCE_TAG}:.source-commit")" = "$SOURCE_COMMIT"
+          test "$(git show "${SOURCE_TAG}:.source-tag")" = "$SOURCE_TAG"
+          printf 'commit=%s\n' "$distribution_commit" >> "$GITHUB_OUTPUT"
+
+  repair-packagist:
+    needs: verify_packagist_repair
+    environment: packagist
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Verify the Packagist credential
+        env:
+          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
+        run: test -n "$PACKAGIST_SAFE_TOKEN"
+
+      - name: Update and verify Packagist
+        env:
+          DISTRIBUTION_COMMIT: ${{ needs.verify_packagist_repair.outputs.distribution_commit }}
+          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
+          SOURCE_TAG: ${{ inputs.tag }}
         run: node scripts/packagist-sync.mjs "$SOURCE_TAG" "$DISTRIBUTION_COMMIT"

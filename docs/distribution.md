@@ -22,4 +22,15 @@ Maintainers publish only through a stable GitHub release. The release workflow g
 
 Run `bun run release:check -- TAG` from a clean, synchronized `main` checkout after its complete CI succeeds, replacing `TAG` with the next unused `vMAJOR.MINOR.PATCH` value.
 
-The command rejects reused or non-SemVer tags and prints the annotated-tag and GitHub Release commands. The publisher independently requires the exact tagged SHA to have one successful full `main` push workflow with every required job present. It serializes all releases, pushes the distribution commit and tag atomically, and verifies the public Packagist metadata before finishing. The protected `distribution` environment stores the deploy key and a Packagist SAFE token; the MAIN token is not used.
+The command rejects reused or non-SemVer tags and prints the annotated-tag and GitHub Release commands. The publisher independently requires the exact tagged SHA to have one successful full `main` push workflow with every required job present. It serializes all releases, pushes the distribution commit and tag atomically, and verifies the public Packagist metadata before finishing. The protected `distribution` environment stores only the deploy key. The separate `packagist` environment stores only a SAFE token; the MAIN token is not used.
+
+If an existing tag needs to be indexed again, run the repair from `main`:
+
+```bash
+gh workflow run publish-distribution.yml \
+  --repo frndchagas/vinext-laravel-starter \
+  --ref main \
+  -f tag=vMAJOR.MINOR.PATCH
+```
+
+The repair verifies the immutable source release, its complete `main` CI run and the existing distribution tag before entering the `packagist` environment. It cannot create or move a Git tag and cannot access the distribution deploy key.
