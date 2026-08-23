@@ -124,27 +124,31 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
         exit 1
     fi
 
-    expected_markdown=$(printf '%s\n' \
-        AGENTS.md \
-        CLAUDE.md \
-        CONTEXT.md \
-        CONTRIBUTING.md \
-        README.md \
-        SECURITY.md \
-        apps/web/AGENTS.md \
-        apps/web/CLAUDE.md \
-        apps/web/README.md \
-        docs/README.md \
-        docs/api-conventions.md \
-        docs/architecture.md \
-        docs/async-workflow.md \
-        docs/authentication.md \
-        docs/customizing.md \
-        docs/deployment.md \
-        docs/development.md \
-        docs/getting-started.md \
-        docs/troubleshooting.md)
-    actual_markdown=$(find . -type f -name '*.md' -print | sed 's#^\./##' | sort)
+    expected_markdown_files=(
+        AGENTS.md
+        CLAUDE.md
+        CONTEXT.md
+        CONTRIBUTING.md
+        README.md
+        SECURITY.md
+        apps/web/AGENTS.md
+        apps/web/CLAUDE.md
+        apps/web/README.md
+        docs/README.md
+        docs/api-conventions.md
+        docs/architecture.md
+        docs/async-workflow.md
+        docs/authentication.md
+        docs/customizing.md
+        docs/deployment.md
+        docs/development.md
+        docs/getting-started.md
+        docs/troubleshooting.md
+    )
+    expected_markdown=$(printf '%s\n' "${expected_markdown_files[@]}")
+    actual_markdown=$(find . \
+        \( -path './apps/web/dist' -o -path './node_modules' -o -path './vendor' \) -prune -o \
+        -type f -name '*.md' -print | sed 's#^\./##' | sort)
     if [[ "$actual_markdown" != "$expected_markdown" ]]; then
         echo 'Distribution Markdown does not match the consumer allowlist.' >&2
         diff <(printf '%s\n' "$expected_markdown") <(printf '%s\n' "$actual_markdown") >&2 || true
@@ -162,10 +166,12 @@ COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
         'GitHub Actions always runs' \
         'On pull requests, oasdiff compares' \
         'canonical release CI scans every production image'; do
-        if grep --recursive --ignore-case --include='*.md' --fixed-strings -- "$forbidden" .; then
-            echo "Consumer Markdown contains maintainer-only or invalid text: $forbidden" >&2
-            exit 1
-        fi
+        for markdown in "${expected_markdown_files[@]}"; do
+            if grep --ignore-case --fixed-strings -- "$forbidden" "$markdown"; then
+                echo "Consumer Markdown contains maintainer-only or invalid text: $forbidden" >&2
+                exit 1
+            fi
+        done
     done
 
     docs_words=$(find docs -type f -name '*.md' -exec cat {} + | wc -w | tr -d ' ')

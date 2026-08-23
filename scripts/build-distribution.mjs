@@ -85,8 +85,12 @@ function markdownFiles(relative = "") {
     withFileTypes: true,
   })) {
     const child = join(relative, entry.name);
-    if (entry.isDirectory()) files.push(...markdownFiles(child));
-    else if (entry.name.endsWith(".md")) files.push(child);
+    if (
+      entry.isDirectory() &&
+      ![".git", "node_modules", "storage", "vendor"].includes(entry.name)
+    ) {
+      files.push(...markdownFiles(child));
+    } else if (entry.name.endsWith(".md")) files.push(child);
   }
 
   return files;
