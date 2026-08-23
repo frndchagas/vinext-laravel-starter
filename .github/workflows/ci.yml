@@ -206,7 +206,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json', 'bun.lock') }}
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
@@ -325,7 +325,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json', 'bun.lock') }}
 
       - run: bun ci
       - run: bunx playwright install --with-deps chromium

@@ -18,6 +18,7 @@
 - `bun run check`: run formatting checks, lint, types, unit tests and build.
 - `bun run contracts:check`: validate HTTP and realtime contracts and fail on generated drift.
 - `bun run test:e2e`: run the Playwright flows against the development stack.
+- `bun run test:production:browser`: exercise the standalone production containers in Chromium.
 
 ## Rules
 

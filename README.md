@@ -53,6 +53,7 @@ See [Source development](docs/getting-started.md) for the expected services, shu
 | `bun run audit`                                       | Check dependency deduplication and advisories                                       |
 | `bun run test:e2e`                                    | Run the Playwright browser journeys                                                 |
 | `bun run test:production`                             | Build and exercise the production containers                                        |
+| `bun run test:production:browser`                     | Exercise the standalone production containers in Chromium                           |
 | `bun run test:template`                               | Create and verify a fresh template snapshot                                         |
 | `bun run infra:down`                                  | Stop local Docker infrastructure without deleting volumes                           |
 | `bun run db:backup -- backup.dump`                    | Create a private PostgreSQL custom-format backup                                    |

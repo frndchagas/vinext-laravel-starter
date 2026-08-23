@@ -27,6 +27,7 @@ The example logs mail instead of sending it. Configure a real SMTP provider, inc
 The automated smoke builds every image and starts the full production topology. It applies migrations, sends one Task through Horizon, inserts an orphaned Task for scheduler recovery and restores a PostgreSQL backup into a new database:
 
 ```bash
+bunx playwright install chromium # first browser run only
 bun run test:production
 bun run test:production:browser
 ```
