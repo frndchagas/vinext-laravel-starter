@@ -12,10 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export default function TwoFactorChallengePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const hydrated = useHydrated();
   const challengeMutation = useCompleteTwoFactorChallenge();
   const [useRecoveryCode, setUseRecoveryCode] = useState(false);
   const errors =
@@ -84,7 +86,7 @@ export default function TwoFactorChallengePage() {
         />
       )}
 
-      <Button disabled={challengeMutation.isPending} size="lg" type="submit">
+      <Button disabled={!hydrated || challengeMutation.isPending} size="lg" type="submit">
         {challengeMutation.isPending ? "Checking…" : "Continue"}
       </Button>
       <Button
