@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./", import.meta.url)),
+      "next/navigation": fileURLToPath(new URL("./test/next-navigation.ts", import.meta.url)),
     },
   },
   test: {
