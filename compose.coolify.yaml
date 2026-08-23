@@ -93,6 +93,12 @@ services:
         NEXT_PUBLIC_REVERB_APP_KEY: ${REVERB_APP_KEY:?Set REVERB_APP_KEY}
     image: vinext-laravel-starter-web:${IMAGE_TAG:-local}
     environment:
+      APP_DESCRIPTION: ${APP_DESCRIPTION:-A Laravel and Vinext foundation for coding agents, with typed contracts, queues and realtime.}
+      APP_INDEXABLE: ${APP_INDEXABLE:-false}
+      APP_NAME: ${APP_NAME:-Vinext Laravel Starter}
+      APP_REPOSITORY_URL: ${APP_REPOSITORY_URL-}
+      APP_SOCIAL_IMAGE: ${APP_SOCIAL_IMAGE-}
+      APP_URL: ${APP_URL:?Set APP_URL}
       HOST: 0.0.0.0
       NODE_ENV: production
       PORT: "3000"

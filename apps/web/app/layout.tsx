@@ -1,23 +1,14 @@
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/newsreader";
-import type { Metadata } from "next";
 import { cookies } from "next/headers";
 
 import "./globals.css";
 
+import { createRootMetadata } from "@/lib/site-config";
+
 import { Providers } from "./providers";
 
-export const metadata: Metadata = {
-  title: "Vinext Laravel Starter",
-  description:
-    "A Laravel and Vinext foundation for coding agents, with typed contracts, queues and realtime.",
-  openGraph: {
-    description:
-      "A Laravel and Vinext foundation for coding agents, with typed contracts, queues and realtime.",
-    title: "Vinext Laravel Starter",
-    type: "website",
-  },
-};
+export const metadata = createRootMetadata();
 
 const appearanceScript = `(() => {
   try {

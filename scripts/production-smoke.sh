@@ -9,13 +9,21 @@ cookie_jar=$(mktemp)
 backup_root=$(mktemp -d)
 backup_file="$backup_root/starter.dump"
 headers_file="$backup_root/headers.txt"
+home_body_file="$backup_root/home.html"
+image_headers_file="$backup_root/image-headers.txt"
+login_body_file="$backup_root/login.html"
 readiness_body_file="$backup_root/readiness.json"
 readiness_headers_file="$backup_root/readiness-headers.txt"
+robots_body_file="$backup_root/robots.txt"
 
 export APP_HOST="127.0.0.1:$production_port"
 export APP_KEY
 APP_KEY=$(php -r 'echo "base64:".base64_encode(random_bytes(32));')
 export APP_NAME="Vinext production smoke"
+export APP_DESCRIPTION="Production metadata smoke."
+export APP_INDEXABLE=true
+export APP_REPOSITORY_URL="https://github.com/frndchagas/vinext-laravel-starter"
+export APP_SOCIAL_IMAGE="/opengraph-image.jpg"
 export APP_URL="http://127.0.0.1:$production_port"
 export FEATURE_REGISTRATION=true
 export IMAGE_TAG="$image_tag"
@@ -42,7 +50,15 @@ cleanup() {
     set +e
     "${compose[@]}" down --volumes --remove-orphans
     rm -f "$cookie_jar"
-    rm -f "$backup_file" "$headers_file" "$readiness_body_file" "$readiness_headers_file"
+    rm -f \
+        "$backup_file" \
+        "$headers_file" \
+        "$home_body_file" \
+        "$image_headers_file" \
+        "$login_body_file" \
+        "$readiness_body_file" \
+        "$readiness_headers_file" \
+        "$robots_body_file"
     rmdir "$backup_root" 2>/dev/null || true
 }
 
@@ -76,8 +92,71 @@ redis_image_id=$(docker inspect --format '{{.Image}}' "$("${compose[@]}" ps --qu
 docker tag "$postgres_image_id" "vinext-laravel-starter-postgres:$image_tag"
 docker tag "$redis_image_id" "vinext-laravel-starter-redis:$image_tag"
 
-curl --fail --silent --show-error --dump-header "$headers_file" "$APP_URL/" >/dev/null
+curl --fail --silent --show-error \
+    --dump-header "$headers_file" \
+    --output "$home_body_file" \
+    "$APP_URL/"
 curl --fail --silent --show-error "$APP_URL/up" >/dev/null
+curl --fail --silent --show-error --output "$login_body_file" "$APP_URL/login"
+curl --fail --silent --show-error --output "$robots_body_file" "$APP_URL/robots.txt"
+if [[ -n "$APP_SOCIAL_IMAGE" ]]; then
+    curl --fail --silent --show-error \
+        --dump-header "$image_headers_file" \
+        --output /dev/null \
+        "$APP_URL$APP_SOCIAL_IMAGE"
+fi
+
+if ! php -r '
+        $home = file_get_contents($argv[1]);
+        $login = file_get_contents($argv[2]);
+        $robots = file_get_contents($argv[3]);
+        $url = $argv[4];
+        $repositoryUrl = $argv[5];
+        $socialImage = $argv[6];
+        $twitterCard = $socialImage === "" ? "summary" : "summary_large_image";
+        $homePatterns = [
+            "~<title>Vinext production smoke</title>~",
+            "~<meta name=\"description\" content=\"Production metadata smoke\.\"\s*/>~",
+            "~<meta name=\"robots\" content=\"(?:index, follow|follow, index)\"\s*/>~",
+            "~<link rel=\"canonical\" href=\"".preg_quote($url, "~")."/?\"\s*/>~",
+            "~<meta property=\"og:url\" content=\"".preg_quote($url, "~")."/?\"\s*/>~",
+            "~<meta name=\"twitter:card\" content=\"".preg_quote($twitterCard, "~")."\"\s*/>~",
+        ];
+        if ($socialImage !== "") {
+            $imageUrl = str_starts_with($socialImage, "/")
+                ? rtrim($url, "/").$socialImage
+                : $socialImage;
+            $homePatterns[] = "~<meta property=\"og:image\" content=\"".preg_quote($imageUrl, "~")."\"\s*/>~";
+        } elseif (str_contains($home, "property=\"og:image\"")) {
+            exit(1);
+        }
+        if ($repositoryUrl !== "") {
+            $homePatterns[] = "~href=\"".preg_quote($repositoryUrl, "~")."\"~";
+        } elseif (str_contains($home, "github.com/frndchagas/vinext-laravel-starter")) {
+            exit(1);
+        }
+        foreach ($homePatterns as $pattern) {
+            if (preg_match($pattern, $home) !== 1) exit(1);
+        }
+        if (preg_match("~<meta name=\"robots\" content=\"nofollow, noindex\"\s*/>~", $login) !== 1) exit(1);
+        if (!str_contains($robots, "User-Agent: *") || !str_contains($robots, "Allow: /")) exit(1);
+    ' \
+        "$home_body_file" \
+        "$login_body_file" \
+        "$robots_body_file" \
+        "$APP_URL" \
+        "$APP_REPOSITORY_URL" \
+        "$APP_SOCIAL_IMAGE"; then
+    echo "Production metadata did not match the configured public identity." >&2
+    exit 1
+fi
+
+if [[ -n "$APP_SOCIAL_IMAGE" ]] && \
+    ! grep --ignore-case --quiet '^Content-Type: image/jpeg' "$image_headers_file"; then
+    echo "The Open Graph image was not served as JPEG." >&2
+    exit 1
+fi
+
 readiness_status=$(curl --silent --show-error \
     --header 'Accept: application/json' \
     --dump-header "$readiness_headers_file" \
@@ -365,4 +444,4 @@ if [[ "$restored_user_count" != 1 ]]; then
     exit 1
 fi
 
-echo "Production smoke passed with stateless readiness, security headers, legacy redirect, $applied_migrations migrations, direct and Scheduler-recovered Tasks, and a restored PostgreSQL backup."
+echo "Production smoke passed with public metadata, stateless readiness, security headers, legacy redirect, $applied_migrations migrations, direct and Scheduler-recovered Tasks, and a restored PostgreSQL backup."

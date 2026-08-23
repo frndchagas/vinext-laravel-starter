@@ -168,6 +168,11 @@ try {
     ["BROADCAST_CONNECTION=reverb", "BROADCAST_CONNECTION=log"],
     ["QUEUE_CONNECTION=redis", "QUEUE_CONNECTION=database"],
     ["CACHE_STORE=redis", "CACHE_STORE=database"],
+    [
+      "APP_REPOSITORY_URL=https://github.com/frndchagas/vinext-laravel-starter",
+      "APP_REPOSITORY_URL=",
+    ],
+    ["APP_SOCIAL_IMAGE=/opengraph-image.jpg", "APP_SOCIAL_IMAGE="],
   ]);
   const gitignoreExceptions = ["!.env.example", "!.env.production.example"];
   const gitignore = [...new Set([...rootGitignore, ...apiGitignore])].filter(
@@ -288,7 +293,14 @@ try {
   ]);
   replace("scripts/production-smoke.sh", [
     ["apps/api/database/migrations", "database/migrations"],
+    [
+      'export APP_REPOSITORY_URL="https://github.com/frndchagas/vinext-laravel-starter"',
+      'export APP_REPOSITORY_URL=""',
+    ],
+    ['export APP_SOCIAL_IMAGE="/opengraph-image.jpg"', 'export APP_SOCIAL_IMAGE=""'],
   ]);
+  rmSync(join(outputRoot, "apps/web/app/opengraph-image.jpg"), { force: true });
+  rmSync(join(outputRoot, "apps/web/app/opengraph-image.alt.txt"), { force: true });
 
   const dependabot = read(".github/dependabot.yml").replace(
     "directory: /apps/api",
