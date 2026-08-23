@@ -4,7 +4,7 @@ Use this page to find the shortest path for the work you are doing.
 
 ## Start
 
-- [Getting started](getting-started.md): install the starter and run the reference flow.
+- [Source development](getting-started.md): run the canonical source repository and its reference flow.
 - [Customize the starter](customizing.md): remove the starter identity and establish your product.
 - [Troubleshooting](troubleshooting.md): diagnose the failures already seen in real use.
 
