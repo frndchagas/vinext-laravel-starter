@@ -26,6 +26,13 @@ export default defineConfig({
       target: "./src/generated/zod.ts",
       client: "zod",
       mode: "single",
+      override: {
+        zod: {
+          strict: {
+            response: true,
+          },
+        },
+      },
     },
   },
 });

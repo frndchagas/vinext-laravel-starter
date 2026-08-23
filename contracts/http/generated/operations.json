@@ -1,0 +1,156 @@
+{
+  "enums": {
+    "AdminUserRole": [
+      "member",
+      "admin"
+    ],
+    "TaskState": [
+      "queued",
+      "processing",
+      "completed",
+      "failed"
+    ]
+  },
+  "operations": [
+    {
+      "method": "GET",
+      "operation_id": "listAdminUsers",
+      "path": "/api/v1/admin/users"
+    },
+    {
+      "method": "PATCH",
+      "operation_id": "updateAdminUserRole",
+      "path": "/api/v1/admin/users/{id}/role"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getAuthCapabilities",
+      "path": "/api/v1/auth/capabilities"
+    },
+    {
+      "method": "POST",
+      "operation_id": "resendEmailVerification",
+      "path": "/api/v1/auth/email/verification-notification"
+    },
+    {
+      "method": "GET",
+      "operation_id": "verifyEmail",
+      "path": "/api/v1/auth/email/verify/{id}/{hash}"
+    },
+    {
+      "method": "POST",
+      "operation_id": "forgotPassword",
+      "path": "/api/v1/auth/forgot-password"
+    },
+    {
+      "method": "POST",
+      "operation_id": "login",
+      "path": "/api/v1/auth/login"
+    },
+    {
+      "method": "POST",
+      "operation_id": "logout",
+      "path": "/api/v1/auth/logout"
+    },
+    {
+      "method": "POST",
+      "operation_id": "register",
+      "path": "/api/v1/auth/register"
+    },
+    {
+      "method": "POST",
+      "operation_id": "resetPassword",
+      "path": "/api/v1/auth/reset-password"
+    },
+    {
+      "method": "POST",
+      "operation_id": "completeTwoFactorChallenge",
+      "path": "/api/v1/auth/two-factor-challenge"
+    },
+    {
+      "method": "DELETE",
+      "operation_id": "deleteCurrentUser",
+      "path": "/api/v1/auth/user"
+    },
+    {
+      "method": "POST",
+      "operation_id": "confirmPassword",
+      "path": "/api/v1/auth/user/confirm-password"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getPasswordConfirmationStatus",
+      "path": "/api/v1/auth/user/confirmed-password-status"
+    },
+    {
+      "method": "POST",
+      "operation_id": "confirmTwoFactor",
+      "path": "/api/v1/auth/user/confirmed-two-factor-authentication"
+    },
+    {
+      "method": "PUT",
+      "operation_id": "updatePassword",
+      "path": "/api/v1/auth/user/password"
+    },
+    {
+      "method": "PUT",
+      "operation_id": "updateProfile",
+      "path": "/api/v1/auth/user/profile-information"
+    },
+    {
+      "method": "DELETE",
+      "operation_id": "disableTwoFactor",
+      "path": "/api/v1/auth/user/two-factor-authentication"
+    },
+    {
+      "method": "POST",
+      "operation_id": "enableTwoFactor",
+      "path": "/api/v1/auth/user/two-factor-authentication"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getTwoFactorQrCode",
+      "path": "/api/v1/auth/user/two-factor-qr-code"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getRecoveryCodes",
+      "path": "/api/v1/auth/user/two-factor-recovery-codes"
+    },
+    {
+      "method": "POST",
+      "operation_id": "regenerateRecoveryCodes",
+      "path": "/api/v1/auth/user/two-factor-recovery-codes"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getTwoFactorSecretKey",
+      "path": "/api/v1/auth/user/two-factor-secret-key"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getMe",
+      "path": "/api/v1/me"
+    },
+    {
+      "method": "GET",
+      "operation_id": "listTasks",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "POST",
+      "operation_id": "createTask",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getTask",
+      "path": "/api/v1/tasks/{id}"
+    },
+    {
+      "method": "GET",
+      "operation_id": "getCsrfCookie",
+      "path": "/sanctum/csrf-cookie"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ using Http;
 using OpenAPI;
 
 @service(#{ title: "Vinext Laravel Starter API" })
+@info(#{ version: "1.0.0" })
 namespace VinextLaravelStarter;
 
 @doc("RFC 9457 problem details.")
@@ -71,14 +72,14 @@ model Me {
   permissions: string[];
 }
 
-model RegisterRequest {
+model RegisterRequest extends Record<unknown> {
   name: string;
   email: string;
   password: string;
   password_confirmation: string;
 }
 
-model LoginRequest {
+model LoginRequest extends Record<unknown> {
   email: string;
   password: string;
   remember?: boolean;
@@ -92,24 +93,24 @@ model AuthCapabilities {
   registration: boolean;
 }
 
-model UpdateProfileRequest {
+model UpdateProfileRequest extends Record<unknown> {
   name: string;
   email: string;
   @doc("Required when the email address changes.")
   current_password?: string;
 }
 
-model UpdatePasswordRequest {
+model UpdatePasswordRequest extends Record<unknown> {
   current_password: string;
   password: string;
   password_confirmation: string;
 }
 
-model DeleteCurrentUserRequest {
+model DeleteCurrentUserRequest extends Record<unknown> {
   password: string;
 }
 
-model TwoFactorChallengeRequest {
+model TwoFactorChallengeRequest extends Record<unknown> {
   code?: string;
   recovery_code?: string;
 }
@@ -121,6 +122,25 @@ model TwoFactorQrCode {
 
 model PasswordConfirmationStatus {
   confirmed: boolean;
+}
+
+model ForgotPasswordRequest extends Record<unknown> {
+  email: string;
+}
+
+model ResetPasswordRequest extends Record<unknown> {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
+
+model ConfirmPasswordRequest extends Record<unknown> {
+  password: string;
+}
+
+model ConfirmTwoFactorRequest extends Record<unknown> {
+  code: string;
 }
 
 @error
@@ -171,9 +191,7 @@ namespace Auth {
   @operationId("forgotPassword")
   @route("/forgot-password")
   @post
-  op forgotPassword(@body body: {
-    email: string;
-  }): {
+  op forgotPassword(@body body: ForgotPasswordRequest): {
     @statusCode statusCode: 200;
     @body body: StatusMessage;
   } | ValidationErrorResponse | TooManyRequestsResponse;
@@ -181,12 +199,7 @@ namespace Auth {
   @operationId("resetPassword")
   @route("/reset-password")
   @post
-  op resetPassword(@body body: {
-    token: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-  }): {
+  op resetPassword(@body body: ResetPasswordRequest): {
     @statusCode statusCode: 200;
     @body body: StatusMessage;
   } | ValidationErrorResponse;
@@ -238,9 +251,7 @@ namespace Auth {
   @operationId("confirmPassword")
   @route("/user/confirm-password")
   @post
-  op confirmPassword(@body body: {
-    password: string;
-  }): {
+  op confirmPassword(@body body: ConfirmPasswordRequest): {
     @statusCode statusCode: 201;
   } | ValidationErrorResponse | UnauthorizedResponse;
 
@@ -262,9 +273,7 @@ namespace Auth {
   @operationId("confirmTwoFactor")
   @route("/user/confirmed-two-factor-authentication")
   @post
-  op confirmTwoFactor(@body body: {
-    code: string;
-  }): {
+  op confirmTwoFactor(@body body: ConfirmTwoFactorRequest): {
     @statusCode statusCode: 200;
   } | ValidationErrorResponse | PasswordConfirmationRequiredResponse | UnauthorizedResponse;
 
@@ -353,7 +362,7 @@ model AdminUserPage {
   };
 }
 
-model UpdateAdminUserRoleRequest {
+model UpdateAdminUserRoleRequest extends Record<unknown> {
   role: AdminUserRole;
 }
 
@@ -422,7 +431,7 @@ model Task {
   created_at: utcDateTime;
 }
 
-model CreateTaskRequest {
+model CreateTaskRequest extends Record<unknown> {
   @maxLength(10000)
   input: string;
 }

@@ -9,6 +9,7 @@
   "scripts": {
     "check": "bun run validate && bun run generate && git diff --exit-code -- generated",
     "generate": "bun run generate.mjs",
+    "test": "bun test generate.test.mjs",
     "typecheck": "tsc --noEmit",
     "validate": "bun run validate.mjs"
   },
