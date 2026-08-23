@@ -17,7 +17,7 @@ jobs:
     if: github.repository == 'frndchagas/vinext-laravel-starter' && github.event.release.prerelease == false
     environment: distribution
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -48,6 +48,11 @@ jobs:
           bash scripts/verify-main-ci.sh "$source_commit"
           printf 'commit=%s\n' "$source_commit" >> "$GITHUB_OUTPUT"
 
+      - name: Verify the Packagist credential
+        env:
+          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
+        run: test -n "$PACKAGIST_SAFE_TOKEN"
+
       - name: Build the Laravel-root distribution
         env:
           SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
@@ -68,6 +73,7 @@ jobs:
             > "$HOME/.ssh/known_hosts"
 
       - name: Publish the matching tag
+        id: distribution
         env:
           SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
           SOURCE_TAG: ${{ github.event.release.tag_name }}
@@ -78,8 +84,10 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
 
           if git rev-parse --verify --quiet "refs/tags/${SOURCE_TAG}"; then
+            distribution_commit=$(git rev-parse "${SOURCE_TAG}^{commit}")
             test "$(git show "${SOURCE_TAG}:.source-commit")" = "$SOURCE_COMMIT"
             test "$(git show "${SOURCE_TAG}:.source-tag")" = "$SOURCE_TAG"
+            printf 'commit=%s\n' "$distribution_commit" >> "$GITHUB_OUTPUT"
             echo "${SOURCE_TAG} already maps to ${SOURCE_COMMIT}."
             exit 0
           fi
@@ -97,3 +105,11 @@ jobs:
           test "$(tr -d '\n' < .source-tag)" = "$SOURCE_TAG"
           git tag --annotate "$SOURCE_TAG" --message "Distribute ${SOURCE_TAG}"
           git push --atomic origin main "$SOURCE_TAG"
+          printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Update and verify Packagist
+        env:
+          DISTRIBUTION_COMMIT: ${{ steps.distribution.outputs.commit }}
+          PACKAGIST_SAFE_TOKEN: ${{ secrets.PACKAGIST_SAFE_TOKEN }}
+          SOURCE_TAG: ${{ github.event.release.tag_name }}
+        run: node scripts/packagist-sync.mjs "$SOURCE_TAG" "$DISTRIBUTION_COMMIT"

@@ -32,6 +32,8 @@ describe("classifyChanges", () => {
       "scripts/ci-changes.test.mjs",
       "scripts/ci-policy.mjs",
       "scripts/ci-policy.test.mjs",
+      "scripts/packagist-sync.mjs",
+      "scripts/packagist-sync.test.mjs",
       "scripts/verify-main-ci.sh",
       "scripts/release-preflight.sh",
     ]) {
@@ -95,6 +97,7 @@ describe("classifyChanges", () => {
     expect(
       classifyChanges([
         ".github/workflows/publish-distribution.yml",
+        "scripts/packagist-sync.mjs",
         "scripts/sync-distribution.sh",
       ]),
     ).toMatchObject({ distribution: true });
