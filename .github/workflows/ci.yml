@@ -45,6 +45,7 @@ jobs:
           scripts/contracts-check.test.mjs
           scripts/packagist-sync.test.mjs
           scripts/trivy-ignore.test.mjs
+          scripts/verify-release-credentials.test.mjs
 
       - name: Select affected gates
         id: classify

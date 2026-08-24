@@ -36,6 +36,8 @@ describe("classifyChanges", () => {
       "scripts/packagist-sync.test.mjs",
       "scripts/trivy-ignore.test.mjs",
       "scripts/verify-main-ci.sh",
+      "scripts/verify-release-credentials.mjs",
+      "scripts/verify-release-credentials.test.mjs",
       "scripts/release-preflight.sh",
     ]) {
       expect(classifyChanges([path])).toEqual(expected);
@@ -102,7 +104,9 @@ describe("classifyChanges", () => {
   });
 
   test("rebuilds the distribution when its contract verifier changes", () => {
-    expect(classifyChanges(["scripts/contracts-check.mjs"])).toMatchObject({ distribution: true });
+    expect(classifyChanges(["scripts/contracts-check.mjs"])).toMatchObject({
+      distribution: true,
+    });
   });
 
   test("rebuilds the distribution when transformed production scripts change", () => {
