@@ -1,10 +1,10 @@
 # v1 incubation
 
-The renamed **Vinext Laravel Starter** will enter a 90-day incubation after its new v1.0.0 release. It is built for experienced Laravel developers and small product teams that use coding agents. The running application does not include an AI provider or AI behavior.
+**Vinext Laravel Starter** entered a 90-day incubation when v1.0.0 was published on August 21, 2026. The adoption campaign begins after the first consumer-safe distribution release is published and verified. The starter is built for experienced Laravel developers and small product teams that use coding agents. The running application does not include an AI provider or AI behavior.
 
 ## Release scope
 
-The adoption campaign starts after the new v1 proves:
+The first consumer-safe release must prove:
 
 - reproducible Bun updates, stable TOTP E2E, private vulnerability reporting and a write-only generated distribution;
 - the Vinext Laravel Starter name across source, distribution, package metadata and interface;
@@ -19,7 +19,7 @@ The release does not include passkeys, Organizations, billing, social login, SSO
 
 ## Delivery
 
-Changes land through small, focused pull requests. Fast checks run on every pull request, while affected paths select integration and the expensive smokes. The complete suite runs on `main`, nightly and through the manual pre-release trigger. A stable release is allowed only after those checks pass on its source commit. The repository rename and legacy v1 reset happen after the replacement is green.
+Changes land through small, focused pull requests. Fast checks run on every pull request, while affected paths select integration and the expensive smokes. The complete suite runs on `main`, nightly and through the manual pre-release trigger. A stable release is allowed only after those checks pass on its source commit. The repository rename and legacy v1 reset are complete.
 
 ## Adoption
 
