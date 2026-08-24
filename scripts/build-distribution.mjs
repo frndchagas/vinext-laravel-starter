@@ -258,6 +258,7 @@ try {
   delete packageJson.scripts["release:check"];
   write("package.json", `${JSON.stringify(packageJson, null, 2)}\n`);
   run("bun", ["install", "--lockfile-only", "--ignore-scripts"], outputRoot);
+  run("bun", ["dedupe", "--lockfile-only"], outputRoot);
 
   replace("infra/docker/api/Dockerfile", [
     [
