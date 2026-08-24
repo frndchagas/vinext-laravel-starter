@@ -35,4 +35,7 @@ test("lock generation does not populate dependency trees", async () => {
   expect(source).toContain(
     'run("bun", ["install", "--lockfile-only", "--ignore-scripts"], outputRoot)',
   );
+  expect(source).toContain(
+    'run("bun", ["dedupe", "--lockfile-only"], outputRoot)',
+  );
 });
