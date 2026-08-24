@@ -1,6 +1,6 @@
 # Source development
 
-This guide runs the canonical source repository, including maintainer tooling and the nested Laravel workspace. To create an application, use the Laravel Installer command in the root README. The generated distribution replaces the source as the GitHub Template only after its first consumer-safe release is published and verified.
+This guide runs the canonical source repository, including maintainer tooling and the nested Laravel workspace. To create an application, use the Laravel Installer command in the root README or the generated GitHub Template instead.
 
 ## Requirements
 
