@@ -12,7 +12,7 @@ The showcase is a real deployment with public registration disabled.
 
 The starter provides same-origin sessions, profile and password settings, optional TOTP, explicit HTTP and realtime contracts, a generated TypeScript client, working role-based administration, Redis queues, Reverb and one idempotent asynchronous flow. It is designed for agent-assisted development, but does not bundle an AI provider.
 
-Vinext is still in beta and the React Compiler integration is experimental. CI verifies local setup, browser behavior, a fresh template snapshot and the production container topology.
+Vinext is still in beta and the React Compiler integration is experimental. CI verifies local setup, browser behavior, a fresh source snapshot and the production container topology.
 
 ## Create an application
 
@@ -26,7 +26,7 @@ composer run dev
 
 Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The Tasks page demonstrates queued processing and private realtime updates.
 
-The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is the consumer-safe snapshot behind Packagist. Its repository becomes the GitHub Template after the first consumer-safe release is published and verified. Applications receive their own history and no updater.
+The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is both the consumer-safe snapshot behind Packagist and the GitHub Template. Applications receive their own history and no updater.
 
 ## Develop the source
 
@@ -54,7 +54,8 @@ See [Source development](docs/getting-started.md) for the expected services, shu
 | `bun run test:e2e`                                    | Run the Playwright browser journeys                                                 |
 | `bun run test:production`                             | Build and exercise the production containers                                        |
 | `bun run test:production:browser`                     | Exercise the standalone production containers in Chromium                           |
-| `bun run test:template`                               | Create and verify a fresh template snapshot                                         |
+| `bun run test:template`                               | Create and verify a fresh source snapshot                                           |
+| `bun run test:distribution`                           | Build the consumer Template and install it through the Laravel Installer             |
 | `bun run infra:down`                                  | Stop local Docker infrastructure without deleting volumes                           |
 | `bun run db:backup -- backup.dump`                    | Create a private PostgreSQL custom-format backup                                    |
 | `bun run db:restore -- backup.dump restored_database` | Restore into a new PostgreSQL database                                              |

@@ -41,8 +41,8 @@ GitHub Actions always runs the fast verification, dependency and secret checks o
 - verification on PHP 8.5 with frozen installs, workflow and shell lint, dependency audit, contracts and the standard gate;
 - integration tests on PHP 8.3 and 8.5 against PostgreSQL and Redis;
 - serial Chromium E2E for auth, mail, queues and reconnection;
-- a fresh template snapshot with isolated ports, migrations, contracts, build and proxy smoke tests;
-- a flattened package installed through the real Laravel Installer, followed by its consumer and production gates;
+- a fresh source snapshot with isolated ports, migrations, contracts, build and proxy smoke tests;
+- the flattened consumer Template installed through the real Laravel Installer, followed by its consumer and production gates;
 - production image builds followed by migrations, readiness, canonical-host checks, a Chromium session over standalone Node/Caddy/Reverb, queued Task processing and a PostgreSQL restore round-trip;
 - Trivy scans fixable high and critical vulnerabilities in the application, proxy, Redis and PostgreSQL runtime images when Docker inputs change and on every complete run;
 - Gitleaks, dependency review and OpenAPI breaking-change detection;

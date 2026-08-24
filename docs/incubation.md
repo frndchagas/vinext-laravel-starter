@@ -1,10 +1,10 @@
 # v1 incubation
 
-**Vinext Laravel Starter** entered a 90-day incubation when v1.0.0 was published on August 21, 2026. The adoption campaign begins after the first consumer-safe distribution release is published and verified. The starter is built for experienced Laravel developers and small product teams that use coding agents. The running application does not include an AI provider or AI behavior.
+**Vinext Laravel Starter** entered a 90-day incubation when v1.0.0 was published on August 21, 2026. The adoption campaign began after the consumer-safe v1.0.5 distribution was published and verified on August 24, 2026. The starter is built for experienced Laravel developers and small product teams that use coding agents. The running application does not include an AI provider or AI behavior.
 
 ## Release scope
 
-The first consumer-safe release must prove:
+v1.0.5 established this release baseline:
 
 - reproducible Bun updates, stable TOTP E2E, private vulnerability reporting and a write-only generated distribution;
 - the Vinext Laravel Starter name across source, distribution, package metadata and interface;
@@ -25,7 +25,7 @@ Changes land through small, focused pull requests. Fast checks run on every pull
 
 The first campaign uses the Laravel community starter directory, one application screenshot, a matching social preview, focused GitHub topics and a Laravel News submission. Repository content stays in English. Promotional material may be translated.
 
-The 90-day continuation threshold is:
+The incubation review is scheduled for November 19, 2026, 90 days after v1.0.0. Adoption metrics are collected from the campaign start on August 24. The continuation thresholds are:
 
 - inclusion in the community starter directory;
 - 25 GitHub stars;
@@ -37,4 +37,4 @@ GitHub Discussions collects adoption reports, help requests and proposals. Gener
 
 ## Maintenance
 
-During incubation, maintainers triage weekly, address actionable security reports promptly and publish no more than one planned release per month. After 90 days, the evidence determines whether the project continues active development, moves to best-effort maintenance or narrows its scope.
+During incubation, maintainers triage weekly, address actionable security reports promptly and publish no more than one planned release per month. At the November 19 review, the evidence determines whether the project continues active development, moves to best-effort maintenance or narrows its scope.
