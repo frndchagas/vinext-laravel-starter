@@ -143,6 +143,7 @@ fi
     test ! -e scripts/packagist-sync.test.mjs
     test ! -e scripts/release-preflight.sh
     test ! -e scripts/trivy-ignore.test.mjs
+    test ! -e scripts/verify-main-ci.test.mjs
     test ! -e scripts/verify-release-credentials.mjs
     test ! -e scripts/verify-release-credentials.test.mjs
     test ! -e apps/web/app/opengraph-image.jpg

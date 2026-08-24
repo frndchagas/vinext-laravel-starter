@@ -397,6 +397,7 @@ try {
     "scripts/template-smoke.sh",
     "scripts/trivy-ignore.test.mjs",
     "scripts/verify-main-ci.sh",
+    "scripts/verify-main-ci.test.mjs",
     "scripts/verify-release-credentials.mjs",
     "scripts/verify-release-credentials.test.mjs",
   ]) {
