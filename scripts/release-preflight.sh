@@ -39,6 +39,7 @@ if gh release view "$source_tag" >/dev/null 2>&1; then
     exit 1
 fi
 
+bun run scripts/verify-release-credentials.mjs
 bash scripts/verify-main-ci.sh "$source_commit"
 
 printf 'Release preflight passed for %s at %s.\n\n' "$source_tag" "$source_commit"

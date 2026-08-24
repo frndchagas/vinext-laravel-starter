@@ -397,6 +397,8 @@ try {
     "scripts/template-smoke.sh",
     "scripts/trivy-ignore.test.mjs",
     "scripts/verify-main-ci.sh",
+    "scripts/verify-release-credentials.mjs",
+    "scripts/verify-release-credentials.test.mjs",
   ]) {
     rmSync(join(outputRoot, path), { recursive: true, force: true });
   }
