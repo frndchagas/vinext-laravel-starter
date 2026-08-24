@@ -11,6 +11,15 @@ composer_cache=$(composer config --global cache-dir --absolute)
 dev_pid=""
 dev_project="vinext-distribution-dev-${GITHUB_RUN_ID:-$$}-${GITHUB_RUN_ATTEMPT:-1}"
 
+retry_once() {
+    if "$@"; then
+        return 0
+    fi
+
+    sleep 5
+    "$@"
+}
+
 stop_dev_stack() {
     if [[ -n "$dev_pid" ]]; then
         kill -TERM -- "-$dev_pid" 2>/dev/null || kill -TERM "$dev_pid" 2>/dev/null || true
@@ -87,19 +96,29 @@ test -f "$sync_target/.git/keep"
 
 COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
     composer config --global repositories.starter vcs "$distribution_dir"
-COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
+retry_once env \
+    COMPOSER_CACHE_DIR="$composer_cache" \
+    COMPOSER_HOME="$composer_home" \
     composer global require laravel/installer:5.31.1 --no-interaction --prefer-dist
 
-(
-    cd "$install_parent"
-    COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
+install_application() {
+    (
+        cd "$install_parent" || exit 1
+        COMPOSER_CACHE_DIR="$composer_cache" COMPOSER_HOME="$composer_home" \
         "$composer_home/vendor/bin/laravel" new application \
-        --using=frndchagas/vinext-laravel-starter \
-        --phpunit \
-        --bun \
-        --no-boost \
-        --no-interaction
-)
+            --using=frndchagas/vinext-laravel-starter \
+            --phpunit \
+            --bun \
+            --no-boost \
+            --no-interaction
+    )
+}
+
+if ! install_application; then
+    rm -rf "$install_dir"
+    sleep 5
+    install_application
+fi
 
 (
     cd "$install_dir"

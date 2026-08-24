@@ -18,7 +18,7 @@ Set `APP_DESCRIPTION` for metadata and keep `APP_INDEXABLE=false` on previews or
 
 `LEGACY_APP_HOST` is optional. Set it to one previous hostname to return a permanent redirect to `APP_URL`; the proxy preserves the path and query. Leave it unset when no redirect is needed.
 
-The example logs mail instead of sending it. Configure a real SMTP provider, including `MAIL_SCHEME`, before setting `FEATURE_REGISTRATION=true` or enabling password reset for users. Public registration defaults to disabled.
+The example logs mail instead of sending it. Configure a real SMTP provider, including `MAIL_SCHEME`, before exposing registration or password reset to users. Password reset is part of the default authentication surface. Public registration defaults to disabled and requires `FEATURE_REGISTRATION=true`.
 
 `/up` proves that Laravel can serve a request. `/ready` also checks the configured database and cache. Both endpoints are stateless and do not issue session or CSRF cookies. Use `/ready` to decide whether a deployment should receive traffic; do not restart PHP merely because an external dependency is temporarily unavailable.
 
