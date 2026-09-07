@@ -44,6 +44,6 @@
     "contracts:check": "bun run scripts/contracts-check.mjs"
   },
   "devDependencies": {
-    "lefthook": "2.1.10"
+    "lefthook": "2.1.12"
   }
 }
