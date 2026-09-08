@@ -91,11 +91,14 @@ docker build \
     --tag "vinext-laravel-starter-web:$image_tag" \
     .
 
+docker build \
+    --file infra/docker/postgres/Dockerfile \
+    --tag "vinext-laravel-starter-postgres:$image_tag" \
+    .
+
 "${compose[@]}" up --detach --no-build --wait
 
-postgres_image_id=$(docker inspect --format '{{.Image}}' "$("${compose[@]}" ps --quiet postgres)")
 redis_image_id=$(docker inspect --format '{{.Image}}' "$("${compose[@]}" ps --quiet redis)")
-docker tag "$postgres_image_id" "vinext-laravel-starter-postgres:$image_tag"
 docker tag "$redis_image_id" "vinext-laravel-starter-redis:$image_tag"
 
 curl --fail --silent --show-error \

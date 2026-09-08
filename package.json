@@ -43,6 +43,9 @@
     "contracts:validate": "bun run --filter @vinext-laravel-starter/realtime-contract validate",
     "contracts:check": "bun run scripts/contracts-check.mjs"
   },
+  "overrides": {
+    "fast-uri": "^3.1.6"
+  },
   "devDependencies": {
     "lefthook": "2.1.10"
   }
