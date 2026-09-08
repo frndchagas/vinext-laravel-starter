@@ -209,7 +209,10 @@ services:
       retries: 6
 
   postgres:
-    image: postgres:17.11-alpine3.24
+    build:
+      context: .
+      dockerfile: infra/docker/postgres/Dockerfile
+    image: vinext-laravel-starter-postgres:${IMAGE_TAG:-local}
     environment:
       POSTGRES_DB: starter
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
