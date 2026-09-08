@@ -8,4 +8,5 @@
 export interface TaskOutput {
   word_count: number;
   reversed: string;
+  [key: string]: unknown;
 }

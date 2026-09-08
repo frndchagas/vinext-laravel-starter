@@ -7,4 +7,5 @@
 
 export type ConfirmPasswordRequest = { [key: string]: unknown } & {
   password: string;
+  [key: string]: unknown;
 };

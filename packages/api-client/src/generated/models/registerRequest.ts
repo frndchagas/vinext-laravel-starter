@@ -10,4 +10,5 @@ export type RegisterRequest = { [key: string]: unknown } & {
   email: string;
   password: string;
   password_confirmation: string;
+  [key: string]: unknown;
 };

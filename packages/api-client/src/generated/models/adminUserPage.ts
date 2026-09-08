@@ -10,4 +10,5 @@ import type { AdminUserPageMeta } from "./adminUserPageMeta";
 export interface AdminUserPage {
   data: AdminUser[];
   meta: AdminUserPageMeta;
+  [key: string]: unknown;
 }

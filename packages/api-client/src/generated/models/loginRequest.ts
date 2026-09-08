@@ -9,4 +9,5 @@ export type LoginRequest = { [key: string]: unknown } & {
   email: string;
   password: string;
   remember?: boolean;
+  [key: string]: unknown;
 };

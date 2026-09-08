@@ -14,4 +14,5 @@ export interface AdminUser {
   email_verified: boolean;
   roles: AdminUserRole[];
   created_at: string;
+  [key: string]: unknown;
 }

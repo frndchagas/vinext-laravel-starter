@@ -8,4 +8,5 @@
 export type AdminUserPageMeta = {
   next_cursor: string | null;
   prev_cursor: string | null;
+  [key: string]: unknown;
 };

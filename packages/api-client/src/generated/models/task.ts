@@ -22,4 +22,5 @@ export interface Task {
   started_at: string | null;
   finished_at: string | null;
   created_at: string;
+  [key: string]: unknown;
 }

@@ -7,4 +7,5 @@
 
 export type GetTwoFactorSecretKey200 = {
   secretKey: string;
+  [key: string]: unknown;
 };

@@ -10,4 +10,5 @@ import type { TaskPageMeta } from "./taskPageMeta";
 export interface TaskPage {
   data: Task[];
   meta: TaskPageMeta;
+  [key: string]: unknown;
 }

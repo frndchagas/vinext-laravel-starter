@@ -7,4 +7,5 @@
 
 export type DeleteCurrentUserRequest = { [key: string]: unknown } & {
   password: string;
+  [key: string]: unknown;
 };

@@ -7,4 +7,5 @@
 
 export interface LoginResult {
   two_factor: boolean;
+  [key: string]: unknown;
 }
