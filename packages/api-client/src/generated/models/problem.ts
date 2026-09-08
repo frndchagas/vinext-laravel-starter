@@ -13,4 +13,5 @@ export interface Problem {
   title: string;
   status: number;
   detail?: string;
+  [key: string]: unknown;
 }

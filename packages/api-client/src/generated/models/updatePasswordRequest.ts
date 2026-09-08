@@ -9,4 +9,5 @@ export type UpdatePasswordRequest = { [key: string]: unknown } & {
   current_password: string;
   password: string;
   password_confirmation: string;
+  [key: string]: unknown;
 };

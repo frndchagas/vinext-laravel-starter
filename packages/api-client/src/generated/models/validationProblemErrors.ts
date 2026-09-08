@@ -5,4 +5,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ValidationProblemErrors = { [key: string]: unknown };
+export type ValidationProblemErrors = { [key: string]: string[] };

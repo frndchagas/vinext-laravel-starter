@@ -15,4 +15,5 @@ export interface ValidationProblem {
   status: number;
   detail?: string;
   errors: ValidationProblemErrors;
+  [key: string]: unknown;
 }

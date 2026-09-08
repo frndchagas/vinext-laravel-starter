@@ -290,13 +290,23 @@ export const updateAdminUserRole = async (
   updateAdminUserRoleRequest: UpdateAdminUserRoleRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<updateAdminUserRoleResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<updateAdminUserRoleResponse>(getUpdateAdminUserRoleUrl(id), {
     ...options,
     method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(updateAdminUserRoleRequest),
   });
 };
+
+export const getUpdateAdminUserRoleMutationKey = () => ["updateAdminUserRole"] as const;
 
 export const getUpdateAdminUserRoleMutationOptions = <
   TError = Problem | UpdateAdminUserRole409 | ValidationProblem,
@@ -305,17 +315,17 @@ export const getUpdateAdminUserRoleMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateAdminUserRole>>,
     TError,
-    { id: string; data: UpdateAdminUserRoleRequest },
+    UpdateAdminUserRoleMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateAdminUserRole>>,
   TError,
-  { id: string; data: UpdateAdminUserRoleRequest },
+  UpdateAdminUserRoleMutationVariables,
   TContext
 > => {
-  const mutationKey = ["updateAdminUserRole"];
+  const mutationKey = getUpdateAdminUserRoleMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -324,7 +334,7 @@ export const getUpdateAdminUserRoleMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateAdminUserRole>>,
-    { id: string; data: UpdateAdminUserRoleRequest }
+    UpdateAdminUserRoleMutationVariables
   > = (props) => {
     const { id, data } = props ?? {};
 
@@ -339,6 +349,7 @@ export type UpdateAdminUserRoleMutationResult = NonNullable<
 >;
 export type UpdateAdminUserRoleMutationBody = UpdateAdminUserRoleRequest;
 export type UpdateAdminUserRoleMutationError = Problem | UpdateAdminUserRole409 | ValidationProblem;
+export type UpdateAdminUserRoleMutationVariables = { id: string; data: UpdateAdminUserRoleRequest };
 
 export const useUpdateAdminUserRole = <
   TError = Problem | UpdateAdminUserRole409 | ValidationProblem,
@@ -348,7 +359,7 @@ export const useUpdateAdminUserRole = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateAdminUserRole>>,
       TError,
-      { id: string; data: UpdateAdminUserRoleRequest },
+      UpdateAdminUserRoleMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -357,7 +368,7 @@ export const useUpdateAdminUserRole = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateAdminUserRole>>,
   TError,
-  { id: string; data: UpdateAdminUserRoleRequest },
+  UpdateAdminUserRoleMutationVariables,
   TContext
 > => {
   return useMutation(getUpdateAdminUserRoleMutationOptions(options), queryClient);
@@ -539,6 +550,8 @@ export const resendEmailVerification = async (
   });
 };
 
+export const getResendEmailVerificationMutationKey = () => ["resendEmailVerification"] as const;
+
 export const getResendEmailVerificationMutationOptions = <
   TError = Problem,
   TContext = unknown,
@@ -556,7 +569,7 @@ export const getResendEmailVerificationMutationOptions = <
   void,
   TContext
 > => {
-  const mutationKey = ["resendEmailVerification"];
+  const mutationKey = getResendEmailVerificationMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -809,13 +822,23 @@ export const forgotPassword = async (
   forgotPasswordRequest: ForgotPasswordRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<forgotPasswordResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<forgotPasswordResponse>(getForgotPasswordUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(forgotPasswordRequest),
   });
 };
+
+export const getForgotPasswordMutationKey = () => ["forgotPassword"] as const;
 
 export const getForgotPasswordMutationOptions = <
   TError = ValidationProblem | Problem,
@@ -824,17 +847,17 @@ export const getForgotPasswordMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof forgotPassword>>,
     TError,
-    { data: ForgotPasswordRequest },
+    ForgotPasswordMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof forgotPassword>>,
   TError,
-  { data: ForgotPasswordRequest },
+  ForgotPasswordMutationVariables,
   TContext
 > => {
-  const mutationKey = ["forgotPassword"];
+  const mutationKey = getForgotPasswordMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -843,7 +866,7 @@ export const getForgotPasswordMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof forgotPassword>>,
-    { data: ForgotPasswordRequest }
+    ForgotPasswordMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -856,13 +879,14 @@ export const getForgotPasswordMutationOptions = <
 export type ForgotPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof forgotPassword>>>;
 export type ForgotPasswordMutationBody = ForgotPasswordRequest;
 export type ForgotPasswordMutationError = ValidationProblem | Problem;
+export type ForgotPasswordMutationVariables = { data: ForgotPasswordRequest };
 
 export const useForgotPassword = <TError = ValidationProblem | Problem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof forgotPassword>>,
       TError,
-      { data: ForgotPasswordRequest },
+      ForgotPasswordMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -871,7 +895,7 @@ export const useForgotPassword = <TError = ValidationProblem | Problem, TContext
 ): UseMutationResult<
   Awaited<ReturnType<typeof forgotPassword>>,
   TError,
-  { data: ForgotPasswordRequest },
+  ForgotPasswordMutationVariables,
   TContext
 > => {
   return useMutation(getForgotPasswordMutationOptions(options), queryClient);
@@ -909,13 +933,23 @@ export const login = async (
   loginRequest: LoginRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<loginResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<loginResponse>(getLoginUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(loginRequest),
   });
 };
+
+export const getLoginMutationKey = () => ["login"] as const;
 
 export const getLoginMutationOptions = <
   TError = ValidationProblem | Problem,
@@ -924,24 +958,24 @@ export const getLoginMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof login>>,
     TError,
-    { data: LoginRequest },
+    LoginMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof login>>,
   TError,
-  { data: LoginRequest },
+  LoginMutationVariables,
   TContext
 > => {
-  const mutationKey = ["login"];
+  const mutationKey = getLoginMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof login>>, { data: LoginRequest }> = (
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof login>>, LoginMutationVariables> = (
     props,
   ) => {
     const { data } = props ?? {};
@@ -955,13 +989,14 @@ export const getLoginMutationOptions = <
 export type LoginMutationResult = NonNullable<Awaited<ReturnType<typeof login>>>;
 export type LoginMutationBody = LoginRequest;
 export type LoginMutationError = ValidationProblem | Problem;
+export type LoginMutationVariables = { data: LoginRequest };
 
 export const useLogin = <TError = ValidationProblem | Problem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof login>>,
       TError,
-      { data: LoginRequest },
+      LoginMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -970,7 +1005,7 @@ export const useLogin = <TError = ValidationProblem | Problem, TContext = unknow
 ): UseMutationResult<
   Awaited<ReturnType<typeof login>>,
   TError,
-  { data: LoginRequest },
+  LoginMutationVariables,
   TContext
 > => {
   return useMutation(getLoginMutationOptions(options), queryClient);
@@ -1006,11 +1041,13 @@ export const logout = async (options?: Parameters<typeof apiFetch>[1]): Promise<
   });
 };
 
+export const getLogoutMutationKey = () => ["logout"] as const;
+
 export const getLogoutMutationOptions = <TError = Problem, TContext = unknown>(options?: {
   mutation?: UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext>;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
-  const mutationKey = ["logout"];
+  const mutationKey = getLogoutMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1082,13 +1119,23 @@ export const register = async (
   registerRequest: RegisterRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<registerResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<registerResponse>(getRegisterUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(registerRequest),
   });
 };
+
+export const getRegisterMutationKey = () => ["register"] as const;
 
 export const getRegisterMutationOptions = <
   TError = Problem | ValidationProblem,
@@ -1097,17 +1144,17 @@ export const getRegisterMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof register>>,
     TError,
-    { data: RegisterRequest },
+    RegisterMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof register>>,
   TError,
-  { data: RegisterRequest },
+  RegisterMutationVariables,
   TContext
 > => {
-  const mutationKey = ["register"];
+  const mutationKey = getRegisterMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1116,7 +1163,7 @@ export const getRegisterMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof register>>,
-    { data: RegisterRequest }
+    RegisterMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1129,13 +1176,14 @@ export const getRegisterMutationOptions = <
 export type RegisterMutationResult = NonNullable<Awaited<ReturnType<typeof register>>>;
 export type RegisterMutationBody = RegisterRequest;
 export type RegisterMutationError = Problem | ValidationProblem;
+export type RegisterMutationVariables = { data: RegisterRequest };
 
 export const useRegister = <TError = Problem | ValidationProblem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof register>>,
       TError,
-      { data: RegisterRequest },
+      RegisterMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1144,7 +1192,7 @@ export const useRegister = <TError = Problem | ValidationProblem, TContext = unk
 ): UseMutationResult<
   Awaited<ReturnType<typeof register>>,
   TError,
-  { data: RegisterRequest },
+  RegisterMutationVariables,
   TContext
 > => {
   return useMutation(getRegisterMutationOptions(options), queryClient);
@@ -1177,13 +1225,23 @@ export const resetPassword = async (
   resetPasswordRequest: ResetPasswordRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<resetPasswordResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<resetPasswordResponse>(getResetPasswordUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(resetPasswordRequest),
   });
 };
+
+export const getResetPasswordMutationKey = () => ["resetPassword"] as const;
 
 export const getResetPasswordMutationOptions = <
   TError = ValidationProblem,
@@ -1192,17 +1250,17 @@ export const getResetPasswordMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof resetPassword>>,
     TError,
-    { data: ResetPasswordRequest },
+    ResetPasswordMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof resetPassword>>,
   TError,
-  { data: ResetPasswordRequest },
+  ResetPasswordMutationVariables,
   TContext
 > => {
-  const mutationKey = ["resetPassword"];
+  const mutationKey = getResetPasswordMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1211,7 +1269,7 @@ export const getResetPasswordMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof resetPassword>>,
-    { data: ResetPasswordRequest }
+    ResetPasswordMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1224,13 +1282,14 @@ export const getResetPasswordMutationOptions = <
 export type ResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof resetPassword>>>;
 export type ResetPasswordMutationBody = ResetPasswordRequest;
 export type ResetPasswordMutationError = ValidationProblem;
+export type ResetPasswordMutationVariables = { data: ResetPasswordRequest };
 
 export const useResetPassword = <TError = ValidationProblem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof resetPassword>>,
       TError,
-      { data: ResetPasswordRequest },
+      ResetPasswordMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1239,7 +1298,7 @@ export const useResetPassword = <TError = ValidationProblem, TContext = unknown>
 ): UseMutationResult<
   Awaited<ReturnType<typeof resetPassword>>,
   TError,
-  { data: ResetPasswordRequest },
+  ResetPasswordMutationVariables,
   TContext
 > => {
   return useMutation(getResetPasswordMutationOptions(options), queryClient);
@@ -1282,13 +1341,24 @@ export const completeTwoFactorChallenge = async (
   twoFactorChallengeRequest: TwoFactorChallengeRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<completeTwoFactorChallengeResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<completeTwoFactorChallengeResponse>(getCompleteTwoFactorChallengeUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(twoFactorChallengeRequest),
   });
 };
+
+export const getCompleteTwoFactorChallengeMutationKey = () =>
+  ["completeTwoFactorChallenge"] as const;
 
 export const getCompleteTwoFactorChallengeMutationOptions = <
   TError = ValidationProblem | Problem,
@@ -1297,17 +1367,17 @@ export const getCompleteTwoFactorChallengeMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof completeTwoFactorChallenge>>,
     TError,
-    { data: TwoFactorChallengeRequest },
+    CompleteTwoFactorChallengeMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof completeTwoFactorChallenge>>,
   TError,
-  { data: TwoFactorChallengeRequest },
+  CompleteTwoFactorChallengeMutationVariables,
   TContext
 > => {
-  const mutationKey = ["completeTwoFactorChallenge"];
+  const mutationKey = getCompleteTwoFactorChallengeMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1316,7 +1386,7 @@ export const getCompleteTwoFactorChallengeMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof completeTwoFactorChallenge>>,
-    { data: TwoFactorChallengeRequest }
+    CompleteTwoFactorChallengeMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1331,6 +1401,7 @@ export type CompleteTwoFactorChallengeMutationResult = NonNullable<
 >;
 export type CompleteTwoFactorChallengeMutationBody = TwoFactorChallengeRequest;
 export type CompleteTwoFactorChallengeMutationError = ValidationProblem | Problem;
+export type CompleteTwoFactorChallengeMutationVariables = { data: TwoFactorChallengeRequest };
 
 export const useCompleteTwoFactorChallenge = <
   TError = ValidationProblem | Problem,
@@ -1340,7 +1411,7 @@ export const useCompleteTwoFactorChallenge = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof completeTwoFactorChallenge>>,
       TError,
-      { data: TwoFactorChallengeRequest },
+      CompleteTwoFactorChallengeMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1349,7 +1420,7 @@ export const useCompleteTwoFactorChallenge = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof completeTwoFactorChallenge>>,
   TError,
-  { data: TwoFactorChallengeRequest },
+  CompleteTwoFactorChallengeMutationVariables,
   TContext
 > => {
   return useMutation(getCompleteTwoFactorChallengeMutationOptions(options), queryClient);
@@ -1401,13 +1472,23 @@ export const deleteCurrentUser = async (
   deleteCurrentUserRequest: DeleteCurrentUserRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<deleteCurrentUserResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<deleteCurrentUserResponse>(getDeleteCurrentUserUrl(), {
     ...options,
     method: "DELETE",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(deleteCurrentUserRequest),
   });
 };
+
+export const getDeleteCurrentUserMutationKey = () => ["deleteCurrentUser"] as const;
 
 export const getDeleteCurrentUserMutationOptions = <
   TError = Problem | DeleteCurrentUser409 | ValidationProblem,
@@ -1416,17 +1497,17 @@ export const getDeleteCurrentUserMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteCurrentUser>>,
     TError,
-    { data: DeleteCurrentUserRequest },
+    DeleteCurrentUserMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteCurrentUser>>,
   TError,
-  { data: DeleteCurrentUserRequest },
+  DeleteCurrentUserMutationVariables,
   TContext
 > => {
-  const mutationKey = ["deleteCurrentUser"];
+  const mutationKey = getDeleteCurrentUserMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1435,7 +1516,7 @@ export const getDeleteCurrentUserMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteCurrentUser>>,
-    { data: DeleteCurrentUserRequest }
+    DeleteCurrentUserMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1450,6 +1531,7 @@ export type DeleteCurrentUserMutationResult = NonNullable<
 >;
 export type DeleteCurrentUserMutationBody = DeleteCurrentUserRequest;
 export type DeleteCurrentUserMutationError = Problem | DeleteCurrentUser409 | ValidationProblem;
+export type DeleteCurrentUserMutationVariables = { data: DeleteCurrentUserRequest };
 
 export const useDeleteCurrentUser = <
   TError = Problem | DeleteCurrentUser409 | ValidationProblem,
@@ -1459,7 +1541,7 @@ export const useDeleteCurrentUser = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteCurrentUser>>,
       TError,
-      { data: DeleteCurrentUserRequest },
+      DeleteCurrentUserMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1468,7 +1550,7 @@ export const useDeleteCurrentUser = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteCurrentUser>>,
   TError,
-  { data: DeleteCurrentUserRequest },
+  DeleteCurrentUserMutationVariables,
   TContext
 > => {
   return useMutation(getDeleteCurrentUserMutationOptions(options), queryClient);
@@ -1509,13 +1591,23 @@ export const confirmPassword = async (
   confirmPasswordRequest: ConfirmPasswordRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<confirmPasswordResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<confirmPasswordResponse>(getConfirmPasswordUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(confirmPasswordRequest),
   });
 };
+
+export const getConfirmPasswordMutationKey = () => ["confirmPassword"] as const;
 
 export const getConfirmPasswordMutationOptions = <
   TError = Problem | ValidationProblem,
@@ -1524,17 +1616,17 @@ export const getConfirmPasswordMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof confirmPassword>>,
     TError,
-    { data: ConfirmPasswordRequest },
+    ConfirmPasswordMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof confirmPassword>>,
   TError,
-  { data: ConfirmPasswordRequest },
+  ConfirmPasswordMutationVariables,
   TContext
 > => {
-  const mutationKey = ["confirmPassword"];
+  const mutationKey = getConfirmPasswordMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1543,7 +1635,7 @@ export const getConfirmPasswordMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof confirmPassword>>,
-    { data: ConfirmPasswordRequest }
+    ConfirmPasswordMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1558,13 +1650,14 @@ export type ConfirmPasswordMutationResult = NonNullable<
 >;
 export type ConfirmPasswordMutationBody = ConfirmPasswordRequest;
 export type ConfirmPasswordMutationError = Problem | ValidationProblem;
+export type ConfirmPasswordMutationVariables = { data: ConfirmPasswordRequest };
 
 export const useConfirmPassword = <TError = Problem | ValidationProblem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof confirmPassword>>,
       TError,
-      { data: ConfirmPasswordRequest },
+      ConfirmPasswordMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1573,7 +1666,7 @@ export const useConfirmPassword = <TError = Problem | ValidationProblem, TContex
 ): UseMutationResult<
   Awaited<ReturnType<typeof confirmPassword>>,
   TError,
-  { data: ConfirmPasswordRequest },
+  ConfirmPasswordMutationVariables,
   TContext
 > => {
   return useMutation(getConfirmPasswordMutationOptions(options), queryClient);
@@ -1765,13 +1858,23 @@ export const confirmTwoFactor = async (
   confirmTwoFactorRequest: ConfirmTwoFactorRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<confirmTwoFactorResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<confirmTwoFactorResponse>(getConfirmTwoFactorUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(confirmTwoFactorRequest),
   });
 };
+
+export const getConfirmTwoFactorMutationKey = () => ["confirmTwoFactor"] as const;
 
 export const getConfirmTwoFactorMutationOptions = <
   TError = Problem | ValidationProblem | StatusMessage,
@@ -1780,17 +1883,17 @@ export const getConfirmTwoFactorMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof confirmTwoFactor>>,
     TError,
-    { data: ConfirmTwoFactorRequest },
+    ConfirmTwoFactorMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof confirmTwoFactor>>,
   TError,
-  { data: ConfirmTwoFactorRequest },
+  ConfirmTwoFactorMutationVariables,
   TContext
 > => {
-  const mutationKey = ["confirmTwoFactor"];
+  const mutationKey = getConfirmTwoFactorMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1799,7 +1902,7 @@ export const getConfirmTwoFactorMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof confirmTwoFactor>>,
-    { data: ConfirmTwoFactorRequest }
+    ConfirmTwoFactorMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1814,6 +1917,7 @@ export type ConfirmTwoFactorMutationResult = NonNullable<
 >;
 export type ConfirmTwoFactorMutationBody = ConfirmTwoFactorRequest;
 export type ConfirmTwoFactorMutationError = Problem | ValidationProblem | StatusMessage;
+export type ConfirmTwoFactorMutationVariables = { data: ConfirmTwoFactorRequest };
 
 export const useConfirmTwoFactor = <
   TError = Problem | ValidationProblem | StatusMessage,
@@ -1823,7 +1927,7 @@ export const useConfirmTwoFactor = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof confirmTwoFactor>>,
       TError,
-      { data: ConfirmTwoFactorRequest },
+      ConfirmTwoFactorMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1832,7 +1936,7 @@ export const useConfirmTwoFactor = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof confirmTwoFactor>>,
   TError,
-  { data: ConfirmTwoFactorRequest },
+  ConfirmTwoFactorMutationVariables,
   TContext
 > => {
   return useMutation(getConfirmTwoFactorMutationOptions(options), queryClient);
@@ -1873,13 +1977,23 @@ export const updatePassword = async (
   updatePasswordRequest: UpdatePasswordRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<updatePasswordResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<updatePasswordResponse>(getUpdatePasswordUrl(), {
     ...options,
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(updatePasswordRequest),
   });
 };
+
+export const getUpdatePasswordMutationKey = () => ["updatePassword"] as const;
 
 export const getUpdatePasswordMutationOptions = <
   TError = Problem | ValidationProblem,
@@ -1888,17 +2002,17 @@ export const getUpdatePasswordMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updatePassword>>,
     TError,
-    { data: UpdatePasswordRequest },
+    UpdatePasswordMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updatePassword>>,
   TError,
-  { data: UpdatePasswordRequest },
+  UpdatePasswordMutationVariables,
   TContext
 > => {
-  const mutationKey = ["updatePassword"];
+  const mutationKey = getUpdatePasswordMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -1907,7 +2021,7 @@ export const getUpdatePasswordMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updatePassword>>,
-    { data: UpdatePasswordRequest }
+    UpdatePasswordMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -1920,13 +2034,14 @@ export const getUpdatePasswordMutationOptions = <
 export type UpdatePasswordMutationResult = NonNullable<Awaited<ReturnType<typeof updatePassword>>>;
 export type UpdatePasswordMutationBody = UpdatePasswordRequest;
 export type UpdatePasswordMutationError = Problem | ValidationProblem;
+export type UpdatePasswordMutationVariables = { data: UpdatePasswordRequest };
 
 export const useUpdatePassword = <TError = Problem | ValidationProblem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updatePassword>>,
       TError,
-      { data: UpdatePasswordRequest },
+      UpdatePasswordMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -1935,7 +2050,7 @@ export const useUpdatePassword = <TError = Problem | ValidationProblem, TContext
 ): UseMutationResult<
   Awaited<ReturnType<typeof updatePassword>>,
   TError,
-  { data: UpdatePasswordRequest },
+  UpdatePasswordMutationVariables,
   TContext
 > => {
   return useMutation(getUpdatePasswordMutationOptions(options), queryClient);
@@ -1973,13 +2088,23 @@ export const updateProfile = async (
   updateProfileRequest: UpdateProfileRequest,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<updateProfileResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<updateProfileResponse>(getUpdateProfileUrl(), {
     ...options,
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...options?.headers },
+    headers: { "Content-Type": "application/json", ...getHeaders(options?.headers) },
     body: JSON.stringify(updateProfileRequest),
   });
 };
+
+export const getUpdateProfileMutationKey = () => ["updateProfile"] as const;
 
 export const getUpdateProfileMutationOptions = <
   TError = Problem | ValidationProblem,
@@ -1988,17 +2113,17 @@ export const getUpdateProfileMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateProfile>>,
     TError,
-    { data: UpdateProfileRequest },
+    UpdateProfileMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateProfile>>,
   TError,
-  { data: UpdateProfileRequest },
+  UpdateProfileMutationVariables,
   TContext
 > => {
-  const mutationKey = ["updateProfile"];
+  const mutationKey = getUpdateProfileMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -2007,7 +2132,7 @@ export const getUpdateProfileMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateProfile>>,
-    { data: UpdateProfileRequest }
+    UpdateProfileMutationVariables
   > = (props) => {
     const { data } = props ?? {};
 
@@ -2020,13 +2145,14 @@ export const getUpdateProfileMutationOptions = <
 export type UpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfile>>>;
 export type UpdateProfileMutationBody = UpdateProfileRequest;
 export type UpdateProfileMutationError = Problem | ValidationProblem;
+export type UpdateProfileMutationVariables = { data: UpdateProfileRequest };
 
 export const useUpdateProfile = <TError = Problem | ValidationProblem, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateProfile>>,
       TError,
-      { data: UpdateProfileRequest },
+      UpdateProfileMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -2035,7 +2161,7 @@ export const useUpdateProfile = <TError = Problem | ValidationProblem, TContext 
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateProfile>>,
   TError,
-  { data: UpdateProfileRequest },
+  UpdateProfileMutationVariables,
   TContext
 > => {
   return useMutation(getUpdateProfileMutationOptions(options), queryClient);
@@ -2081,6 +2207,8 @@ export const enableTwoFactor = async (
   });
 };
 
+export const getEnableTwoFactorMutationKey = () => ["enableTwoFactor"] as const;
+
 export const getEnableTwoFactorMutationOptions = <
   TError = Problem | StatusMessage,
   TContext = unknown,
@@ -2093,7 +2221,7 @@ export const getEnableTwoFactorMutationOptions = <
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<Awaited<ReturnType<typeof enableTwoFactor>>, TError, void, TContext> => {
-  const mutationKey = ["enableTwoFactor"];
+  const mutationKey = getEnableTwoFactorMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -2170,6 +2298,8 @@ export const disableTwoFactor = async (
   });
 };
 
+export const getDisableTwoFactorMutationKey = () => ["disableTwoFactor"] as const;
+
 export const getDisableTwoFactorMutationOptions = <
   TError = Problem | StatusMessage,
   TContext = unknown,
@@ -2182,7 +2312,7 @@ export const getDisableTwoFactorMutationOptions = <
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<Awaited<ReturnType<typeof disableTwoFactor>>, TError, void, TContext> => {
-  const mutationKey = ["disableTwoFactor"];
+  const mutationKey = getDisableTwoFactorMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -2535,6 +2665,8 @@ export const regenerateRecoveryCodes = async (
   });
 };
 
+export const getRegenerateRecoveryCodesMutationKey = () => ["regenerateRecoveryCodes"] as const;
+
 export const getRegenerateRecoveryCodesMutationOptions = <
   TError = Problem | StatusMessage,
   TContext = unknown,
@@ -2552,7 +2684,7 @@ export const getRegenerateRecoveryCodesMutationOptions = <
   void,
   TContext
 > => {
-  const mutationKey = ["regenerateRecoveryCodes"];
+  const mutationKey = getRegenerateRecoveryCodesMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -2915,13 +3047,23 @@ export const createTask = async (
   headers: CreateTaskHeaders,
   options?: Parameters<typeof apiFetch>[1],
 ): Promise<createTaskResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
   return apiFetch<createTaskResponse>(getCreateTaskUrl(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...headers, ...options?.headers },
+    headers: { "Content-Type": "application/json", ...headers, ...getHeaders(options?.headers) },
     body: JSON.stringify(createTaskRequest),
   });
 };
+
+export const getCreateTaskMutationKey = () => ["createTask"] as const;
 
 export const getCreateTaskMutationOptions = <
   TError = Problem | CreateTask409 | ValidationProblem,
@@ -2930,17 +3072,17 @@ export const getCreateTaskMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createTask>>,
     TError,
-    { data: CreateTaskRequest; headers: CreateTaskHeaders },
+    CreateTaskMutationVariables,
     TContext
   >;
   request?: SecondParameter<typeof apiFetch>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createTask>>,
   TError,
-  { data: CreateTaskRequest; headers: CreateTaskHeaders },
+  CreateTaskMutationVariables,
   TContext
 > => {
-  const mutationKey = ["createTask"];
+  const mutationKey = getCreateTaskMutationKey();
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation && "mutationKey" in options.mutation && options.mutation.mutationKey
       ? options
@@ -2949,7 +3091,7 @@ export const getCreateTaskMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createTask>>,
-    { data: CreateTaskRequest; headers: CreateTaskHeaders }
+    CreateTaskMutationVariables
   > = (props) => {
     const { data, headers } = props ?? {};
 
@@ -2962,6 +3104,7 @@ export const getCreateTaskMutationOptions = <
 export type CreateTaskMutationResult = NonNullable<Awaited<ReturnType<typeof createTask>>>;
 export type CreateTaskMutationBody = CreateTaskRequest;
 export type CreateTaskMutationError = Problem | CreateTask409 | ValidationProblem;
+export type CreateTaskMutationVariables = { data: CreateTaskRequest; headers: CreateTaskHeaders };
 
 export const useCreateTask = <
   TError = Problem | CreateTask409 | ValidationProblem,
@@ -2971,7 +3114,7 @@ export const useCreateTask = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createTask>>,
       TError,
-      { data: CreateTaskRequest; headers: CreateTaskHeaders },
+      CreateTaskMutationVariables,
       TContext
     >;
     request?: SecondParameter<typeof apiFetch>;
@@ -2980,7 +3123,7 @@ export const useCreateTask = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof createTask>>,
   TError,
-  { data: CreateTaskRequest; headers: CreateTaskHeaders },
+  CreateTaskMutationVariables,
   TContext
 > => {
   return useMutation(getCreateTaskMutationOptions(options), queryClient);

@@ -18,4 +18,5 @@ export interface Me {
   two_factor_confirmed: boolean;
   roles: string[];
   permissions: string[];
+  [key: string]: unknown;
 }

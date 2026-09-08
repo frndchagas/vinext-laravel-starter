@@ -7,4 +7,5 @@
 
 export interface AuthCapabilities {
   registration: boolean;
+  [key: string]: unknown;
 }

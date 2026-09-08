@@ -11,4 +11,5 @@ export type CreateTask409 = {
   status: number;
   detail?: string;
   code: string;
+  [key: string]: unknown;
 };

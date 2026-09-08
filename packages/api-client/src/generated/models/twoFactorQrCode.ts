@@ -8,4 +8,5 @@
 export interface TwoFactorQrCode {
   svg: string;
   url: string;
+  [key: string]: unknown;
 }

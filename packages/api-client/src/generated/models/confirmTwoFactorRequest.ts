@@ -7,4 +7,5 @@
 
 export type ConfirmTwoFactorRequest = { [key: string]: unknown } & {
   code: string;
+  [key: string]: unknown;
 };

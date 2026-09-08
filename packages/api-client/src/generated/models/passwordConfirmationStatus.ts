@@ -7,4 +7,5 @@
 
 export interface PasswordConfirmationStatus {
   confirmed: boolean;
+  [key: string]: unknown;
 }

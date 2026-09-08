@@ -8,4 +8,5 @@ import type { AdminUserRole } from "./adminUserRole";
 
 export type UpdateAdminUserRoleRequest = { [key: string]: unknown } & {
   role: AdminUserRole;
+  [key: string]: unknown;
 };

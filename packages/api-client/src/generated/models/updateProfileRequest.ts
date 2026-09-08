@@ -10,4 +10,5 @@ export type UpdateProfileRequest = { [key: string]: unknown } & {
   email: string;
   /** Required when the email address changes. */
   current_password?: string;
+  [key: string]: unknown;
 };

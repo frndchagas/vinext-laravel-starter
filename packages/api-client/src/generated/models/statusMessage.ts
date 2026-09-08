@@ -7,4 +7,5 @@
 
 export interface StatusMessage {
   message: string;
+  [key: string]: unknown;
 }

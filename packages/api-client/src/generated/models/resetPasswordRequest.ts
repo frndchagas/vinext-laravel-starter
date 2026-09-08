@@ -10,4 +10,5 @@ export type ResetPasswordRequest = { [key: string]: unknown } & {
   email: string;
   password: string;
   password_confirmation: string;
+  [key: string]: unknown;
 };

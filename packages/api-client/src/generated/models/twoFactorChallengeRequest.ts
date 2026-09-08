@@ -8,4 +8,5 @@
 export type TwoFactorChallengeRequest = { [key: string]: unknown } & {
   code?: string;
   recovery_code?: string;
+  [key: string]: unknown;
 };

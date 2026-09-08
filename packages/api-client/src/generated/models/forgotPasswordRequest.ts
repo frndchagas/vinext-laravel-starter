@@ -7,4 +7,5 @@
 
 export type ForgotPasswordRequest = { [key: string]: unknown } & {
   email: string;
+  [key: string]: unknown;
 };

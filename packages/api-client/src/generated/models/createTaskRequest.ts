@@ -8,4 +8,5 @@
 export type CreateTaskRequest = { [key: string]: unknown } & {
   /** @maxLength 10000 */
   input: string;
+  [key: string]: unknown;
 };
