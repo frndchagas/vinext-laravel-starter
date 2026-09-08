@@ -212,7 +212,7 @@ jobs:
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
-      - run: bunx playwright install --with-deps chromium
+      - run: bun run --filter web test:e2e:install
 
       - name: Prepare application key
         working-directory: apps/api
@@ -330,7 +330,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json', 'bun.lock') }}
 
       - run: bun ci
-      - run: bunx playwright install --with-deps chromium
+      - run: bun run --filter web test:e2e:install
 
       - name: Production topology
         run: bun run test:production:browser
