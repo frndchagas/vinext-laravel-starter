@@ -28,7 +28,17 @@ const STATE_STYLES: Record<Task["state"], string> = {
 export default function TasksPage() {
   const queryClient = useQueryClient();
   const hydrated = useHydrated();
-  const tasksQuery = useListTasks();
+  const tasksQuery = useListTasks(undefined, {
+    query: {
+      refetchInterval: (query) => {
+        const response = query.state.data;
+        return response?.status === 200 &&
+          response.data.data.some((task) => task.state === "queued" || task.state === "processing")
+          ? 3_000
+          : false;
+      },
+    },
+  });
   const createMutation = useCreateTask();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -53,6 +63,9 @@ export default function TasksPage() {
     for (const id of ids) {
       echo
         .private(`tasks.${id}`)
+        .subscribed(() => {
+          void queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
+        })
         .listen(".TaskStatusChanged", (event: TaskStatusChangedPayload) => {
           if (event.id === id) {
             void queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
@@ -71,6 +84,11 @@ export default function TasksPage() {
 
   const errors =
     createMutation.data?.status === 422 ? validationErrors(createMutation.data.data) : {};
+  const listFailed =
+    tasksQuery.isError || (tasksQuery.data !== undefined && tasksQuery.data.status !== 200);
+  const createFailed =
+    createMutation.isError ||
+    (createMutation.data !== undefined && ![202, 422].includes(createMutation.data.status));
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,10 +150,28 @@ export default function TasksPage() {
             {errors["input"][0]}
           </p>
         ) : null}
+        {createFailed ? (
+          <p role="alert" className="text-sm text-destructive">
+            The task could not be queued. Check your connection and try again.
+          </p>
+        ) : null}
       </form>
 
       <section className="flex flex-col gap-3" aria-label="Tasks">
-        {tasks.length === 0 ? (
+        {tasksQuery.isPending ? <output>Loading tasks…</output> : null}
+        {listFailed ? (
+          <div role="alert" className="flex items-center gap-3 text-sm text-destructive">
+            <p>Tasks could not be loaded. Try again.</p>
+            <Button
+              variant="outline"
+              disabled={tasksQuery.isFetching}
+              onClick={() => void tasksQuery.refetch()}
+            >
+              Try again
+            </Button>
+          </div>
+        ) : null}
+        {!tasksQuery.isPending && !listFailed && tasks.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No tasks yet. Queue one to watch it move through queued, processing and completed.
           </p>

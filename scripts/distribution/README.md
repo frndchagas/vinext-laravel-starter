@@ -6,7 +6,7 @@ This repository is an application snapshot. There is no starter updater, so you 
 
 ## Start locally
 
-Requirements: Bun 1.4+, Node.js 24+, PHP 8.3+, Composer 2.10, Docker Compose and Git.
+Requirements: Bun 1.4.2+, Node.js 24+, PHP 8.3+, Composer 2.10, Docker Compose and Git.
 
 ```bash
 composer run dev

@@ -14,6 +14,10 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
 const sourceRoot = process.cwd();
+const sourceRef = process.env.SMOKE_SOURCE_REF ?? "HEAD";
+if (process.env.SMOKE_SOURCE_REF && (process.env.SOURCE_COMMIT || process.env.SOURCE_TAG)) {
+  throw new Error("SMOKE_SOURCE_REF is only available for local validation, not releases.");
+}
 const outputRoot = resolve(process.argv[2] ?? "");
 
 if (!process.argv[2]) {
@@ -116,7 +120,7 @@ function validateMarkdownLinks() {
 }
 
 try {
-  run("git", ["archive", "--format=tar", "HEAD", "-o", archive]);
+  run("git", ["archive", "--format=tar", sourceRef, "-o", archive]);
   mkdirSync(outputRoot, { recursive: true });
   run("tar", ["-xf", archive, "-C", outputRoot]);
 

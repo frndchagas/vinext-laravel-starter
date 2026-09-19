@@ -39,7 +39,7 @@ Changing the login email requires the current password. Laravel notifies the pre
 
 ## Sessions and realtime
 
-Echo authorizes every private subscription through the same Laravel session. Logout disconnects Echo. Reconnection requires fresh channel authorization and then refetches persisted state.
+Echo authorizes every private subscription through the same Laravel session. Login, registration, two-factor completion, logout, session expiry, password changes and Account deletion disconnect Echo, cancel pending queries and clear query and mutation caches before changing screens. Cached private data never carries over to the next User. Reconnection requires fresh channel authorization and then refetches persisted state.
 
 Changing the account password logs out the Laravel guard and invalidates the current Sanctum session before the endpoint returns. The interface clears its cached identity and realtime connection, then returns the User to login with a confirmation message.
 

@@ -4,7 +4,7 @@ This guide runs the canonical source repository, including maintainer tooling an
 
 ## Requirements
 
-- Bun 1.4 or newer
+- Bun 1.4.2 or newer
 - Node.js 24 or newer
 - PHP 8.3 or newer
 - Composer 2.10

@@ -34,7 +34,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - name: Test path classification
         run: >-
@@ -63,14 +63,14 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.5"
           extensions: pdo_sqlite, pcntl
           coverage: none
-          tools: composer:2.10.2
+          tools: composer:2.10.3
 
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -131,7 +131,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
       redis:
-        image: redis:7.4.10-alpine3.21
+        image: redis:7.4.11-alpine3.21@sha256:520775a41a63e77e06c73e35d2fd9cc15921a609516818796b4ecbb813078bc7
         ports:
           - 6379:6379
         options: >-
@@ -157,7 +157,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: pdo_pgsql, redis, pcntl
           coverage: none
-          tools: composer:2.10.2
+          tools: composer:2.10.3
 
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -189,14 +189,14 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.5"
           extensions: pdo_pgsql, redis, pcntl
           coverage: none
-          tools: composer:2.10.2
+          tools: composer:2.10.3
 
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -243,6 +243,15 @@ jobs:
       - name: Browser flows
         run: bun run test:e2e
 
+      - name: Preserve development browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: development-browser-diagnostics
+          path: apps/web/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Show development logs on failure
         if: failure()
         run: sed -n '1,320p' "$RUNNER_TEMP/vinext-laravel-starter-dev.log"
@@ -265,14 +274,14 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.3"
           extensions: pdo_pgsql, redis, pcntl
           coverage: none
-          tools: composer:2.10.2
+          tools: composer:2.10.3
 
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -293,14 +302,14 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.3"
           extensions: pdo_sqlite, redis, pcntl
           coverage: none
-          tools: composer:2.10.2
+          tools: composer:2.10.3
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
@@ -316,7 +325,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
@@ -334,6 +343,15 @@ jobs:
 
       - name: Production topology
         run: bun run test:production:browser
+
+      - name: Preserve production browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: production-browser-diagnostics
+          path: apps/web/test-results
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Scan PHP runtime image
         if: needs.changes.outputs.docker == 'true'
@@ -433,7 +451,7 @@ jobs:
           ref: ${{ github.base_ref }}
           path: base
       - name: Detect breaking API changes
-        uses: oasdiff/oasdiff-action/breaking@54d7a752569cb30b644b7f27a362c1077973d1c0 # v0.1.14
+        uses: oasdiff/oasdiff-action/breaking@9c0494cfee8b8fcc9fb383ed2d5d3fbdae169b93 # v0.1.15
         with:
           base: base/contracts/http/openapi/openapi.yaml
           revision: contracts/http/openapi/openapi.yaml

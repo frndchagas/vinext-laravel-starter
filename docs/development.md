@@ -58,7 +58,7 @@ Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose 
 
 The web app uses shadcn/ui components with Base UI primitives and Tailwind CSS through PostCSS. Do not mix primitive systems in one interaction surface.
 
-Vinext 1.0.0-beta.8 enables the experimental React Compiler through Oxc. Every Vinext update must pass `vinext check`, production build and E2E.
+Vinext 1.0.0-beta.10 enables the experimental React Compiler through Oxc. Every Vinext update must pass `vinext check`, production build and E2E.
 
 Vitest and Testing Library cover fast component behavior. Playwright covers browser integration and runs axe WCAG A/AA checks on authenticated screens.
 
@@ -67,3 +67,22 @@ Vitest and Testing Library cover fast component behavior. Playwright covers brow
 Do not commit `.env`, credentials, logs, build output, Playwright reports or generated runtime state. OpenAPI, `contracts/realtime/generated` and `packages/api-client/src/generated` are deterministic contract artifacts and must be committed with their source change.
 
 Architecture changes require an ADR. Domain language changes require an update to `CONTEXT.md`.
+
+## Validate an uncommitted snapshot
+
+Template and distribution smokes archive `HEAD` by default. To include local changes without changing the branch or real Git index, create an immutable tree with a temporary index:
+
+```bash
+smoke_index=$(mktemp)
+rm "$smoke_index"
+GIT_INDEX_FILE="$smoke_index" git read-tree HEAD
+GIT_INDEX_FILE="$smoke_index" git add -A
+smoke_tree=$(GIT_INDEX_FILE="$smoke_index" git write-tree)
+rm "$smoke_index"
+SMOKE_SOURCE_REF="$smoke_tree" bun run test:template
+SMOKE_SOURCE_REF="$smoke_tree" bun run test:distribution
+```
+
+The distribution builder rejects this override when release provenance variables are set. Local smoke output keeps its `development` provenance.
+
+Bun 1.4.2 is pinned in the workspace, CI and web image. Node types follow the production Node 24 runtime. The scoped Undici override keeps Scalar contract tooling on the patched 7.x release while jsdom uses 8.x. Recheck that override when upgrading Scalar.

@@ -71,7 +71,7 @@ archive_overrides=(
 for override in "${archive_overrides[@]}"; do
     source_path=${override%%|*}
     output_path=${override#*|}
-    git show "HEAD:$source_path" | cmp - "$distribution_dir/$output_path"
+    git show "${SMOKE_SOURCE_REF:-HEAD}:$source_path" | cmp - "$distribution_dir/$output_path"
 done
 
 mkdir -p "$sync_target/.git"

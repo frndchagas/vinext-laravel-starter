@@ -26,7 +26,7 @@ External providers should receive an idempotency key derived from the Task ident
 
 The contracted Reverb channel is private. Laravel authorizes the owning verified User before Echo can subscribe.
 
-WebSocket delivery has no end-to-end guarantee. A client may miss or receive duplicate notifications. The frontend therefore invalidates the Task list after an event and refetches active Tasks when Echo reconnects.
+WebSocket delivery has no end-to-end guarantee. A client may miss or receive duplicate notifications. The frontend therefore invalidates the Task list after an event, after a private channel subscription succeeds and when Echo reconnects. While the visible list contains queued or processing Tasks, it also refetches every three seconds in the foreground. Polling stops when all visible Tasks reach a final state. Loading and failed requests have separate states, and a failed list request offers a retry.
 
 ## Contracts and proofs
 
@@ -41,6 +41,8 @@ Tests currently prove:
 - processing-token ownership and retry behavior;
 - final states are not processed again;
 - private-channel ownership and verified-email checks;
-- browser recovery after a temporary connection loss.
+- browser recovery after a temporary connection loss or unavailable WebSocket delivery;
+- completion between the initial response and channel subscription;
+- isolation of cached Tasks when switching Users.
 
 The suite does not claim a real operating-system timeout test or a stress test with parallel HTTP clients.
