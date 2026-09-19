@@ -1,10 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  getGetMeQueryKey,
-  useCompleteTwoFactorChallenge,
-} from "@vinext-laravel-starter/api-client";
+import { useCompleteTwoFactorChallenge } from "@vinext-laravel-starter/api-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -12,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
+import { clearSession } from "@/lib/session";
 import { useHydrated } from "@/lib/use-hydrated";
 
 export default function TwoFactorChallengePage() {
@@ -38,9 +36,9 @@ export default function TwoFactorChallengePage() {
           : { code: formValue(form, "code") },
       },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           if (response.status !== 204) return;
-          queryClient.removeQueries({ queryKey: getGetMeQueryKey() });
+          await clearSession(queryClient);
           router.push("/dashboard");
         },
       },

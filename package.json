@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "packageManager": "bun@1.4.0",
+  "packageManager": "bun@1.4.2",
   "engines": {
-    "bun": ">=1.4.0",
+    "bun": ">=1.4.2",
     "node": ">=24.0.0"
   },
   "workspaces": [
@@ -44,9 +44,12 @@
     "contracts:check": "bun run scripts/contracts-check.mjs"
   },
   "overrides": {
-    "fast-uri": "^3.1.6"
+    "fast-uri": "^3.1.6",
+    "@scalar/json-magic": {
+      "undici": "^7.29.1"
+    }
   },
   "devDependencies": {
-    "lefthook": "2.1.12"
+    "lefthook": "2.1.14"
   }
 }

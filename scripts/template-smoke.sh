@@ -86,7 +86,7 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-git -C "$source_root" archive --format=tar HEAD --output "$archive_file"
+git -C "$source_root" archive --format=tar "${SMOKE_SOURCE_REF:-HEAD}" --output "$archive_file"
 tar -xf "$archive_file" -C "$template_root"
 rm -f -- "$archive_file"
 archive_file=""

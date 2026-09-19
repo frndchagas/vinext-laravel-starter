@@ -1,11 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  getGetMeQueryKey,
-  useGetAuthCapabilities,
-  useRegister,
-} from "@vinext-laravel-starter/api-client";
+import { useGetAuthCapabilities, useRegister } from "@vinext-laravel-starter/api-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
+import { clearSession } from "@/lib/session";
 import { useHydrated } from "@/lib/use-hydrated";
 
 export default function RegisterPage() {
@@ -53,9 +50,9 @@ export default function RegisterPage() {
         },
       },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           if (response.status === 201) {
-            queryClient.removeQueries({ queryKey: getGetMeQueryKey() });
+            await clearSession(queryClient);
             router.push("/verify-email");
           }
         },

@@ -9,7 +9,7 @@ test("distribution overrides come only from the archived commit", async () => {
   const source = await Bun.file(scriptPath).text();
 
   expect(source).toContain(
-    'run("git", ["archive", "--format=tar", "HEAD", "-o", archive])',
+    'run("git", ["archive", "--format=tar", sourceRef, "-o", archive])',
   );
   expect(source).not.toContain("cpSync");
   expect(source).not.toContain("join(sourceRoot");
@@ -38,4 +38,16 @@ test("lock generation does not populate dependency trees", async () => {
   expect(source).toContain(
     'run("bun", ["dedupe", "--lockfile-only"], outputRoot)',
   );
+});
+
+test("local snapshots cannot claim release provenance", () => {
+  for (const field of ["SOURCE_COMMIT", "SOURCE_TAG"]) {
+    const result = Bun.spawnSync([process.execPath, scriptPath], {
+      env: { ...process.env, SMOKE_SOURCE_REF: "HEAD", [field]: "release-provenance" },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr.toString()).toContain("only available for local validation, not releases");
+  }
 });

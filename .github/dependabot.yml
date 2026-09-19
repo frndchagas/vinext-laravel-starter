@@ -87,6 +87,7 @@ updates:
       - /infra/docker/api
       - /infra/docker/api-nginx
       - /infra/docker/proxy
+      - /infra/docker/postgres
       - /infra/docker/web
     schedule:
       interval: weekly

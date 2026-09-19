@@ -1,13 +1,13 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { getGetMeQueryKey, type Me, useGetMe, useLogout } from "@vinext-laravel-starter/api-client";
+import { type Me, useGetMe, useLogout } from "@vinext-laravel-starter/api-client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import { disconnectEcho } from "@/lib/echo";
+import { clearSession } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
 const AuthenticatedUserContext = createContext<Me | undefined>(undefined);
@@ -38,17 +38,16 @@ export function AuthenticatedShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (meQuery.data?.status === 401) {
-      router.replace("/login");
+      void clearSession(queryClient).then(() => router.replace("/login"));
     } else if (me !== undefined && !me.email_verified) {
       router.replace("/verify-email");
     }
-  }, [me, meQuery.data?.status, router]);
+  }, [me, meQuery.data?.status, queryClient, router]);
 
   function signOut() {
     logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        disconnectEcho();
-        queryClient.removeQueries({ queryKey: getGetMeQueryKey() });
+      onSuccess: async () => {
+        await clearSession(queryClient);
         router.push("/login");
       },
     });

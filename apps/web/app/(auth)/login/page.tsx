@@ -1,11 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  getGetMeQueryKey,
-  useGetAuthCapabilities,
-  useLogin,
-} from "@vinext-laravel-starter/api-client";
+import { useGetAuthCapabilities, useLogin } from "@vinext-laravel-starter/api-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -13,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
+import { clearSession } from "@/lib/session";
 import { useHydrated } from "@/lib/use-hydrated";
 
 export default function LoginPage() {
@@ -45,9 +42,9 @@ export default function LoginPage() {
         },
       },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           if (response.status === 200) {
-            queryClient.removeQueries({ queryKey: getGetMeQueryKey() });
+            await clearSession(queryClient);
             router.push(response.data.two_factor ? "/two-factor-challenge" : "/dashboard");
           }
         },

@@ -16,7 +16,7 @@ Vinext is still in beta and the React Compiler integration is experimental. CI v
 
 ## Create an application
 
-Requirements: Bun 1.4+, Node.js 24+, PHP 8.3+, Composer 2.10, Laravel Installer 5.31+, Docker Compose and Git.
+Requirements: Bun 1.4.2+, Node.js 24+, PHP 8.3+, Composer 2.10, Laravel Installer 5.31+, Docker Compose and Git.
 
 ```bash
 laravel new my-app --using=frndchagas/vinext-laravel-starter --phpunit --bun --no-boost

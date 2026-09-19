@@ -24,9 +24,9 @@ import { useAuthenticatedUser } from "@/components/authenticated-shell";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { PasswordActionDialog } from "@/components/ui/password-action-dialog";
-import { disconnectEcho } from "@/lib/echo";
 import { formValue } from "@/lib/form";
 import { problemDetail, validationErrors } from "@/lib/problem";
+import { clearSession } from "@/lib/session";
 import { useHydrated } from "@/lib/use-hydrated";
 
 async function confirmCurrentPassword(password: string): Promise<string | undefined> {
@@ -126,10 +126,9 @@ export default function SettingsPage() {
         },
       },
       {
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
           if (response.status === 200) {
-            disconnectEcho();
-            queryClient.clear();
+            await clearSession(queryClient);
             window.location.assign("/login?password_updated=1");
           }
         },
@@ -206,7 +205,7 @@ export default function SettingsPage() {
     const response = await deleteCurrentUser({ password });
 
     if (response.status === 204) {
-      queryClient.clear();
+      await clearSession(queryClient);
       window.location.assign("/login?account_deleted=1");
       return undefined;
     }
