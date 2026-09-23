@@ -27,6 +27,7 @@
     "nextjs",
     "promise"
   ],
+  "jsPlugins": ["@shadcn/lint"],
   "overrides": [
     {
       "files": ["e2e/**"],
