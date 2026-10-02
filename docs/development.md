@@ -58,7 +58,7 @@ Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose 
 
 The web app uses shadcn/ui components with Base UI primitives and Tailwind CSS through PostCSS. Do not mix primitive systems in one interaction surface.
 
-Vinext 1.0.0-beta.10 enables the experimental React Compiler through Oxc. Every Vinext update must pass `vinext check`, production build and E2E.
+Vinext 1.0.1 enables the experimental React Compiler through Oxc. Every Vinext update must pass `vinext check`, production build and E2E.
 
 Vitest and Testing Library cover fast component behavior. Playwright covers browser integration and runs axe WCAG A/AA checks on authenticated screens.
 
