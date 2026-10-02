@@ -65,6 +65,6 @@ The production proxy rejects unknown Host authorities with `421`, while the opti
 
 ## Container scan policy
 
-The canonical release CI scans every production image with Trivy and blocks fixable high and critical findings. The PostgreSQL image rebuilds upstream `gosu` 1.19 with Go 1.26.8 and verifies privilege dropping during the build. Its OS packages and bundled binaries are scanned without vulnerability exceptions. Redis uses the same image digest in development, integration tests and production, so a cached image cannot silently retain older OS packages.
+The canonical release CI scans every production image with Trivy and blocks fixable high and critical findings. The PostgreSQL image rebuilds upstream `gosu` 1.19 with Go 1.26.8 and verifies privilege dropping during the build. Its OS packages and bundled binaries are scanned without vulnerability exceptions. The production Redis image uses the same pinned upstream Redis 7.4.11 base as development and integration tests, then updates `libcrypto3` and `libssl3` from Alpine security packages. Its Redis binary, data directory and configuration stay unchanged; Trivy scans the resulting image.
 
 Coolify recreates services in a regular Docker Compose deployment. This reference does not claim zero downtime. Roll back by selecting the previous source tag and redeploying it; do not roll back the database unless the migration has an explicit reversal plan.
