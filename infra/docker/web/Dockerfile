@@ -5,6 +5,7 @@ COPY --from=oven/bun:1.4.2-alpine /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 
 COPY package.json bun.lock ./
+COPY patches ./patches
 COPY apps/api/package.json ./apps/api/package.json
 COPY apps/web/package.json ./apps/web/package.json
 COPY contracts/http/package.json ./contracts/http/package.json

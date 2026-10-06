@@ -52,6 +52,14 @@ Lefthook is intentionally smaller. Pre-commit runs format checks and uses Gitlea
 
 Tests never call a real external provider. The starter has no AI provider in the current release.
 
+### Temporary braces mitigation
+
+`braces@3.0.3` has no published fix for [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Bun applies the committed patch in `patches/braces@3.0.3.patch` on installation. It caps brace and parenthesis nesting at 256 and validates AST depth before the recursive compile, expand and stringify operations. Deeper inputs and child-node cycles raise a controlled `SyntaxError`; ordinary pattern behavior remains covered by the Node regression check.
+
+`bun run audit` runs the native Bun audit without an ignore list. It reports this finding as mitigated only after verifying the patch registration, locked version, patch checksum, every installed copy's code checksums and the Node regression proof. Other high and critical findings still fail the gate. Unknown audit formats fail closed; moderate findings remain visible without changing the existing high-severity threshold. The production smoke runs the same regression proof inside the standalone Node container.
+
+The evidence in `scripts/braces-mitigation.json` expires at **2026-11-05 00:00 UTC**. After expiry the audit fails. Replace this patch with an upstream fixed release, rerun fresh-install and production checks, then remove the mitigation-specific evidence and audit handling. Raw `bun audit` continues to report the upstream version as vulnerable: this is a local backport, not an upstream release.
+
 Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose manifest each week. Major updates remain manual. Minor updates to PHP, Go, Composer, Bun and Caddy also require a coordinated change; other Docker minor and patch updates must pass the production gate.
 
 ## Frontend baseline
