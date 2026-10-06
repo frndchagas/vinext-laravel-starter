@@ -43,6 +43,14 @@ E2E, production topology, image scanning, CodeQL and OpenAPI compatibility check
 
 Lefthook is intentionally smaller. Pre-commit runs format checks and uses Gitleaks when installed; pre-push runs `bun run check`. Contracts, audit, E2E and production remain explicit local commands.
 
+### Temporary braces mitigation
+
+`braces@3.0.3` has no published fix for [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Bun applies `patches/braces@3.0.3.patch` on installation. The patch caps brace and parenthesis nesting at 256 and validates AST depth before recursive compile, expand and stringify operations. Deeper inputs and child-node cycles raise a controlled `SyntaxError`.
+
+`bun run audit` runs the native Bun audit without an ignore list. It accepts this finding only after checking the patch registration, locked version, patch and installed-code checksums, and the Node regression proof. Other high and critical findings still block; unknown audit formats fail closed. The production smoke checks the package inside the standalone Node container.
+
+`scripts/braces-mitigation.json` expires at **2026-11-05 00:00 UTC**; the audit fails after that date. The application owner must replace the patch with an upstream fixed release and remove the mitigation-specific evidence and audit handling after fresh-install and production validation. Raw `bun audit` still reports the upstream version as vulnerable because this is a local backport.
+
 ## Frontend baseline
 
 The web app uses shadcn/ui components with Base UI primitives and Tailwind CSS through PostCSS. Do not mix primitive systems in one interaction surface.

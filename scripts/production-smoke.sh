@@ -103,6 +103,8 @@ docker build \
 
 "${compose[@]}" up --detach --no-build --wait
 
+"${compose[@]}" exec -T web node --input-type=module - < scripts/braces-security-check.mjs
+
 curl --fail --silent --show-error \
     --dump-header "$headers_file" \
     --output "$home_body_file" \

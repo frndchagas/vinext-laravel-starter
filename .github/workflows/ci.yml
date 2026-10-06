@@ -36,6 +36,8 @@ jobs:
         with:
           bun-version: 1.4.2
 
+      - run: bun ci
+
       - name: Test path classification
         run: >-
           bun test
@@ -47,6 +49,8 @@ jobs:
           scripts/trivy-ignore.test.mjs
           scripts/verify-main-ci.test.mjs
           scripts/verify-release-credentials.test.mjs
+          scripts/braces-security-check.test.mjs
+          scripts/audit-dependencies.test.mjs
 
       - name: Select affected gates
         id: classify
