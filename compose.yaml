@@ -2,7 +2,7 @@ name: vinext-laravel-starter
 
 services:
   caddy:
-    image: caddy:2.11.4-alpine
+    image: caddy:2.11.6-alpine
     environment:
       API_UPSTREAM: "${API_UPSTREAM:-host.docker.internal:${API_PORT:-18000}}"
       REVERB_UPSTREAM: "${REVERB_UPSTREAM:-host.docker.internal:${REVERB_PORT:-19080}}"
