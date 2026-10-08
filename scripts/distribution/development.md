@@ -43,6 +43,10 @@ E2E, production topology, image scanning, CodeQL and OpenAPI compatibility check
 
 Lefthook is intentionally smaller. Pre-commit runs format checks and uses Gitleaks when installed; pre-push runs `bun run check`. Contracts, audit, E2E and production remain explicit local commands.
 
+### Transitive security overrides
+
+The root overrides pin `@modelcontextprotocol/sdk` to 1.31.0 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h) and `fflate` to 0.7.5 for [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98). The SDK is a dependency of shadcn and an optional Orval peer; the application does not implement an MCP OAuth client. `fflate` comes through the Vinext image-rendering dependencies. Keep it on the patched 0.7.x line while those dependencies pin 0.7.3. Remove each override when its parent dependencies resolve a patched version without it, then validate a frozen install, audit, contract generation and production build.
+
 ### Temporary braces mitigation
 
 `braces@3.0.3` has no published fix for [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Bun applies `patches/braces@3.0.3.patch` on installation. The patch caps brace and parenthesis nesting at 256 and validates AST depth before recursive compile, expand and stringify operations. Deeper inputs and child-node cycles raise a controlled `SyntaxError`.
