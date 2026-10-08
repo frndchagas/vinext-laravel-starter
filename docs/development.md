@@ -52,6 +52,10 @@ Lefthook is intentionally smaller. Pre-commit runs format checks and uses Gitlea
 
 Tests never call a real external provider. The starter has no AI provider in the current release.
 
+### Transitive security overrides
+
+The root overrides pin `@modelcontextprotocol/sdk` to 1.31.0 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h) and `fflate` to 0.7.5 for [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98). The SDK is a dependency of shadcn and an optional Orval peer; the application does not implement an MCP OAuth client. `fflate` comes through the Vinext image-rendering dependencies. Keep it on the patched 0.7.x line while those dependencies pin 0.7.3. Remove each override when its parent dependencies resolve a patched version without it, then validate a frozen install, audit, contract generation and production build in both the source and generated application.
+
 ### Temporary braces mitigation
 
 `braces@3.0.3` has no published fix for [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Bun applies the committed patch in `patches/braces@3.0.3.patch` on installation. It caps brace and parenthesis nesting at 256 and validates AST depth before the recursive compile, expand and stringify operations. Deeper inputs and child-node cycles raise a controlled `SyntaxError`; ordinary pattern behavior remains covered by the Node regression check.

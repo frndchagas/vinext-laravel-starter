@@ -44,7 +44,9 @@
     "contracts:check": "bun run scripts/contracts-check.mjs"
   },
   "overrides": {
+    "@modelcontextprotocol/sdk": "1.31.0",
     "fast-uri": "^3.1.6",
+    "fflate": "0.7.5",
     "@scalar/json-magic": {
       "undici": "^7.29.1"
     }
