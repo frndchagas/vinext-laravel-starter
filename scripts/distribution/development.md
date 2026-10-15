@@ -59,7 +59,11 @@ The root overrides pin `@modelcontextprotocol/sdk` to 1.31.0 for [GHSA-6qxp-vccf
 
 The web app uses shadcn/ui components with Base UI primitives and Tailwind CSS through PostCSS. Do not mix primitive systems in one interaction surface.
 
-Vinext 1.0.1 enables the experimental React Compiler through Oxc. Bun installs dependencies and runs workspace scripts; the Vite production build runs on Node 24 locally and in the web image builder. Every Vinext update must pass `vinext check`, production build and E2E.
+Vinext 1.2.0 and `@vitejs/plugin-rsc` 0.5.37 are pinned together. The plugin binds encrypted Server Action captures to their action ID; Vinext 1.2.0 rejects older plugin versions. Keep the pair coordinated even when the application has no Server Actions. See the [upstream security advisory](https://github.com/cloudflare/vinext/security/advisories/GHSA-8969-277p-8rrm).
+
+The experimental React Compiler runs through Oxc. Bun installs dependencies and runs workspace scripts; the Vite production build runs on Node 24 locally and in the web image builder. Every Vinext update must pass `vinext check`, production build and E2E.
+
+Pint excludes `apps/web` from directory traversal. Oxfmt owns frontend formatting, and the web build can replace its output while the PHP check runs. Laravel source files remain covered by Pint.
 
 Vitest and Testing Library cover fast component behavior. Playwright covers browser integration and runs axe WCAG A/AA checks on authenticated screens.
 

@@ -203,6 +203,8 @@ try {
     "bun run bootstrap && bun run dev",
   ];
   write("composer.json", `${JSON.stringify(composer, null, 4)}\n`);
+  // Laravel owns PHP formatting; the frontend build mutates its output in parallel.
+  write("pint.json", `${JSON.stringify({ exclude: ["apps/web"] }, null, 4)}\n`);
   run(
     "composer",
     ["update", "--lock", "--no-install", "--no-interaction", "--no-scripts"],

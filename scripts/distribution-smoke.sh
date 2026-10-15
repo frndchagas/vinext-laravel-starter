@@ -225,6 +225,22 @@ fi
     bun run config:check
     bun run contracts:check
     bun run audit
+
+    # Pint must prune the frontend before traversing mutable build output.
+    mkdir -p apps/web/dist/server/_next
+    printf '<?php this is not valid PHP;\n' > apps/web/dist/server/_next/pint-scope-smoke.php
+    vendor/bin/pint --test
+    rm apps/web/dist/server/_next/pint-scope-smoke.php
+
+    # Excluding the frontend must not disable the Laravel formatting gate.
+    printf '<?php class PintScopeSmoke{}\n' > app/PintScopeSmoke.php
+    if vendor/bin/pint --test > pint-scope-smoke.log 2>&1; then
+        echo 'Pint accepted an unformatted Laravel source file.' >&2
+        exit 1
+    fi
+    grep --quiet 'PintScopeSmoke.php' pint-scope-smoke.log
+    rm app/PintScopeSmoke.php pint-scope-smoke.log
+
     bun run check
     bun run test:production
     test "$(php artisan migrate:status --no-ansi | grep -c '\[1\] Ran')" -eq \

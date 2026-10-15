@@ -34,6 +34,8 @@ bun run test:production:browser
 
 The first command exercises HTTP, queues and recovery. The browser variant also proves SSR before hydration, RSC navigation without reload, private Reverb authorization and a Task completion event. Both use a separate Compose project and delete their containers and volumes when they exit.
 
+Vinext 1.2.0 uses a new cache namespace, so an upgrade starts with cold entries. If an application adds Server Actions, do not mix pre-1.2.0 and 1.2.0 instances behind one origin: encrypted captures from the older RSC plugin are incompatible with 0.5.37. Finish restricted staging validation before authorizing a production rollout.
+
 ## Coolify
 
 Create a Docker Compose application from the public repository and select `compose.coolify.yaml`. Assign a domain to the `proxy` service on port `8080`. Keep PostgreSQL and Redis private. The Coolify-specific file excludes the one-time migration container from aggregate health checks and is generated from the production Compose file with `bun run coolify:build`.
@@ -65,6 +67,8 @@ The production proxy rejects unknown Host authorities with `421`, while the opti
 
 ## Container scan policy
 
-The canonical release CI scans every production image with Trivy and blocks fixable high and critical findings. The PostgreSQL image rebuilds upstream `gosu` 1.19 with Go 1.26.8 and verifies privilege dropping during the build. Its OS packages and bundled binaries are scanned without vulnerability exceptions. The production Redis image uses the same pinned upstream Redis 7.4.11 base as development and integration tests, then updates `libcrypto3` and `libssl3` from Alpine security packages. Its Redis binary, data directory and configuration stay unchanged; Trivy scans the resulting image.
+The canonical release CI scans every production image with Trivy and blocks fixable high and critical findings. The Caddy 2.11.6 proxy and PostgreSQL's `gosu` 1.19 binary are compiled with Go 1.26.9. This toolchain includes the standard-library fixes for [CVE-2026-78667](https://pkg.go.dev/vuln/GO-2026-6609) and [CVE-2026-97031](https://pkg.go.dev/vuln/GO-2026-6607). The proxy also pins `golang.org/x/net` to 0.60.0 for the HTTP/2 CPU-exhaustion fix ([CVE-2026-78669](https://pkg.go.dev/vuln/GO-2026-6611)). Updating Alpine packages alone does not replace the Go standard library or modules embedded in these binaries; rebuild and scan the runtime images after changing either.
+
+The PostgreSQL build verifies privilege dropping. Its OS packages and bundled binaries are scanned without vulnerability exceptions. The production Redis image uses the same pinned upstream Redis 7.4.11 base as development and integration tests, then updates `libcrypto3` and `libssl3` from Alpine security packages. Its Redis binary, data directory and configuration stay unchanged; Trivy scans the resulting image.
 
 Coolify recreates services in a regular Docker Compose deployment. This reference does not claim zero downtime. Roll back by selecting the previous source tag and redeploying it; do not roll back the database unless the migration has an explicit reversal plan.
