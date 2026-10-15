@@ -10,6 +10,6 @@
     "test": "php artisan test"
   },
   "devDependencies": {
-    "@laravel/multiplex": "0.4.3"
+    "@laravel/multiplex": "0.4.5"
   }
 }
