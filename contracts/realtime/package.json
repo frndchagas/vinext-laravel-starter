@@ -14,8 +14,8 @@
     "validate": "bun run validate.mjs"
   },
   "devDependencies": {
-    "@asyncapi/parser": "3.6.3",
-    "oxfmt": "0.68.0",
+    "@asyncapi/parser": "3.6.4",
+    "oxfmt": "0.73.0",
     "typescript": "7.0.2"
   }
 }
