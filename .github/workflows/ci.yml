@@ -460,6 +460,7 @@ jobs:
           base: base/contracts/http/openapi/openapi.yaml
           revision: contracts/http/openapi/openapi.yaml
           fail-on: ERR
+          err-ignore: .github/oasdiff-retirements.txt
           review: false
           github-token: ""
 

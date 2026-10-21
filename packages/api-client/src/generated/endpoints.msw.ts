@@ -8,17 +8,14 @@ import { HttpResponse, http } from "msw";
 import type { RequestHandlerOptions } from "msw";
 
 import {
-  getCreateTaskResponseMock,
   getForgotPasswordResponseMock,
   getGetAuthCapabilitiesResponseMock,
   getGetMeResponseMock,
   getGetPasswordConfirmationStatusResponseMock,
   getGetRecoveryCodesResponseMock,
-  getGetTaskResponseMock,
   getGetTwoFactorQrCodeResponseMock,
   getGetTwoFactorSecretKeyResponseMock,
   getListAdminUsersResponseMock,
-  getListTasksResponseMock,
   getLoginResponseMock,
   getResetPasswordResponseMock,
   getUpdateAdminUserRoleResponseMock,
@@ -33,8 +30,6 @@ import type {
   Me,
   PasswordConfirmationStatus,
   StatusMessage,
-  Task,
-  TaskPage,
   TwoFactorQrCode,
 } from "./models";
 
@@ -50,9 +45,6 @@ export {
   getGetRecoveryCodesResponseMock,
   getGetTwoFactorSecretKeyResponseMock,
   getGetMeResponseMock,
-  getCreateTaskResponseMock,
-  getListTasksResponseMock,
-  getGetTaskResponseMock,
 } from "./endpoints.faker";
 
 export const getListAdminUsersMockHandler = (
@@ -560,72 +552,6 @@ export const getGetMeMockHandler = (
   );
 };
 
-export const getCreateTaskMockHandler = (
-  overrideResponse?:
-    | Task
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Task> | Task),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    "*/api/v1/tasks",
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getCreateTaskResponseMock(),
-        { status: 202 },
-      );
-    },
-    options,
-  );
-};
-
-export const getListTasksMockHandler = (
-  overrideResponse?:
-    | TaskPage
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<TaskPage> | TaskPage),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    "*/api/v1/tasks",
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getListTasksResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
-
-export const getGetTaskMockHandler = (
-  overrideResponse?:
-    | Task
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Task> | Task),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    "*/api/v1/tasks/:id",
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getGetTaskResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
-
 export const getGetCsrfCookieMockHandler = (
   overrideResponse?:
     | void
@@ -669,8 +595,5 @@ export const getVinextLaravelStarterAPIMock = () => [
   getRegenerateRecoveryCodesMockHandler(),
   getGetTwoFactorSecretKeyMockHandler(),
   getGetMeMockHandler(),
-  getCreateTaskMockHandler(),
-  getListTasksMockHandler(),
-  getGetTaskMockHandler(),
   getGetCsrfCookieMockHandler(),
 ];

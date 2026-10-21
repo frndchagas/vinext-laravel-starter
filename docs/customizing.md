@@ -33,11 +33,11 @@ Copy the root `.env.example` and change ports there. The development command pro
 
 Production secrets do not belong in either example file. Generate unique Laravel and Reverb keys in the deployment environment.
 
-## Replace the reference flow
+## Add product features
 
-`Task` is a teaching resource, not a product abstraction. Keep it while learning the vertical path, then either rename it into a real domain concept or remove its contract, migration, job, event, routes, screen and tests together.
+The starter includes identity, Account settings and User administration. Define product resources in the application domain; there is no bundled Tasks CRUD or background-processing example.
 
-Do not keep `Task` as a generic bucket for unrelated background work. New public HTTP types begin in TypeSpec, and new observable realtime messages begin in AsyncAPI.
+New public HTTP types begin in TypeSpec, and new observable realtime messages begin in AsyncAPI. Persist application state in Laravel and use the configured queue and Reverb infrastructure when the feature needs it.
 
 ## Final check
 

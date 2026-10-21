@@ -6,16 +6,12 @@ import { validateContractResponse } from "./validate-response";
 describe("validateContractResponse", () => {
   it("accepts a documented response through a parameterized route", () => {
     expect(() =>
-      validateContractResponse("GET", "/api/v1/tasks/task-id?ignored=true", 200, {
-        id: "task-id",
-        input: "contract",
-        output: null,
-        state: "queued",
-        version: 1,
-        error_code: null,
-        correlation_id: "correlation-id",
-        started_at: null,
-        finished_at: null,
+      validateContractResponse("PATCH", "/api/v1/admin/users/user-id/role?ignored=true", 200, {
+        id: "user-id",
+        name: "User",
+        email: "user@example.com",
+        email_verified: true,
+        roles: ["member"],
         created_at: "2026-08-21T12:00:00Z",
       }),
     ).not.toThrow();
@@ -52,19 +48,19 @@ describe("validateContractResponse", () => {
     ).toThrow(/getMe returned an invalid 200 response.*unexpected_secret/);
 
     expect(() =>
-      validateContractResponse("GET", "/api/v1/tasks/task-id", 200, {
-        id: "task-id",
-        input: "contract",
-        output: { word_count: 1, reversed: "tcartnoc", unexpected: true },
-        state: "completed",
-        version: 3,
-        error_code: null,
-        correlation_id: "correlation-id",
-        started_at: "2026-08-21T12:00:00Z",
-        finished_at: "2026-08-21T12:01:00Z",
-        created_at: "2026-08-21T11:59:00Z",
+      validateContractResponse("GET", "/api/v1/admin/users", 200, {
+        data: [{
+          id: "user-id",
+          name: "User",
+          email: "user@example.com",
+          email_verified: true,
+          roles: ["member"],
+          created_at: "2026-08-21T11:59:00Z",
+          unexpected: true,
+        }],
+        meta: { next_cursor: null, prev_cursor: null },
       }),
-    ).toThrow(/getTask returned an invalid 200 response.*output.unexpected/);
+    ).toThrow(/listAdminUsers returned an invalid 200 response.*data.0.unexpected/);
 
     expect(() =>
       validateContractResponse("GET", "/api/v1/me", 401, {

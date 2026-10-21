@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\Task;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,21 +30,8 @@ class DeleteAccountTest extends TestCase
 
         $user = User::factory()->create();
         $user->assignRole('member');
-        $task = Task::factory()->for($user)->create();
         $token = $user->createToken('delete-test');
 
-        DB::table('idempotency_keys')->insert([
-            'id' => fake()->uuid(),
-            'user_id' => $user->id,
-            'operation' => 'tasks.store',
-            'key' => 'delete-account-test',
-            'payload_hash' => hash('sha256', 'input'),
-            'resource_id' => $task->id,
-            'response_status' => 202,
-            'response_body' => '{}',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
         DB::table('password_reset_tokens')->insert([
             'email' => $user->email,
             'token' => 'hashed-token',
@@ -63,8 +49,6 @@ class DeleteAccountTest extends TestCase
 
         $this->getJson('/api/v1/me')->assertUnauthorized();
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
-        $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
-        $this->assertDatabaseMissing('idempotency_keys', ['user_id' => $user->id]);
         $this->assertDatabaseMissing('personal_access_tokens', ['id' => $token->accessToken->id]);
         $this->assertDatabaseMissing('password_reset_tokens', ['email' => $user->email]);
         $this->assertDatabaseMissing('model_has_roles', ['model_id' => $user->id]);

@@ -6,7 +6,7 @@
  */
 import { faker } from "@faker-js/faker";
 
-import { AdminUserRole, TaskState } from "./models";
+import { AdminUserRole } from "./models";
 import type {
   AdminUser,
   AdminUserPage,
@@ -16,8 +16,6 @@ import type {
   Me,
   PasswordConfirmationStatus,
   StatusMessage,
-  Task,
-  TaskPage,
   TwoFactorQrCode,
 } from "./models";
 
@@ -114,110 +112,5 @@ export const getGetMeResponseMock = (overrideResponse: Partial<Extract<Me, objec
   permissions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
     () => faker.string.alpha({ length: { min: 10, max: 20 } }),
   ),
-  ...overrideResponse,
-});
-
-export const getCreateTaskResponseMock = (
-  overrideResponse: Partial<Extract<Task, object>> = {},
-): Task => ({
-  id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  input: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  output: faker.helpers.arrayElement([
-    {
-      word_count: faker.number.int(),
-      reversed: faker.string.alpha({ length: { min: 10, max: 20 } }),
-    },
-    null,
-  ]),
-  state: faker.helpers.arrayElement(Object.values(TaskState)),
-  version: faker.number.int(),
-  error_code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    null,
-  ]),
-  correlation_id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  started_at: faker.helpers.arrayElement([
-    faker.date.past().toISOString().slice(0, 19) + "Z",
-    null,
-  ]),
-  finished_at: faker.helpers.arrayElement([
-    faker.date.past().toISOString().slice(0, 19) + "Z",
-    null,
-  ]),
-  created_at: faker.date.past().toISOString().slice(0, 19) + "Z",
-  ...overrideResponse,
-});
-
-export const getListTasksResponseMock = (
-  overrideResponse: Partial<Extract<TaskPage, object>> = {},
-): TaskPage => ({
-  data: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
-    id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-    input: faker.string.alpha({ length: { min: 10, max: 20 } }),
-    output: faker.helpers.arrayElement([
-      {
-        word_count: faker.number.int(),
-        reversed: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      },
-      null,
-    ]),
-    state: faker.helpers.arrayElement(Object.values(TaskState)),
-    version: faker.number.int(),
-    error_code: faker.helpers.arrayElement([
-      faker.string.alpha({ length: { min: 10, max: 20 } }),
-      null,
-    ]),
-    correlation_id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-    started_at: faker.helpers.arrayElement([
-      faker.date.past().toISOString().slice(0, 19) + "Z",
-      null,
-    ]),
-    finished_at: faker.helpers.arrayElement([
-      faker.date.past().toISOString().slice(0, 19) + "Z",
-      null,
-    ]),
-    created_at: faker.date.past().toISOString().slice(0, 19) + "Z",
-  })),
-  meta: {
-    next_cursor: faker.helpers.arrayElement([
-      faker.string.alpha({ length: { min: 10, max: 20 } }),
-      null,
-    ]),
-    prev_cursor: faker.helpers.arrayElement([
-      faker.string.alpha({ length: { min: 10, max: 20 } }),
-      null,
-    ]),
-  },
-  ...overrideResponse,
-});
-
-export const getGetTaskResponseMock = (
-  overrideResponse: Partial<Extract<Task, object>> = {},
-): Task => ({
-  id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  input: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  output: faker.helpers.arrayElement([
-    {
-      word_count: faker.number.int(),
-      reversed: faker.string.alpha({ length: { min: 10, max: 20 } }),
-    },
-    null,
-  ]),
-  state: faker.helpers.arrayElement(Object.values(TaskState)),
-  version: faker.number.int(),
-  error_code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    null,
-  ]),
-  correlation_id: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  started_at: faker.helpers.arrayElement([
-    faker.date.past().toISOString().slice(0, 19) + "Z",
-    null,
-  ]),
-  finished_at: faker.helpers.arrayElement([
-    faker.date.past().toISOString().slice(0, 19) + "Z",
-    null,
-  ]),
-  created_at: faker.date.past().toISOString().slice(0, 19) + "Z",
   ...overrideResponse,
 });

@@ -297,10 +297,12 @@ export function generateArtifacts(parsed) {
   }
   artifacts.set(
     "index.ts",
-    [...schemas.keys()]
-      .sort()
-      .map((name) => `export type { ${name} } from "./${name}";`)
-      .join("\n") + "\n",
+    schemas.size === 0
+      ? "export {};\n"
+      : [...schemas.keys()]
+          .sort()
+          .map((name) => `export type { ${name} } from "./${name}";`)
+          .join("\n") + "\n",
   );
   artifacts.set(
     "realtime-contracts.json",

@@ -40,10 +40,6 @@ _Avoid_: using `Account` for a collective tenant.
 
 _UI label_: `Delete account`
 
-## Reference asynchronous flow
+## Request tracing
 
-**Task**: permanent pedagogical reference for the starter's asynchronous golden path. Owned by a single `User`, it moves through the states `queued`, `processing`, `completed`, or `failed`, and its persisted state is always the source of truth over delivery attempts and realtime notifications.
-
-**Idempotency Key**: opaque string a client sends with a mutating request so a retry can never create a second logical operation. Scoped to a `User` and an operation name.
-
-**Correlation ID**: identifier that relates one HTTP request to its Task processing and realtime notifications.
+**Correlation ID**: identifier attached to an HTTP request and response for tracing application work.

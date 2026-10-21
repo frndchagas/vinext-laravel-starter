@@ -1,1 +1,1 @@
-Vinext Laravel Starter Tasks screen showing a completed production-release task.
+Vinext Laravel Starter home page showing the Laravel, Vinext and Reverb architecture.

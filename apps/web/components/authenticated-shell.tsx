@@ -14,7 +14,6 @@ const AuthenticatedUserContext = createContext<Me | undefined>(undefined);
 
 const primaryNavigation = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/tasks", label: "Tasks" },
   { href: "/settings", label: "Settings" },
 ] as const;
 

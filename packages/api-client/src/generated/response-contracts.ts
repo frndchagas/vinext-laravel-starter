@@ -5,17 +5,14 @@
 import * as zod from "zod";
 
 import {
-  CreateTaskResponse,
   ForgotPasswordResponse,
   GetAuthCapabilitiesResponse,
   GetMeResponse,
   GetPasswordConfirmationStatusResponse,
   GetRecoveryCodesResponse,
-  GetTaskResponse,
   GetTwoFactorQrCodeResponse,
   GetTwoFactorSecretKeyResponse,
   ListAdminUsersResponse,
-  ListTasksResponse,
   LoginResponse,
   ResetPasswordResponse,
   UpdateAdminUserRoleResponse,
@@ -414,80 +411,6 @@ const GetMeResponse401 = zod
     detail: zod.string().optional(),
   })
   .strict();
-const CreateTaskResponse401 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const CreateTaskResponse403 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const CreateTaskResponse409 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-    code: zod.string(),
-  })
-  .strict();
-const CreateTaskResponse422 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-    errors: zod.object({}).catchall(zod.array(zod.string())),
-  })
-  .strict();
-const ListTasksResponse401 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const ListTasksResponse403 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const GetTaskResponse401 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const GetTaskResponse403 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
-const GetTaskResponse404 = zod
-  .object({
-    type: zod.string(),
-    title: zod.string(),
-    status: zod.number().int().min(-2147483648).max(2147483647),
-    detail: zod.string().optional(),
-  })
-  .strict();
 
 export const responseContracts = [
   {
@@ -730,39 +653,6 @@ export const responseContracts = [
     responses: {
       200: GetMeResponse,
       401: GetMeResponse401,
-    },
-  },
-  {
-    operationId: "createTask",
-    method: "POST",
-    path: /^\/api\/v1\/tasks$/,
-    responses: {
-      202: CreateTaskResponse,
-      401: CreateTaskResponse401,
-      403: CreateTaskResponse403,
-      409: CreateTaskResponse409,
-      422: CreateTaskResponse422,
-    },
-  },
-  {
-    operationId: "listTasks",
-    method: "GET",
-    path: /^\/api\/v1\/tasks$/,
-    responses: {
-      200: ListTasksResponse,
-      401: ListTasksResponse401,
-      403: ListTasksResponse403,
-    },
-  },
-  {
-    operationId: "getTask",
-    method: "GET",
-    path: /^\/api\/v1\/tasks\/[^/]+$/,
-    responses: {
-      200: GetTaskResponse,
-      401: GetTaskResponse401,
-      403: GetTaskResponse403,
-      404: GetTaskResponse404,
     },
   },
   {

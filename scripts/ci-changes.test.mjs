@@ -46,7 +46,7 @@ describe("classifyChanges", () => {
   });
 
   test("selects application gates without unrelated packaging smokes", () => {
-    expect(classifyChanges(["apps/api/app/Jobs/ProcessTask.php"])).toEqual({
+    expect(classifyChanges(["apps/api/app/Jobs/SendReport.php"])).toEqual({
       integration: true,
       e2e: true,
       template: false,

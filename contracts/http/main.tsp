@@ -403,47 +403,6 @@ namespace Infrastructure {
   op getCsrfCookie(): NoContentResponse;
 }
 
-union TaskState {
-  "queued",
-  "processing",
-  "completed",
-  "failed",
-}
-
-model TaskOutput {
-  word_count: int32;
-  reversed: string;
-}
-
-@doc("Reference asynchronous resource. The persisted state is the source of truth.")
-model Task {
-  @doc("Opaque identifier. Clients must not infer meaning from its value.")
-  id: string;
-
-  input: string;
-  output: TaskOutput | null;
-  state: TaskState;
-  version: int32;
-  error_code: string | null;
-  correlation_id: string;
-  started_at: utcDateTime | null;
-  finished_at: utcDateTime | null;
-  created_at: utcDateTime;
-}
-
-model CreateTaskRequest extends Record<unknown> {
-  @maxLength(10000)
-  input: string;
-}
-
-model TaskPage {
-  data: Task[];
-  meta: {
-    next_cursor: string | null;
-    prev_cursor: string | null;
-  };
-}
-
 @error
 model ConflictResponse {
   @statusCode statusCode: 409;
@@ -452,36 +411,4 @@ model ConflictResponse {
     ...Problem;
     code: string;
   };
-}
-
-@tag("Tasks")
-@route("/api/v1/tasks")
-namespace Tasks {
-  @operationId("createTask")
-  @doc("Create a Task and queue its processing. Requires a verified email and an Idempotency-Key header; repeating the key with the same payload replays the first response, and a different payload returns 409 with code idempotency_key_reused.")
-  @post
-  op createTask(
-    @header("Idempotency-Key") idempotencyKey: string,
-    @body body: CreateTaskRequest,
-  ): {
-    @statusCode statusCode: 202;
-    @header("Location") location: string;
-    @body body: Task;
-  } | ConflictResponse | ValidationErrorResponse | UnauthorizedResponse | ForbiddenResponse;
-
-  @operationId("listTasks")
-  @doc("Cursor-paginated list of the authenticated user's Tasks, newest first.")
-  @get
-  op listTasks(@query cursor?: string, @query per_page?: int32): {
-    @statusCode statusCode: 200;
-    @body body: TaskPage;
-  } | UnauthorizedResponse | ForbiddenResponse;
-
-  @operationId("getTask")
-  @route("/{id}")
-  @get
-  op getTask(@path id: string): {
-    @statusCode statusCode: 200;
-    @body body: Task;
-  } | UnauthorizedResponse | ForbiddenResponse | NotFoundResponse;
 }

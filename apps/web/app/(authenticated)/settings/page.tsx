@@ -233,14 +233,13 @@ export default function SettingsPage() {
     <>
       <header className="border-b border-border pb-6">
         <div>
-          <p className="text-sm text-muted-foreground">Account</p>
-          <h1 className="mt-1 font-[family-name:var(--font-app-display)] text-4xl text-balance">
+          <h1 className="font-[family-name:var(--font-app-display)] text-4xl text-balance">
             Settings
           </h1>
         </div>
       </header>
 
-      <section aria-labelledby="profile-heading" className="rounded-xl border border-border p-6">
+      <section aria-labelledby="profile-heading" className="border-b border-border pb-8">
         <h2 id="profile-heading" className="text-xl font-semibold text-balance">
           Profile
         </h2>
@@ -248,7 +247,7 @@ export default function SettingsPage() {
           Changing the email address requires your current password and verification again.
         </p>
         <form
-          className="mt-5 flex flex-col gap-4"
+          className="mt-5 flex max-w-xl flex-col gap-4"
           key={`${me.id}:${me.name}:${me.email}`}
           onSubmit={updateProfile}
         >
@@ -290,7 +289,7 @@ export default function SettingsPage() {
         </form>
       </section>
 
-      <section aria-labelledby="appearance-heading" className="rounded-xl border border-border p-6">
+      <section aria-labelledby="appearance-heading" className="border-b border-border pb-8">
         <h2 id="appearance-heading" className="text-xl font-semibold text-balance">
           Appearance
         </h2>
@@ -302,46 +301,51 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      <section aria-labelledby="password-heading" className="rounded-xl border border-border p-6">
+      <section aria-labelledby="password-heading" className="border-b border-border pb-8">
         <h2 id="password-heading" className="text-xl font-semibold text-balance">
           Password
         </h2>
-        <form className="mt-5 flex flex-col gap-4" onSubmit={updatePassword}>
-          <Field
-            autoComplete="current-password"
-            errors={passwordErrors["current_password"]}
-            label="Current password"
-            name="current_password"
-            required
-            type="password"
-          />
-          <Field
-            autoComplete="new-password"
-            errors={passwordErrors["password"]}
-            label="New password"
-            name="password"
-            required
-            type="password"
-          />
-          <Field
-            autoComplete="new-password"
-            errors={passwordErrors["password_confirmation"]}
-            label="Confirm new password"
-            name="password_confirmation"
-            required
-            type="password"
-          />
-          <Button
-            className="self-start"
-            disabled={!hydrated || passwordMutation.isPending}
-            type="submit"
-          >
-            {passwordMutation.isPending ? "Updating…" : "Update password"}
-          </Button>
-        </form>
+        <details className="mt-3">
+          <summary className="w-fit cursor-pointer py-2 text-sm font-medium underline-offset-4 hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none">
+            Change password
+          </summary>
+          <form className="mt-4 flex max-w-xl flex-col gap-4" onSubmit={updatePassword}>
+            <Field
+              autoComplete="current-password"
+              errors={passwordErrors["current_password"]}
+              label="Current password"
+              name="current_password"
+              required
+              type="password"
+            />
+            <Field
+              autoComplete="new-password"
+              errors={passwordErrors["password"]}
+              label="New password"
+              name="password"
+              required
+              type="password"
+            />
+            <Field
+              autoComplete="new-password"
+              errors={passwordErrors["password_confirmation"]}
+              label="Confirm new password"
+              name="password_confirmation"
+              required
+              type="password"
+            />
+            <Button
+              className="self-start"
+              disabled={!hydrated || passwordMutation.isPending}
+              type="submit"
+            >
+              {passwordMutation.isPending ? "Updating…" : "Update password"}
+            </Button>
+          </form>
+        </details>
       </section>
 
-      <section aria-labelledby="two-factor-heading" className="rounded-xl border border-border p-6">
+      <section aria-labelledby="two-factor-heading" className="border-b border-border pb-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 id="two-factor-heading" className="text-xl font-semibold text-balance">
@@ -483,10 +487,7 @@ export default function SettingsPage() {
         ) : null}
       </section>
 
-      <section
-        aria-labelledby="delete-account-heading"
-        className="rounded-xl border border-destructive/30 p-6"
-      >
+      <section aria-labelledby="delete-account-heading" className="pb-2">
         <h2
           id="delete-account-heading"
           className="text-xl font-semibold text-balance text-destructive"
@@ -494,13 +495,13 @@ export default function SettingsPage() {
           Delete account
         </h2>
         <p className="mt-1 max-w-xl text-sm text-pretty text-muted-foreground">
-          Permanently delete your identity, Tasks and account data. This action cannot be undone.
+          Permanently delete your identity and account data. This action cannot be undone.
         </p>
         <div className="mt-5">
           <PasswordActionDialog
             destructive
             actionLabel="Delete account"
-            description="Your identity, Tasks and account data will be permanently deleted. This cannot be undone."
+            description="Your identity and account data will be permanently deleted. This cannot be undone."
             onConfirm={deleteAccount}
             passwordId="delete-account-password"
             title="Delete your account?"
