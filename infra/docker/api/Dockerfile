@@ -25,7 +25,7 @@ RUN composer dump-autoload \
     --no-dev \
     --no-interaction
 
-FROM php:8.3.33-fpm-alpine3.24 AS runtime
+FROM php:8.3.36-fpm-alpine3.24 AS runtime
 
 RUN apk upgrade --no-cache \
     && apk add --no-cache libpq \

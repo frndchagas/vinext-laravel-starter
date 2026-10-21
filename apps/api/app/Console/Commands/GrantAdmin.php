@@ -14,7 +14,13 @@ class GrantAdmin extends Command
 
     public function handle(): int
     {
-        $email = (string) $this->argument('email');
+        $email = $this->argument('email');
+
+        if (! is_string($email)) {
+            $this->error('The email argument must be a string.');
+
+            return self::INVALID;
+        }
 
         $user = User::query()->where('email', $email)->first();
 

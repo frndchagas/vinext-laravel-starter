@@ -1,4 +1,4 @@
-FROM golang:1.26.9-alpine3.24 AS build
+FROM golang:1.26.10-alpine3.24 AS build
 
 WORKDIR /src
 
@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 go build \
     -o /usr/bin/caddy \
     .
 
-FROM alpine:3.24.1
+FROM alpine:3.24.2
 
 COPY infra/docker/proxy/Caddyfile /etc/caddy/Caddyfile
 

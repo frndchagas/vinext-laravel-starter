@@ -1,4 +1,4 @@
-FROM golang:1.26.9-alpine3.24 AS gosu
+FROM golang:1.26.10-alpine3.24 AS gosu
 
 # Keep upstream privilege dropping while using a supported Go standard library.
 RUN GOBIN=/out CGO_ENABLED=0 go install -trimpath -ldflags="-s -w" github.com/tianon/gosu@1.19

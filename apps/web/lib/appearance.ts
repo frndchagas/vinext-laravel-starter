@@ -59,20 +59,20 @@ function subscribe(listener: () => void): () => void {
   return () => listeners.delete(listener);
 }
 
+function updateAppearance(nextAppearance: Appearance): void {
+  currentAppearance = nextAppearance;
+  window.localStorage.setItem("appearance", nextAppearance);
+  setAppearanceCookie(nextAppearance);
+  applyAppearance(nextAppearance);
+  listeners.forEach((listener) => listener());
+}
+
 export function useAppearance() {
   const appearance = useSyncExternalStore(
     subscribe,
     () => currentAppearance,
     () => "system" as const,
   );
-
-  function updateAppearance(nextAppearance: Appearance): void {
-    currentAppearance = nextAppearance;
-    window.localStorage.setItem("appearance", nextAppearance);
-    setAppearanceCookie(nextAppearance);
-    applyAppearance(nextAppearance);
-    listeners.forEach((listener) => listener());
-  }
 
   return {
     appearance,
