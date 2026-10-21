@@ -17,6 +17,8 @@ v1.0.5 established this release baseline:
 
 The release does not include passkeys, Organizations, billing, social login, SSO, an AI provider, zero-downtime deployment, public container images or cross-browser guarantees.
 
+The current core removes the Tasks tutorial and example vertical; [ADR 0017](adr/0017-remove-task-example.md) records the narrower scope and upgrade path.
+
 ## Delivery
 
 Changes land through small, focused pull requests. Fast checks run on every pull request, while affected paths select integration and the expensive smokes. The complete suite runs on `main`, nightly and through the manual pre-release trigger. A stable release is allowed only after those checks pass on its source commit. The repository rename and legacy v1 reset are complete.

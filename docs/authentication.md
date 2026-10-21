@@ -18,13 +18,13 @@ The application consumes these versioned routes:
 
 ## Verification and access
 
-Registration is controlled by `FEATURE_REGISTRATION` and defaults to disabled in the production reference. The public capabilities response keeps the login and registration screens aligned with Laravel. A newly registered User receives the `member` role and must verify their email before accessing Tasks or private channels.
+Registration is controlled by `FEATURE_REGISTRATION` and defaults to disabled in the production reference. The public capabilities response keeps the login and registration screens aligned with Laravel. A newly registered User receives the `member` role and must verify their email before accessing User administration or private channels.
 
 Login and TOTP challenges allow five attempts per minute. Registration and password-reset requests allow five attempts per normalized email and IP, with an additional limit of twenty attempts per IP. Limited requests return a documented `429` Problem Details response with `Retry-After`.
 
 The forgot-password endpoint returns the same `200` response for existing and unknown email addresses. Malformed addresses still return validation errors. Laravel timeboxes valid requests so the public response does not reveal whether a User exists.
 
-The `admin` and `member` roles are persisted by an idempotent seeder and returned by `/api/v1/me`. The `users.view` and `users.manage` permissions protect the versioned User administration API. Task access remains enforced by ownership Policy.
+The `admin` and `member` roles are persisted by an idempotent seeder and returned by `/api/v1/me`. The `users.view` and `users.manage` permissions protect the versioned User administration API.
 
 The first admin is promoted explicitly:
 
@@ -43,7 +43,7 @@ Echo authorizes every private subscription through the same Laravel session. Log
 
 Changing the account password logs out the Laravel guard and invalidates the current Sanctum session before the endpoint returns. The interface clears its cached identity and realtime connection, then returns the User to login with a confirmation message.
 
-Account deletion requires the current password. It permanently removes the User, active sessions, tokens, roles, Tasks, idempotency records and pending password-reset record. The interface returns to login after completion.
+Account deletion requires the current password. It permanently removes the User, active sessions, tokens, roles and pending password-reset record. The interface returns to login after completion.
 
 ## Appearance
 

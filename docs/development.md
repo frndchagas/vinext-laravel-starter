@@ -34,7 +34,7 @@ The client validates documented responses with generated Zod schemas in developm
 
 TypeSpec remains pinned to 1.16.0. Version 1.17 changes dictionary emission from `unevaluatedProperties` to `additionalProperties`, which the current oasdiff gate reports as a breaking response change. Revisit this pin when the compatibility check can verify the equivalent dictionary constraints.
 
-Realtime messages start in `contracts/realtime/asyncapi.yaml`. The official parser validates and dereferences the document before the local generator writes every named TypeScript schema and a committed manifest. PHP tests require matching event fixtures, authorized private channels and payloads for every operation message.
+Realtime messages start in `contracts/realtime/asyncapi.yaml`. The official parser validates and dereferences the document before the local generator writes every named TypeScript schema and a committed manifest. The current contract contains the private User connectivity channel and no application messages. Add PHP conformance tests for channel authorization and payloads with new messages.
 
 ## Quality gates
 
@@ -42,10 +42,10 @@ GitHub Actions always runs the fast verification, dependency and secret checks o
 
 - verification on PHP 8.5 with frozen installs, workflow and shell lint, dependency audit, contracts and the standard gate;
 - integration tests on PHP 8.3 and 8.5 against PostgreSQL and Redis;
-- serial Chromium E2E for auth, mail, queues and reconnection;
+- serial Chromium E2E for auth, mail, Account settings, User administration and private channels;
 - a fresh source snapshot with isolated ports, migrations, contracts, build and proxy smoke tests;
 - the flattened consumer Template installed through the real Laravel Installer, followed by its consumer and production gates;
-- production image builds followed by migrations, readiness, canonical-host checks, a Chromium session over standalone Node/Caddy/Reverb, queued Task processing and a PostgreSQL restore round-trip;
+- production image builds followed by migrations, readiness, canonical-host checks, a Chromium session over standalone Node/Caddy/Reverb and a PostgreSQL restore round-trip;
 - Trivy scans fixable high and critical vulnerabilities in the application, proxy, Redis and PostgreSQL runtime images when Docker inputs change and on every complete run;
 - Gitleaks, dependency review and OpenAPI breaking-change detection;
 - GitHub CodeQL default setup outside the repository workflow.

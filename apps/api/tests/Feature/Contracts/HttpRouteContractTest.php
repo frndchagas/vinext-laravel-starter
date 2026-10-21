@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Contracts;
 
-use App\Enums\TaskState;
 use Illuminate\Routing\Route;
 use JsonException;
 use Tests\TestCase;
@@ -40,23 +39,6 @@ class HttpRouteContractTest extends TestCase
         sort($implemented);
 
         $this->assertSame($contracted, $implemented);
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function test_laravel_task_states_match_the_generated_http_contract(): void
-    {
-        $contractPath = realpath(base_path('contracts/http/generated/operations.json'))
-            ?: realpath(base_path('../../contracts/http/generated/operations.json'));
-
-        $this->assertNotFalse($contractPath, 'Generate HTTP contract artifacts before running PHP tests.');
-
-        /** @var array{enums: array<string, list<string>>} $manifest */
-        $manifest = json_decode((string) file_get_contents($contractPath), true, flags: JSON_THROW_ON_ERROR);
-        $implemented = array_map(fn (TaskState $state): string => $state->value, TaskState::cases());
-
-        $this->assertEqualsCanonicalizing($manifest['enums']['TaskState'], $implemented);
     }
 
     private function belongsToContract(string $uri): bool

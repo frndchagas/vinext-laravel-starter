@@ -49,6 +49,7 @@ test("register, verify email, use the private channel, sign out and sign in agai
   await expect(page).toHaveURL(/\/dashboard\?verified=1$/, { timeout: 20_000 });
   await expect(page.getByText("Email verified")).toBeVisible();
   await expect(page.getByText("member")).toBeVisible();
+  await page.getByText("Session details", { exact: true }).click();
   await expect(page.getByText(/Subscribed to users\./)).toBeVisible({ timeout: 15_000 });
   await expectNoAccessibilityViolations(page);
 
@@ -60,6 +61,7 @@ test("register, verify email, use the private channel, sign out and sign in agai
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await expect(page).toHaveURL(/\/dashboard$/, { timeout: 20_000 });
+  await page.getByText("Session details", { exact: true }).click();
   await expect(page.getByText(/Subscribed to users\./)).toBeVisible({ timeout: 15_000 });
 });
 
@@ -158,6 +160,7 @@ test("update account settings and complete the two-factor recovery flow", async 
   const passwordSection = page.locator("section").filter({
     has: page.getByRole("heading", { name: "Password" }),
   });
+  await passwordSection.getByText("Change password", { exact: true }).click();
   await passwordSection.getByLabel("Current password").fill(originalPassword);
   await passwordSection.getByLabel("New password", { exact: true }).fill(newPassword);
   await passwordSection.getByLabel("Confirm new password").fill(newPassword);

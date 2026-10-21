@@ -13,11 +13,6 @@ DevCommands::artisan(
 // into `artisan dev` itself.
 DevCommands::except('vite');
 
-Schedule::command('tasks:reconcile')
-    ->everyMinute()
-    ->onOneServer()
-    ->withoutOverlapping(5);
-
 Schedule::command('horizon:snapshot')
     ->everyFiveMinutes()
     ->onOneServer()

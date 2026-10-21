@@ -50,7 +50,7 @@ export async function registerVerifiedUser(
   password: string,
 ): Promise<void> {
   await page.goto("/register");
-  await page.getByLabel("Name").fill("E2E Task User");
+  await page.getByLabel("Name").fill("E2E User");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByLabel("Confirm password").fill(password);

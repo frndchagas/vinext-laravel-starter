@@ -9,10 +9,7 @@ function Label({ className, htmlFor, ...props }: LabelProps) {
     <label
       data-slot="label"
       htmlFor={htmlFor}
-      className={cn(
-        "text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase select-none",
-        className,
-      )}
+      className={cn("text-sm font-medium text-foreground select-none", className)}
       {...props}
     />
   );

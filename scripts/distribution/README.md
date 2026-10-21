@@ -1,6 +1,6 @@
 # Vinext Laravel Starter
 
-A ready-to-own Laravel and Vinext application with same-origin sessions, profile and password settings, optional TOTP, generated HTTP contracts, Redis queues, Reverb and an idempotent Task example.
+A ready-to-own Laravel and Vinext application with same-origin sessions, profile and password settings, optional TOTP, generated HTTP contracts, Redis queues and Reverb.
 
 This repository is an application snapshot. There is no starter updater, so you can change every part of it as your product evolves.
 
@@ -14,7 +14,7 @@ composer run dev
 
 The command installs locked dependencies, starts the local services, preserves an existing Laravel application key, runs migrations and then starts Vinext, Laravel, Horizon and Reverb.
 
-Open the application at `http://localhost:13000` and Mailpit at `http://localhost:18025`. Register a User, verify the email through Mailpit and open Tasks to exercise the queued realtime flow.
+Open the application at `http://localhost:13000` and Mailpit at `http://localhost:18025`. Register a User, verify the email through Mailpit and open the dashboard to verify private realtime connectivity.
 
 ## Main commands
 

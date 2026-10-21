@@ -36,11 +36,6 @@ export REVERB_APP_KEY=smoke-key
 export REVERB_APP_SECRET=smoke-secret
 export REVERB_ALLOWED_ORIGINS=127.0.0.1
 export SESSION_SECURE_COOKIE=false
-if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
-    export TASK_SIMULATED_DELAY_MS=5000
-else
-    export TASK_SIMULATED_DELAY_MS=0
-fi
 export COMPOSE_PROJECT_NAME="$project_name"
 export COMPOSE_FILE="compose.production.yaml:compose.production.local.yaml"
 
@@ -247,7 +242,6 @@ php -r '
 schedule=$(
     "${compose[@]}" exec -T api-php php artisan schedule:list --no-ansi
 )
-grep --quiet 'tasks:reconcile' <<<"$schedule"
 grep --quiet 'horizon:snapshot' <<<"$schedule"
 grep --quiet 'queue:prune-failed --hours=168' <<<"$schedule"
 
@@ -331,60 +325,26 @@ if [[ "$register_status" != 201 ]]; then
     exit 1
 fi
 
-xsrf_token=$(awk '$6 == "XSRF-TOKEN" { print $7 }' "$cookie_jar" | tail -n 1)
-decoded_xsrf_token=$(php -r "echo urldecode(\$argv[1]);" "$xsrf_token")
-
 "${compose[@]}" exec -T postgres \
     psql --username starter --dbname starter \
     --command "update users set email_verified_at = now() where email = 'smoke@example.invalid';" \
     >/dev/null
 
-task_response=$(
+me_response=$(
     curl --fail --silent --show-error \
         --cookie "$cookie_jar" \
         --header 'Accept: application/json' \
-        --header 'Content-Type: application/json' \
-        --header 'Idempotency-Key: production-smoke-task' \
         --header "Origin: $APP_URL" \
         --header "Referer: $APP_URL/" \
-        --header "X-XSRF-TOKEN: $decoded_xsrf_token" \
-        --request POST \
-        --data '{"input":"production smoke"}' \
-        "$APP_URL/api/v1/tasks"
+        "$APP_URL/api/v1/me"
 )
-
-task_id=$(php -r "\$data=json_decode(stream_get_contents(STDIN), true, flags: JSON_THROW_ON_ERROR); echo \$data['id'];" <<<"$task_response")
-
-if [[ ! "$task_id" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
-    echo "Task API returned an invalid identifier: $task_id" >&2
-    exit 1
-fi
-
-task_completed=false
-
-for _ in {1..30}; do
-    task_response=$(
-        curl --fail --silent --show-error \
-            --cookie "$cookie_jar" \
-            --header 'Accept: application/json' \
-            --header "Origin: $APP_URL" \
-            --header "Referer: $APP_URL/" \
-            "$APP_URL/api/v1/tasks/$task_id"
-    )
-    task_state=$(php -r "\$data=json_decode(stream_get_contents(STDIN), true, flags: JSON_THROW_ON_ERROR); echo \$data['state'];" <<<"$task_response")
-
-    if [[ "$task_state" == completed ]]; then
-        task_completed=true
-        break
-    fi
-
-    sleep 1
-done
-
-if [[ "$task_completed" != true ]]; then
-    echo "Task $task_id did not complete through Horizon." >&2
-    exit 1
-fi
+php -r '
+    $data = json_decode(stream_get_contents(STDIN), true, flags: JSON_THROW_ON_ERROR);
+    $valid = ($data["email"] ?? null) === "smoke@example.invalid"
+        && ($data["email_verified"] ?? null) === true
+        && in_array("member", $data["roles"] ?? [], true);
+    exit($valid ? 0 : 1);
+' <<<"$me_response"
 
 if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
     E2E_BASE_URL="$APP_URL" \
@@ -393,69 +353,10 @@ if [[ "${PRODUCTION_BROWSER_SMOKE:-false}" == true ]]; then
         bun run --filter web test:e2e:production
 fi
 
-reconciled_task_id=$(
-    "${compose[@]}" exec -T postgres \
-        psql --username starter --dbname starter --quiet --tuples-only --no-align \
-        --command "
-            insert into tasks (
-                id,
-                user_id,
-                input,
-                state,
-                version,
-                correlation_id,
-                created_at,
-                updated_at
-            )
-            select
-                gen_random_uuid(),
-                id,
-                'scheduler recovery',
-                'queued',
-                1,
-                gen_random_uuid(),
-                now() - interval '10 minutes',
-                now() - interval '10 minutes'
-            from users
-            where email = 'smoke@example.invalid'
-            returning id;
-        " | sed -n '1p'
-)
-
-if [[ ! "$reconciled_task_id" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
-    echo "Could not create a queued Task for Scheduler recovery: $reconciled_task_id" >&2
-    exit 1
-fi
-
-reconciled_task_completed=false
-reconciled_task_version=""
-
-for _ in {1..90}; do
-    reconciled_task_result=$(
-        "${compose[@]}" exec -T postgres \
-            psql --username starter --dbname starter --tuples-only --no-align \
-            --command "select state || ' ' || version from tasks where id = '$reconciled_task_id';"
-    )
-    read -r reconciled_task_state reconciled_task_version <<<"$reconciled_task_result"
-
-    if [[ "$reconciled_task_state" == completed ]]; then
-        reconciled_task_completed=true
-        break
-    fi
-
-    sleep 1
-done
-
-if [[ "$reconciled_task_completed" != true || "$reconciled_task_version" != 3 ]]; then
-    echo "Scheduler did not recover Task $reconciled_task_id; state=$reconciled_task_state version=$reconciled_task_version." >&2
-    "${compose[@]}" logs --no-color --tail 200 scheduler worker >&2
-    exit 1
-fi
-
-source_task_count=$(
+source_user_count=$(
     "${compose[@]}" exec -T postgres \
         psql --username starter --dbname starter --tuples-only --no-align \
-        --command 'select count(*) from tasks;'
+        --command 'select count(*) from users;'
 )
 
 bash scripts/postgres-backup.sh "$backup_file"
@@ -466,15 +367,10 @@ restored_migrations=$(
         psql --username starter --dbname starter_restore --tuples-only --no-align \
         --command 'select count(*) from migrations;'
 )
-restored_task_count=$(
+restored_total_users=$(
     "${compose[@]}" exec -T postgres \
         psql --username starter --dbname starter_restore --tuples-only --no-align \
-        --command 'select count(*) from tasks;'
-)
-restored_task_state=$(
-    "${compose[@]}" exec -T postgres \
-        psql --username starter --dbname starter_restore --tuples-only --no-align \
-        --command "select state from tasks where id = '$task_id';"
+        --command 'select count(*) from users;'
 )
 restored_user_count=$(
     "${compose[@]}" exec -T postgres \
@@ -487,13 +383,8 @@ if [[ "$restored_migrations" != "$applied_migrations" ]]; then
     exit 1
 fi
 
-if [[ "$restored_task_count" != "$source_task_count" ]]; then
-    echo "Restore has $restored_task_count Tasks; expected $source_task_count." >&2
-    exit 1
-fi
-
-if [[ "$restored_task_state" != completed ]]; then
-    echo "Restored Task $task_id is $restored_task_state; expected completed." >&2
+if [[ "$restored_total_users" != "$source_user_count" ]]; then
+    echo "Restore has $restored_total_users Users; expected $source_user_count." >&2
     exit 1
 fi
 
@@ -502,4 +393,4 @@ if [[ "$restored_user_count" != 1 ]]; then
     exit 1
 fi
 
-echo "Production smoke passed with public metadata, stateless readiness, security headers, legacy redirect, $applied_migrations migrations, direct and Scheduler-recovered Tasks, and a restored PostgreSQL backup."
+echo "Production smoke passed with public metadata, stateless readiness, security headers, legacy redirect, $applied_migrations migrations, verified identity, and a restored PostgreSQL backup."

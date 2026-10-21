@@ -89,15 +89,9 @@ export default function AdminUsersPage() {
   return (
     <>
       <header className="border-b border-border pb-6">
-        <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-          Administration
-        </p>
-        <h1 className="mt-1 font-[family-name:var(--font-app-display)] text-4xl text-balance">
-          Users
-        </h1>
+        <h1 className="font-[family-name:var(--font-app-display)] text-4xl text-balance">Users</h1>
         <p className="mt-2 max-w-2xl text-sm text-pretty text-muted-foreground">
-          Search identity metadata and assign the starter&apos;s canonical member or admin role.
-          Laravel remains the authorization authority.
+          Find users and manage their roles.
         </p>
       </header>
 

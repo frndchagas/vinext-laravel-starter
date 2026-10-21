@@ -39,7 +39,7 @@ curl -i http://localhost:13000/up
 
 The browser connects through `/ws`; Caddy strips that prefix before proxying to Reverb. Confirm that the Reverb key in the frontend matches the Laravel environment and that the User has verified their email.
 
-## A Task stays queued
+## A background job stays queued
 
 Horizon or the queue worker is not consuming jobs. Inspect the development terminal and Laravel log, then check Horizon directly at `http://localhost:18000/horizon` in the local environment.
 

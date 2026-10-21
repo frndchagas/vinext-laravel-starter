@@ -1,48 +1,23 @@
-# Asynchronous workflow
+# Queues and realtime
 
-`Task` is the reference path for work that cannot finish inside one HTTP request. PostgreSQL remains the source of truth; Reverb only notifies the browser that state may have changed.
+Redis, Horizon and Reverb are configured for application features. The core includes no example domain resource, background job or application event. The dashboard subscribes to the verified User's private channel to prove session-based authorization and connectivity.
 
-## Create once
+## Add background work
 
-`POST /api/v1/tasks` requires an `Idempotency-Key`. Laravel stores the validated input hash, response and Task identifier under a unique User, operation and key tuple.
+Start with the application's domain model and HTTP contract. Persist durable state in Laravel, dispatch jobs after the surrounding transaction commits and make retries safe. Choose timeouts, retry limits and a recovery path for that operation.
 
-Repeating the key with the same input returns the first response without dispatching another job. Reusing it with different input returns `409 idempotency_key_reused`.
+Horizon uses a 125-second supervisor timeout and Redis uses a 150-second `retry_after` value. Keep a job's timeout below both limits. The scheduler records Horizon metrics every five minutes and prunes failed jobs after seven days.
 
-The Task and idempotency record share a PostgreSQL transaction. Redis delivery runs only after the outer transaction commits, so rolling back leaves no Task or key. Redis is a separate system: if delivery fails after commit, the persisted Task remains `queued` and still represents work that is owed.
+For mutations that can be retried, define idempotency around the actual operation. The core provides no idempotency table or replay service. The starter cannot promise exactly-once effects across a provider call and a process crash.
 
-An idempotent replay attempts delivery again. The scheduler also reconciles queued Tasks after one minute and processing claims that remain unfinished beyond the complete retry window. PostgreSQL state is the recovery boundary; PostgreSQL and Redis still do not share one transaction.
+## Add realtime messages
 
-## Process safely
+Define public HTTP resources in TypeSpec and observable messages in AsyncAPI, then run `bun run contracts:build`. The current AsyncAPI contract records `private-users.{userId}` as a connectivity channel with no application messages.
 
-`ProcessTask` has three attempts, a 120-second timeout and backoff delays of 10 and 60 seconds. Horizon uses a 125-second supervisor timeout, and Redis uses a 150-second `retry_after` value.
+Broadcast only after persisted state commits. Laravel must authorize each private channel. Add PHP conformance tests for new events and browser coverage for their delivery and recovery behavior.
 
-`ShouldBeUnique` reduces duplicate dispatches and expires its delivery lock after three minutes, but it is not the correctness boundary. Each serialized job carries a processing token. The atomic transition from `queued` to `processing` stores that token. A retry or reconciled stale claim with the same token may continue; another worker exits without completing or failing the Task.
+WebSocket delivery can be duplicated or lost. Consumers must rebuild current state through the HTTP API after a reconnection and provide a recovery path when realtime delivery is unavailable. PostgreSQL remains the source of truth.
 
-External providers should receive an idempotency key derived from the Task identifier when they support one. The starter cannot promise exactly-once effects across a provider call and a process crash.
+## Existing installations
 
-## Notify after persistence
-
-`TaskStatusChanged` is dispatched after the processing, completed or failed state is persisted. The payload contains Task ID, state, version, occurrence time and correlation ID. There is no event for initial creation in the `queued` state.
-
-The contracted Reverb channel is private. Laravel authorizes the owning verified User before Echo can subscribe.
-
-WebSocket delivery has no end-to-end guarantee. A client may miss or receive duplicate notifications. The frontend therefore invalidates the Task list after an event, after a private channel subscription succeeds and when Echo reconnects. While the visible list contains queued or processing Tasks, it also refetches every three seconds in the foreground. Polling stops when all visible Tasks reach a final state. Loading and failed requests have separate states, and a failed list request offers a retry.
-
-## Contracts and proofs
-
-TypeSpec defines the HTTP resource and errors. AsyncAPI defines the observable Task channel and message. CI detects generated drift in both pipelines, and PHP tests compare the broadcast event with generated AsyncAPI metadata.
-
-Tests currently prove:
-
-- idempotent replay and conflicting reuse;
-- rollback without persisted work or queued jobs;
-- recovery after Redis rejects the first delivery attempt;
-- reconciliation of queued work and stale processing claims;
-- processing-token ownership and retry behavior;
-- final states are not processed again;
-- private-channel ownership and verified-email checks;
-- browser recovery after a temporary connection loss or unavailable WebSocket delivery;
-- completion between the initial response and channel subscription;
-- isolation of cached Tasks when switching Users.
-
-The suite does not claim a real operating-system timeout test or a stress test with parallel HTTP clients.
+The example Tasks vertical has been removed. See [deployment](deployment.md#removing-the-tasks-example-from-an-existing-database) before applying its removal migration to an existing database.

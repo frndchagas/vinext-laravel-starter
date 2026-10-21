@@ -3,12 +3,6 @@
     "AdminUserRole": [
       "member",
       "admin"
-    ],
-    "TaskState": [
-      "queued",
-      "processing",
-      "completed",
-      "failed"
     ]
   },
   "operations": [
@@ -131,21 +125,6 @@
       "method": "GET",
       "operation_id": "getMe",
       "path": "/api/v1/me"
-    },
-    {
-      "method": "GET",
-      "operation_id": "listTasks",
-      "path": "/api/v1/tasks"
-    },
-    {
-      "method": "POST",
-      "operation_id": "createTask",
-      "path": "/api/v1/tasks"
-    },
-    {
-      "method": "GET",
-      "operation_id": "getTask",
-      "path": "/api/v1/tasks/{id}"
     },
     {
       "method": "GET",

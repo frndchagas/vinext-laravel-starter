@@ -18,7 +18,7 @@ Vinext owns presentation routes and user experience. Laravel owns identity, auth
 
 Local development runs Caddy, PostgreSQL, Redis and Mailpit in Docker. Vinext, Laravel, Horizon and Reverb run as host processes through `bun run dev`.
 
-Production builds separate images for Caddy, Vinext, Nginx and PHP-FPM. The PHP image is reused by the API, Horizon, scheduler, migration and Reverb services. PostgreSQL and Redis use named volumes. CI starts the complete topology and sends a Task through Horizon before accepting a change.
+Production builds separate images for Caddy, Vinext, Nginx and PHP-FPM. The PHP image is reused by the API, Horizon, scheduler, migration and Reverb services. PostgreSQL and Redis use named volumes. CI starts the complete topology, verifies authenticated navigation and private Reverb connectivity, and tests a PostgreSQL backup and restore.
 
 ## Boundaries
 
@@ -26,7 +26,8 @@ Production builds separate images for Caddy, Vinext, Nginx and PHP-FPM. The PHP 
 - AsyncAPI generates frontend message types and PHP conformance metadata from the same payload schema.
 - Sanctum CSRF and Echo broadcasting authorization remain protocol infrastructure. The session fetcher invokes the contracted CSRF endpoint, while Echo owns broadcasting authorization.
 - PostgreSQL state wins over any realtime notification.
-- Roles and permissions are stored and exposed, but the current Task authorization rule is ownership, not role membership.
+- Roles and permissions authorize User administration through Laravel.
+- Queue and realtime infrastructure is available; application-specific resources, jobs and messages are defined by the adopting product.
 
 See [Authentication](authentication.md), [API conventions](api-conventions.md) and [Asynchronous workflow](async-workflow.md) for current behavior.
 

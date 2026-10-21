@@ -49,20 +49,3 @@ export function disconnectEcho(): void {
   echo?.disconnect();
   echo = undefined;
 }
-
-export function onEchoReconnected(callback: () => void): () => void {
-  const connector = getEcho().connector;
-  let hasConnected = connector.connectionStatus() === "connected";
-
-  return connector.onConnectionChange((status) => {
-    if (status !== "connected") {
-      return;
-    }
-
-    if (hasConnected) {
-      callback();
-    }
-
-    hasConnected = true;
-  });
-}

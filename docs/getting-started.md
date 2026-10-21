@@ -33,7 +33,7 @@ Open these URLs after `dev` reports that Vinext and Laravel are ready:
 | Mailpit                      | `http://localhost:18025`       |
 | Laravel directly             | `http://localhost:18000`       |
 
-Register a User, open the verification message in Mailpit and follow its link. The dashboard proves the same Laravel session can authorize a private Reverb channel. The Tasks page proves idempotent creation, queued processing and recovery through the HTTP API after a WebSocket reconnection.
+Register a User, open the verification message in Mailpit and follow its link. The dashboard proves the same Laravel session can authorize a private Reverb channel. Use Settings to manage the profile, appearance, password and two-factor authentication.
 
 Run the local quality gates in another terminal:
 

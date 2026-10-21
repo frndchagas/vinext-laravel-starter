@@ -13,7 +13,6 @@ class ScheduleConfigurationTest extends TestCase
     public function test_scheduled_commands_have_short_mutex_recovery_windows(): void
     {
         $scheduledCommands = [
-            'tasks:reconcile' => ['expression' => '* * * * *', 'minutes' => 5],
             'horizon:snapshot' => ['expression' => '*/5 * * * *', 'minutes' => 10],
             'queue:prune-failed --hours=168' => ['expression' => '0 0 * * *', 'minutes' => 60],
         ];

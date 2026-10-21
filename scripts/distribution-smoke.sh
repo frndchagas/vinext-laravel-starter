@@ -299,7 +299,9 @@ for launch_attempt in {1..3}; do
 
     for _ in {1..60}; do
         if curl --connect-timeout 1 --fail --max-time 2 --silent \
-            "http://127.0.0.1:$WEB_PUBLIC_PORT/up" >/dev/null; then
+            "http://127.0.0.1:$WEB_PUBLIC_PORT/up" >/dev/null \
+            && curl --connect-timeout 1 --fail --max-time 5 --silent \
+                "http://127.0.0.1:$WEB_PUBLIC_PORT/" >/dev/null; then
             ready=true
             break
         fi

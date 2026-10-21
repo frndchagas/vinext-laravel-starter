@@ -8,9 +8,9 @@ A Laravel and Vinext foundation for coding agents.
 
 The showcase is a real deployment with public registration disabled.
 
-![Vinext Laravel Starter Tasks screen](apps/web/app/opengraph-image.jpg)
+![Vinext Laravel Starter home page](apps/web/app/opengraph-image.jpg)
 
-The starter provides same-origin sessions, profile and password settings, optional TOTP, explicit HTTP and realtime contracts, a generated TypeScript client, working role-based administration, Redis queues, Reverb and one idempotent asynchronous flow. It is designed for agent-assisted development, but does not bundle an AI provider.
+The starter provides same-origin sessions, profile and password settings, optional TOTP, explicit HTTP and realtime contracts, a generated TypeScript client, working role-based administration, Redis queues and Reverb. It is designed for agent-assisted development, but does not bundle an AI provider.
 
 Vinext is still in beta and the React Compiler integration is experimental. CI verifies local setup, browser behavior, a fresh source snapshot and the production container topology.
 
@@ -24,7 +24,7 @@ cd my-app
 composer run dev
 ```
 
-Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The Tasks page demonstrates queued processing and private realtime updates.
+Open `http://localhost:13000`, register a User and use Mailpit at `http://localhost:18025` to verify the email. The dashboard verifies private realtime connectivity, and Settings manages the Account.
 
 The [generated distribution](https://github.com/frndchagas/vinext-laravel-starter-distribution) is both the consumer-safe snapshot behind Packagist and the GitHub Template. Applications receive their own history and no updater.
 

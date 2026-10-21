@@ -1,6 +1,6 @@
 # Deployment
 
-The production reference runs one public Caddy service with separate containers for Vinext, Laravel, Horizon, the scheduler and Reverb. PostgreSQL and Redis keep persistent volumes. Laravel migrations run once before application services start. The scheduler reconciles unfinished Task delivery, records Horizon metrics every five minutes and prunes failed jobs after seven days.
+The production reference runs one public Caddy service with separate containers for Vinext, Laravel, Horizon, the scheduler and Reverb. PostgreSQL and Redis keep persistent volumes. Laravel migrations run once before application services start. The scheduler records Horizon metrics every five minutes and prunes failed jobs after seven days.
 
 ## Environment
 
@@ -24,7 +24,7 @@ The example logs mail instead of sending it. Configure a real SMTP provider, inc
 
 ## Local production smoke
 
-The automated smoke builds every image and starts the full production topology. It applies migrations, sends one Task through Horizon, inserts an orphaned Task for scheduler recovery and restores a PostgreSQL backup into a new database:
+The automated smoke builds every image and starts the full production topology. It applies migrations, verifies readiness and identity, checks scheduled maintenance commands and restores a PostgreSQL backup into a new database:
 
 ```bash
 bunx playwright install chromium # first browser run only
@@ -32,7 +32,7 @@ bun run test:production
 bun run test:production:browser
 ```
 
-The first command exercises HTTP, queues and recovery. The browser variant also proves SSR before hydration, RSC navigation without reload, private Reverb authorization and a Task completion event. Both use a separate Compose project and delete their containers and volumes when they exit.
+The first command exercises HTTP and database recovery. The browser variant also proves SSR before hydration, RSC navigation to Account settings without reload and private Reverb authorization. Both use a separate Compose project and delete their containers and volumes when they exit. Background-job and domain-event behavior need coverage when an application adds those features.
 
 Vinext 1.2.0 uses a new cache namespace, so an upgrade starts with cold entries. If an application adds Server Actions, do not mix pre-1.2.0 and 1.2.0 instances behind one origin: encrypted captures from the older RSC plugin are incompatible with 0.5.37. Finish restricted staging validation before authorizing a production rollout.
 
@@ -42,7 +42,13 @@ Create a Docker Compose application from the public repository and select `compo
 
 Add every variable from `.env.production.example`. Do not expose the internal API, Reverb, PostgreSQL or Redis ports. Configure the service health path as `/ready` with expected status `200`. Container liveness checks continue to use `/up`.
 
-Deploys run migrations before starting the application services. Published migrations must remain backward compatible with the previous release.
+Deploys run migrations before starting the application services. Prefer backward-compatible migrations when old application processes may still be running.
+
+## Removing the Tasks example from an existing database
+
+Migration `2026_10_21_230000_remove_task_example_tables` drops `tasks` and `idempotency_keys`, including their records. Back up the database, finish any queued example jobs using the previous code and stop the old workers before deploying this change. Fresh installations require no special preparation.
+
+The migration's rollback restores empty tables. Restoring the previous application with its example data requires the matching database backup. Other identity and Account tables are preserved.
 
 ## PostgreSQL backup and restore
 
