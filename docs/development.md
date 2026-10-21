@@ -32,6 +32,8 @@ TypeSpec -> OpenAPI 3.1 -> Orval -> Fetch client, Query hooks, Zod and MSW
 
 The client validates documented responses with generated Zod schemas in development and tests. An invalid payload fails at the HTTP boundary with the operation, status and field path. Production does not parse responses. Infrastructure may call contracted endpoints directly, as the session fetcher does for Sanctum CSRF; Echo broadcasting authorization remains outside the generated client.
 
+TypeSpec remains pinned to 1.16.0. Version 1.17 changes dictionary emission from `unevaluatedProperties` to `additionalProperties`, which the current oasdiff gate reports as a breaking response change. Revisit this pin when the compatibility check can verify the equivalent dictionary constraints.
+
 Realtime messages start in `contracts/realtime/asyncapi.yaml`. The official parser validates and dereferences the document before the local generator writes every named TypeScript schema and a committed manifest. PHP tests require matching event fixtures, authorized private channels and payloads for every operation message.
 
 ## Quality gates
@@ -54,7 +56,7 @@ Tests never call a real external provider. The starter has no AI provider in the
 
 ### Transitive security overrides
 
-The root overrides pin `@modelcontextprotocol/sdk` to 1.31.0 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h) and `fflate` to 0.7.5 for [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98). The SDK is a dependency of shadcn and an optional Orval peer; the application does not implement an MCP OAuth client. `fflate` comes through the Vinext image-rendering dependencies. Keep it on the patched 0.7.x line while those dependencies pin 0.7.3. Remove each override when its parent dependencies resolve a patched version without it, then validate a frozen install, audit, contract generation and production build in both the source and generated application.
+The root overrides pin `@modelcontextprotocol/sdk` to 1.32.1 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h) and `fflate` to 0.7.5 for [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98). The SDK is a dependency of shadcn and an optional Orval peer; the application does not implement an MCP OAuth client. `fflate` comes through the Vinext image-rendering dependencies. Keep it on the patched 0.7.x line while those dependencies pin 0.7.3. Remove each override when its parent dependencies resolve a patched version without it, then validate a frozen install, audit, contract generation and production build in both the source and generated application.
 
 ### Temporary braces mitigation
 
@@ -70,7 +72,7 @@ Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose 
 
 The web app uses shadcn/ui components with Base UI primitives and Tailwind CSS through PostCSS. Do not mix primitive systems in one interaction surface.
 
-Vinext 1.2.0 and `@vitejs/plugin-rsc` 0.5.37 are pinned together. The plugin binds encrypted Server Action captures to their action ID; Vinext 1.2.0 rejects older plugin versions. Keep the pair coordinated even when the application has no Server Actions. See the [upstream security advisory](https://github.com/cloudflare/vinext/security/advisories/GHSA-8969-277p-8rrm).
+Vinext 1.3.0 and `@vitejs/plugin-rsc` 0.5.38 are pinned together. The plugin binds encrypted Server Action captures to their action ID; Vinext requires plugin 0.5.37 or newer. Keep the pair coordinated even when the application has no Server Actions. See the [upstream security advisory](https://github.com/cloudflare/vinext/security/advisories/GHSA-8969-277p-8rrm).
 
 The experimental React Compiler runs through Oxc. Bun installs dependencies and runs workspace scripts; the Vite production build runs on Node 24 locally and in the web image builder. Every Vinext update must pass `vinext check`, production build and E2E.
 
@@ -101,4 +103,4 @@ SMOKE_SOURCE_REF="$smoke_tree" bun run test:distribution
 
 The distribution builder rejects this override when release provenance variables are set. Local smoke output keeps its `development` provenance.
 
-Bun 1.4.2 is pinned in the workspace, CI and web image. Node types follow the production Node 24 runtime. The scoped Undici override keeps Scalar contract tooling on the patched 7.x release while jsdom uses 8.x. Recheck that override when upgrading Scalar.
+Bun 1.4.3 is pinned in the workspace, CI and web image. Node types follow the production Node 24 runtime. The scoped Undici override keeps Scalar contract tooling on the patched 7.x release while jsdom uses 8.x. Recheck that override when upgrading Scalar.
