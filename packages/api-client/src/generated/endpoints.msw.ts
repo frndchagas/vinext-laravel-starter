@@ -119,8 +119,7 @@ export const getGetAuthCapabilitiesMockHandler = (
 
 export const getResendEmailVerificationMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -138,8 +137,7 @@ export const getResendEmailVerificationMockHandler = (
 
 export const getVerifyEmailMockHandler = (
   overrideResponse?:
-    | unknown
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown),
+    unknown | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<unknown> | unknown),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -205,8 +203,7 @@ export const getLoginMockHandler = (
 
 export const getLogoutMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -224,8 +221,7 @@ export const getLogoutMockHandler = (
 
 export const getRegisterMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -267,8 +263,7 @@ export const getResetPasswordMockHandler = (
 
 export const getCompleteTwoFactorChallengeMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -286,8 +281,7 @@ export const getCompleteTwoFactorChallengeMockHandler = (
 
 export const getDeleteCurrentUserMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.delete(
@@ -305,8 +299,7 @@ export const getDeleteCurrentUserMockHandler = (
 
 export const getConfirmPasswordMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -348,8 +341,7 @@ export const getGetPasswordConfirmationStatusMockHandler = (
 
 export const getConfirmTwoFactorMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -367,8 +359,7 @@ export const getConfirmTwoFactorMockHandler = (
 
 export const getUpdatePasswordMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.put(
@@ -386,8 +377,7 @@ export const getUpdatePasswordMockHandler = (
 
 export const getUpdateProfileMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.put(
@@ -405,8 +395,7 @@ export const getUpdateProfileMockHandler = (
 
 export const getEnableTwoFactorMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -424,8 +413,7 @@ export const getEnableTwoFactorMockHandler = (
 
 export const getDisableTwoFactorMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.delete(
@@ -489,8 +477,7 @@ export const getGetRecoveryCodesMockHandler = (
 
 export const getRegenerateRecoveryCodesMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
@@ -532,8 +519,7 @@ export const getGetTwoFactorSecretKeyMockHandler = (
 
 export const getGetMeMockHandler = (
   overrideResponse?:
-    | Me
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Me> | Me),
+    Me | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Me> | Me),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -554,8 +540,7 @@ export const getGetMeMockHandler = (
 
 export const getGetCsrfCookieMockHandler = (
   overrideResponse?:
-    | void
-    | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
+    void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(

@@ -87,8 +87,7 @@ export type listAdminUsersResponseSuccess = listAdminUsersResponse200 & {
   headers: Headers;
 };
 export type listAdminUsersResponseError = (
-  | listAdminUsersResponse401
-  | listAdminUsersResponse403
+  listAdminUsersResponse401 | listAdminUsersResponse403
 ) & {
   headers: Headers;
 };
@@ -269,8 +268,7 @@ export type updateAdminUserRoleResponseError = (
 };
 
 export type updateAdminUserRoleResponse =
-  | updateAdminUserRoleResponseSuccess
-  | updateAdminUserRoleResponseError;
+  updateAdminUserRoleResponseSuccess | updateAdminUserRoleResponseError;
 
 export const getUpdateAdminUserRoleUrl = (id: string) => {
   return `/api/v1/admin/users/${id}/role`;
@@ -387,7 +385,6 @@ export type getAuthCapabilitiesResponse200 = {
 export type getAuthCapabilitiesResponseSuccess = getAuthCapabilitiesResponse200 & {
   headers: Headers;
 };
-
 export type getAuthCapabilitiesResponse = getAuthCapabilitiesResponseSuccess;
 
 export const getGetAuthCapabilitiesUrl = () => {
@@ -529,15 +526,13 @@ export type resendEmailVerificationResponseSuccess = resendEmailVerificationResp
   headers: Headers;
 };
 export type resendEmailVerificationResponseError = (
-  | resendEmailVerificationResponse401
-  | resendEmailVerificationResponse429
+  resendEmailVerificationResponse401 | resendEmailVerificationResponse429
 ) & {
   headers: Headers;
 };
 
 export type resendEmailVerificationResponse =
-  | resendEmailVerificationResponseSuccess
-  | resendEmailVerificationResponseError;
+  resendEmailVerificationResponseSuccess | resendEmailVerificationResponseError;
 
 export const getResendEmailVerificationUrl = () => {
   return `/api/v1/auth/email/verification-notification`;
@@ -636,11 +631,9 @@ export type verifyEmailResponse429 = {
   data: Problem;
   status: 429;
 };
+
 export type verifyEmailResponseError = (
-  | verifyEmailResponse302
-  | verifyEmailResponse401
-  | verifyEmailResponse403
-  | verifyEmailResponse429
+  verifyEmailResponse302 | verifyEmailResponse401 | verifyEmailResponse403 | verifyEmailResponse429
 ) & {
   headers: Headers;
 };
@@ -811,8 +804,7 @@ export type forgotPasswordResponseSuccess = forgotPasswordResponse200 & {
   headers: Headers;
 };
 export type forgotPasswordResponseError = (
-  | forgotPasswordResponse422
-  | forgotPasswordResponse429
+  forgotPasswordResponse422 | forgotPasswordResponse429
 ) & {
   headers: Headers;
 };
@@ -1126,9 +1118,7 @@ export type registerResponseSuccess = registerResponse201 & {
   headers: Headers;
 };
 export type registerResponseError = (
-  | registerResponse403
-  | registerResponse422
-  | registerResponse429
+  registerResponse403 | registerResponse422 | registerResponse429
 ) & {
   headers: Headers;
 };
@@ -1372,15 +1362,13 @@ export type completeTwoFactorChallengeResponseSuccess = completeTwoFactorChallen
   headers: Headers;
 };
 export type completeTwoFactorChallengeResponseError = (
-  | completeTwoFactorChallengeResponse422
-  | completeTwoFactorChallengeResponse429
+  completeTwoFactorChallengeResponse422 | completeTwoFactorChallengeResponse429
 ) & {
   headers: Headers;
 };
 
 export type completeTwoFactorChallengeResponse =
-  | completeTwoFactorChallengeResponseSuccess
-  | completeTwoFactorChallengeResponseError;
+  completeTwoFactorChallengeResponseSuccess | completeTwoFactorChallengeResponseError;
 
 export const getCompleteTwoFactorChallengeUrl = () => {
   return `/api/v1/auth/two-factor-challenge`;
@@ -1510,16 +1498,13 @@ export type deleteCurrentUserResponseSuccess = deleteCurrentUserResponse204 & {
   headers: Headers;
 };
 export type deleteCurrentUserResponseError = (
-  | deleteCurrentUserResponse401
-  | deleteCurrentUserResponse409
-  | deleteCurrentUserResponse422
+  deleteCurrentUserResponse401 | deleteCurrentUserResponse409 | deleteCurrentUserResponse422
 ) & {
   headers: Headers;
 };
 
 export type deleteCurrentUserResponse =
-  | deleteCurrentUserResponseSuccess
-  | deleteCurrentUserResponseError;
+  deleteCurrentUserResponseSuccess | deleteCurrentUserResponseError;
 
 export const getDeleteCurrentUserUrl = () => {
   return `/api/v1/auth/user`;
@@ -1646,8 +1631,7 @@ export type confirmPasswordResponseSuccess = confirmPasswordResponse201 & {
   headers: Headers;
 };
 export type confirmPasswordResponseError = (
-  | confirmPasswordResponse401
-  | confirmPasswordResponse422
+  confirmPasswordResponse401 | confirmPasswordResponse422
 ) & {
   headers: Headers;
 };
@@ -1774,8 +1758,7 @@ export type getPasswordConfirmationStatusResponseError =
   };
 
 export type getPasswordConfirmationStatusResponse =
-  | getPasswordConfirmationStatusResponseSuccess
-  | getPasswordConfirmationStatusResponseError;
+  getPasswordConfirmationStatusResponseSuccess | getPasswordConfirmationStatusResponseError;
 
 export const getGetPasswordConfirmationStatusUrl = () => {
   return `/api/v1/auth/user/confirmed-password-status`;
@@ -1921,16 +1904,13 @@ export type confirmTwoFactorResponseSuccess = confirmTwoFactorResponse200 & {
   headers: Headers;
 };
 export type confirmTwoFactorResponseError = (
-  | confirmTwoFactorResponse401
-  | confirmTwoFactorResponse422
-  | confirmTwoFactorResponse423
+  confirmTwoFactorResponse401 | confirmTwoFactorResponse422 | confirmTwoFactorResponse423
 ) & {
   headers: Headers;
 };
 
 export type confirmTwoFactorResponse =
-  | confirmTwoFactorResponseSuccess
-  | confirmTwoFactorResponseError;
+  confirmTwoFactorResponseSuccess | confirmTwoFactorResponseError;
 
 export const getConfirmTwoFactorUrl = () => {
   return `/api/v1/auth/user/confirmed-two-factor-authentication`;
@@ -2054,8 +2034,7 @@ export type updatePasswordResponseSuccess = updatePasswordResponse200 & {
   headers: Headers;
 };
 export type updatePasswordResponseError = (
-  | updatePasswordResponse401
-  | updatePasswordResponse422
+  updatePasswordResponse401 | updatePasswordResponse422
 ) & {
   headers: Headers;
 };
@@ -2301,8 +2280,7 @@ export type enableTwoFactorResponseSuccess = enableTwoFactorResponse200 & {
   headers: Headers;
 };
 export type enableTwoFactorResponseError = (
-  | enableTwoFactorResponse401
-  | enableTwoFactorResponse423
+  enableTwoFactorResponse401 | enableTwoFactorResponse423
 ) & {
   headers: Headers;
 };
@@ -2390,15 +2368,13 @@ export type disableTwoFactorResponseSuccess = disableTwoFactorResponse200 & {
   headers: Headers;
 };
 export type disableTwoFactorResponseError = (
-  | disableTwoFactorResponse401
-  | disableTwoFactorResponse423
+  disableTwoFactorResponse401 | disableTwoFactorResponse423
 ) & {
   headers: Headers;
 };
 
 export type disableTwoFactorResponse =
-  | disableTwoFactorResponseSuccess
-  | disableTwoFactorResponseError;
+  disableTwoFactorResponseSuccess | disableTwoFactorResponseError;
 
 export const getDisableTwoFactorUrl = () => {
   return `/api/v1/auth/user/two-factor-authentication`;
@@ -2481,15 +2457,13 @@ export type getTwoFactorQrCodeResponseSuccess = getTwoFactorQrCodeResponse200 & 
   headers: Headers;
 };
 export type getTwoFactorQrCodeResponseError = (
-  | getTwoFactorQrCodeResponse401
-  | getTwoFactorQrCodeResponse423
+  getTwoFactorQrCodeResponse401 | getTwoFactorQrCodeResponse423
 ) & {
   headers: Headers;
 };
 
 export type getTwoFactorQrCodeResponse =
-  | getTwoFactorQrCodeResponseSuccess
-  | getTwoFactorQrCodeResponseError;
+  getTwoFactorQrCodeResponseSuccess | getTwoFactorQrCodeResponseError;
 
 export const getGetTwoFactorQrCodeUrl = () => {
   return `/api/v1/auth/user/two-factor-qr-code`;
@@ -2621,15 +2595,13 @@ export type getRecoveryCodesResponseSuccess = getRecoveryCodesResponse200 & {
   headers: Headers;
 };
 export type getRecoveryCodesResponseError = (
-  | getRecoveryCodesResponse401
-  | getRecoveryCodesResponse423
+  getRecoveryCodesResponse401 | getRecoveryCodesResponse423
 ) & {
   headers: Headers;
 };
 
 export type getRecoveryCodesResponse =
-  | getRecoveryCodesResponseSuccess
-  | getRecoveryCodesResponseError;
+  getRecoveryCodesResponseSuccess | getRecoveryCodesResponseError;
 
 export const getGetRecoveryCodesUrl = () => {
   return `/api/v1/auth/user/two-factor-recovery-codes`;
@@ -2757,15 +2729,13 @@ export type regenerateRecoveryCodesResponseSuccess = regenerateRecoveryCodesResp
   headers: Headers;
 };
 export type regenerateRecoveryCodesResponseError = (
-  | regenerateRecoveryCodesResponse401
-  | regenerateRecoveryCodesResponse423
+  regenerateRecoveryCodesResponse401 | regenerateRecoveryCodesResponse423
 ) & {
   headers: Headers;
 };
 
 export type regenerateRecoveryCodesResponse =
-  | regenerateRecoveryCodesResponseSuccess
-  | regenerateRecoveryCodesResponseError;
+  regenerateRecoveryCodesResponseSuccess | regenerateRecoveryCodesResponseError;
 
 export const getRegenerateRecoveryCodesUrl = () => {
   return `/api/v1/auth/user/two-factor-recovery-codes`;
@@ -2874,8 +2844,7 @@ export type getTwoFactorSecretKeyResponseError = (
 };
 
 export type getTwoFactorSecretKeyResponse =
-  | getTwoFactorSecretKeyResponseSuccess
-  | getTwoFactorSecretKeyResponseError;
+  getTwoFactorSecretKeyResponseSuccess | getTwoFactorSecretKeyResponseError;
 
 export const getGetTwoFactorSecretKeyUrl = () => {
   return `/api/v1/auth/user/two-factor-secret-key`;
@@ -3119,7 +3088,6 @@ export type getCsrfCookieResponse204 = {
 export type getCsrfCookieResponseSuccess = getCsrfCookieResponse204 & {
   headers: Headers;
 };
-
 export type getCsrfCookieResponse = getCsrfCookieResponseSuccess;
 
 export const getGetCsrfCookieUrl = () => {
