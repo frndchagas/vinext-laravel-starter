@@ -10,12 +10,11 @@
     "check": "bun run validate && bun run generate && git diff --exit-code -- generated",
     "generate": "bun run generate.mjs",
     "test": "bun test generate.test.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bun check --no-script",
     "validate": "bun run validate.mjs"
   },
   "devDependencies": {
     "@asyncapi/parser": "3.6.6",
-    "oxfmt": "0.74.0",
     "typescript": "7.0.2"
   }
 }

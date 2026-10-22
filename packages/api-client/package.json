@@ -9,9 +9,9 @@
     "./testing": "./src/testing.ts"
   },
   "scripts": {
-    "generate": "orval --config ./orval.config.ts && bun run scripts/generate-response-contracts.mjs && oxfmt --write src/generated",
+    "generate": "orval --config ./orval.config.ts && bun run scripts/generate-response-contracts.mjs && bun fmt --print-width 100 src/generated",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "bun check --no-script"
   },
   "dependencies": {
     "zod": "4.6.7"
@@ -26,7 +26,6 @@
     "@types/node": "24.19.2",
     "msw": "2.15.0",
     "orval": "8.44.0",
-    "oxfmt": "0.74.0",
     "typescript": "7.0.2",
     "vitest": "5.0.5",
     "yaml": "2.9.1"

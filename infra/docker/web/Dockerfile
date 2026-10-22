@@ -1,6 +1,6 @@
 FROM node:24.22.1-alpine3.24 AS build
 
-COPY --from=oven/bun:1.4.3-alpine /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=oven/bun:1.4.4-alpine /usr/local/bin/bun /usr/local/bin/bun
 
 WORKDIR /app
 

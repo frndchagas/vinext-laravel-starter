@@ -96,7 +96,10 @@ function schemaExpression(schema, componentNames, dependencies, currentName) {
   }
 
   if (schema?.type === "string") {
-    rejectUnsupportedKeywords(schema, new Set(["format", "maxLength", "minLength", "pattern", "type"]));
+    rejectUnsupportedKeywords(
+      schema,
+      new Set(["format", "maxLength", "minLength", "pattern", "type"]),
+    );
     if (schema.format !== undefined && !STRING_FORMATS.has(schema.format)) {
       throw new Error(`Unsupported AsyncAPI string format: ${schema.format}`);
     }
@@ -124,7 +127,14 @@ function schemaExpression(schema, componentNames, dependencies, currentName) {
   if (schema?.type === "object") {
     rejectUnsupportedKeywords(
       schema,
-      new Set(["additionalProperties", "maxProperties", "minProperties", "properties", "required", "type"]),
+      new Set([
+        "additionalProperties",
+        "maxProperties",
+        "minProperties",
+        "properties",
+        "required",
+        "type",
+      ]),
     );
     const required = new Set(schema.required ?? []);
     const properties = Object.entries(schema.properties ?? {}).map(([name, property]) => {
@@ -156,7 +166,14 @@ function renderSchema(name, schema, componentNames) {
   if (schema.type === "object" && schema.additionalProperties === false) {
     rejectUnsupportedKeywords(
       schema,
-      new Set(["additionalProperties", "maxProperties", "minProperties", "properties", "required", "type"]),
+      new Set([
+        "additionalProperties",
+        "maxProperties",
+        "minProperties",
+        "properties",
+        "required",
+        "type",
+      ]),
     );
     const required = new Set(schema.required ?? []);
     const properties = Object.entries(schema.properties ?? {}).map(([propertyName, property]) => {
@@ -333,14 +350,14 @@ if (import.meta.main) {
     writeFileSync(new URL(`./generated/${path}`, import.meta.url), contents);
   }
 
-  const formatter = Bun.spawnSync(["bunx", "oxfmt", "--write", "generated"], {
+  const formatter = Bun.spawnSync(["bun", "fmt", "--print-width", "100", "generated"], {
     cwd: workspace,
     stdout: "inherit",
     stderr: "inherit",
   });
 
   if (formatter.exitCode !== 0) {
-    throw new Error(`oxfmt exited with ${formatter.exitCode}.`);
+    throw new Error(`bun fmt exited with ${formatter.exitCode}.`);
   }
 
   console.log(`Generated realtime artifacts: ${outputPath}`);
