@@ -41,7 +41,7 @@ export const UpdateAdminUserRoleParams = zod.object({
   id: zod.string(),
 });
 
-export const UpdateAdminUserRoleBody = zod.looseObject({}).and(
+export const UpdateAdminUserRoleBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     role: zod.enum(["member", "admin"]),
   }),
@@ -83,7 +83,7 @@ export const VerifyEmailQueryParams = zod.object({
 
 export const VerifyEmailResponse = zod.void();
 
-export const ForgotPasswordBody = zod.looseObject({}).and(
+export const ForgotPasswordBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     email: zod.string(),
   }),
@@ -93,7 +93,7 @@ export const ForgotPasswordResponse = zod.strictObject({
   message: zod.string(),
 });
 
-export const LoginBody = zod.looseObject({}).and(
+export const LoginBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     email: zod.string(),
     password: zod.string(),
@@ -110,7 +110,7 @@ export const LogoutResponse = zod.void();
 /**
  * Register a new user. Controlled by the registration feature flag.
  */
-export const RegisterBody = zod.looseObject({}).and(
+export const RegisterBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     name: zod.string(),
     email: zod.string(),
@@ -121,7 +121,7 @@ export const RegisterBody = zod.looseObject({}).and(
 
 export const RegisterResponse = zod.void();
 
-export const ResetPasswordBody = zod.looseObject({}).and(
+export const ResetPasswordBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     token: zod.string(),
     email: zod.string(),
@@ -134,7 +134,7 @@ export const ResetPasswordResponse = zod.strictObject({
   message: zod.string(),
 });
 
-export const CompleteTwoFactorChallengeBody = zod.looseObject({}).and(
+export const CompleteTwoFactorChallengeBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     code: zod.string().optional(),
     recovery_code: zod.string().optional(),
@@ -146,7 +146,7 @@ export const CompleteTwoFactorChallengeResponse = zod.void();
 /**
  * Permanently delete the authenticated User and resources owned only by that identity.
  */
-export const DeleteCurrentUserBody = zod.looseObject({}).and(
+export const DeleteCurrentUserBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     password: zod.string(),
   }),
@@ -154,7 +154,7 @@ export const DeleteCurrentUserBody = zod.looseObject({}).and(
 
 export const DeleteCurrentUserResponse = zod.void();
 
-export const ConfirmPasswordBody = zod.looseObject({}).and(
+export const ConfirmPasswordBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     password: zod.string(),
   }),
@@ -166,7 +166,7 @@ export const GetPasswordConfirmationStatusResponse = zod.strictObject({
   confirmed: zod.boolean(),
 });
 
-export const ConfirmTwoFactorBody = zod.looseObject({}).and(
+export const ConfirmTwoFactorBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     code: zod.string(),
   }),
@@ -174,7 +174,7 @@ export const ConfirmTwoFactorBody = zod.looseObject({}).and(
 
 export const ConfirmTwoFactorResponse = zod.unknown();
 
-export const UpdatePasswordBody = zod.looseObject({}).and(
+export const UpdatePasswordBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     current_password: zod.string(),
     password: zod.string(),
@@ -184,7 +184,7 @@ export const UpdatePasswordBody = zod.looseObject({}).and(
 
 export const UpdatePasswordResponse = zod.unknown();
 
-export const UpdateProfileBody = zod.looseObject({}).and(
+export const UpdateProfileBody = zod.record(zod.string(), zod.unknown()).and(
   zod.object({
     name: zod.string(),
     email: zod.string(),

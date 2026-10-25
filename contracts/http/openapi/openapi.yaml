@@ -862,7 +862,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     ConfirmTwoFactorRequest:
       type: object
       required:
@@ -874,7 +874,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     DeleteCurrentUserRequest:
       type: object
       required:
@@ -886,7 +886,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     ForgotPasswordRequest:
       type: object
       required:
@@ -898,7 +898,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     LoginRequest:
       type: object
       required:
@@ -915,7 +915,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     LoginResult:
       type: object
       required:
@@ -1009,7 +1009,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     ResetPasswordRequest:
       type: object
       required:
@@ -1030,7 +1030,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     StatusMessage:
       type: object
       required:
@@ -1051,7 +1051,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     TwoFactorQrCode:
       type: object
       required:
@@ -1075,7 +1075,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     UpdatePasswordRequest:
       type: object
       required:
@@ -1093,7 +1093,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     UpdateProfileRequest:
       type: object
       required:
@@ -1111,7 +1111,7 @@ components:
         not: {}
       allOf:
         - type: object
-          unevaluatedProperties: {}
+          additionalProperties: {}
     ValidationProblem:
       type: object
       required:
@@ -1131,7 +1131,7 @@ components:
           type: string
         errors:
           type: object
-          unevaluatedProperties:
+          additionalProperties:
             type: array
             items:
               type: string
