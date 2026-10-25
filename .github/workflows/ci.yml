@@ -454,11 +454,25 @@ jobs:
         with:
           ref: ${{ github.base_ref }}
           path: base
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.4
+      - run: bun ci
+      - name: Verify dictionary compatibility against oasdiff
+        run: |
+          docker pull tufin/oasdiff:v1.34.1
+          bun test contracts/http/openapi-compat.test.mjs
+      - name: Normalize plain dictionary schemas for comparison
+        run: |
+          mkdir -p .openapi-compat
+          bun contracts/http/normalize-openapi-records.mjs \
+            base/contracts/http/openapi/openapi.yaml contracts/http/openapi/openapi.yaml \
+            .openapi-compat/base.json .openapi-compat/revision.json
       - name: Detect breaking API changes
         uses: oasdiff/oasdiff-action/breaking@9ce3a29eb0e6478dd0140932a678c7fb59d08f22 # v0.1.20
         with:
-          base: base/contracts/http/openapi/openapi.yaml
-          revision: contracts/http/openapi/openapi.yaml
+          base: .openapi-compat/base.json
+          revision: .openapi-compat/revision.json
           fail-on: ERR
           err-ignore: .github/oasdiff-retirements.txt
           review: false
