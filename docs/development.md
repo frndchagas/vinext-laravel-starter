@@ -32,7 +32,7 @@ TypeSpec -> OpenAPI 3.1 -> Orval -> Fetch client, Query hooks, Zod and MSW
 
 The client validates documented responses with generated Zod schemas in development and tests. An invalid payload fails at the HTTP boundary with the operation, status and field path. Production does not parse responses. Infrastructure may call contracted endpoints directly, as the session fetcher does for Sanctum CSRF; Echo broadcasting authorization remains outside the generated client.
 
-TypeSpec remains pinned to 1.16.0. Version 1.17 changes dictionary emission from `unevaluatedProperties` to `additionalProperties`, which the current oasdiff gate reports as a breaking response change. Revisit this pin when the compatibility check can verify the equivalent dictionary constraints.
+TypeSpec 1.17 emits `additionalProperties` for plain dictionaries. Before comparing contracts, the oasdiff job normalizes a pair of component schemas only when both contain `type: object` and a dictionary keyword with identical value constraints. Removed or changed constraints and composed schemas stay unchanged. Run `bun test contracts/http/openapi-compat.test.mjs` to verify equivalent dictionaries and breaking changes against the same oasdiff Docker image used by CI. Generated artifacts retain the emitter's original output.
 
 Realtime messages start in `contracts/realtime/asyncapi.yaml`. The official parser validates and dereferences the document before the local generator writes every named TypeScript schema and a committed manifest. The current contract contains the private User connectivity channel and no application messages. Add PHP conformance tests for channel authorization and payloads with new messages.
 
