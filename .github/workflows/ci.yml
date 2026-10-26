@@ -461,7 +461,7 @@ jobs:
       - name: Verify dictionary compatibility against oasdiff
         run: |
           docker pull tufin/oasdiff:v1.34.1
-          bun test contracts/http/openapi-compat.test.mjs
+          bun test ./contracts/http/openapi-compat.test.mjs
       - name: Normalize plain dictionary schemas for comparison
         run: |
           mkdir -p .openapi-compat
