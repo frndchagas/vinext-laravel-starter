@@ -146,7 +146,7 @@ export default function AdminUsersPage() {
           No users match this search.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="relative overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-2xl border-collapse text-left text-sm">
             <caption className="sr-only">Users and their assigned roles</caption>
             <thead className="bg-muted/60 text-xs tracking-wide text-muted-foreground uppercase">
