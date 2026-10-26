@@ -242,7 +242,9 @@ test("permanently delete the current account", async ({ page }) => {
   await expect(page.getByRole("alert")).toContainText(/credentials/i);
 });
 
-test("manage users through the permission-gated administration surface", async ({ page }) => {
+test("manage users through the permission-gated administration surface on mobile", async ({
+  page,
+}) => {
   test.setTimeout(120_000);
 
   const suffix = Date.now();
@@ -259,11 +261,23 @@ test("manage users through the permission-gated administration surface", async (
   await page.reload();
   await expect(page.getByRole("link", { name: "Users" })).toBeVisible();
   await page.getByRole("link", { name: "Users" }).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole("table", { name: "Users and their assigned roles" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    )
+    .toBe(0);
 
   await page.getByLabel("Search users").fill(targetEmail);
   await page.getByRole("button", { name: "Search" }).click();
   const targetRow = page.getByRole("row", { name: new RegExp(targetEmail) });
   await expect(targetRow).toBeVisible();
+  await targetRow.getByLabel(/Role for/).scrollIntoViewIfNeeded();
+  await expect(targetRow.getByLabel(/Role for/)).toBeInViewport();
+  expect(await page.evaluate(() => window.scrollX)).toBe(0);
   await targetRow.getByLabel(/Role for/).selectOption("admin");
   await expect(page.getByText(/is now admin/)).toBeVisible();
   await expect(targetRow.getByLabel(/Role for/)).toHaveValue("admin");
