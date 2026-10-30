@@ -103,9 +103,6 @@
       },
     },
   },
-  "patchedDependencies": {
-    "braces@3.0.3": "patches/braces@3.0.3.patch",
-  },
   "overrides": {
     "@modelcontextprotocol/sdk": "1.32.1",
     "@scalar/json-magic": {
