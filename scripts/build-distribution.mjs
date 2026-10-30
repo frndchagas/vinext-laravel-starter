@@ -391,7 +391,6 @@ try {
     "scripts/build-distribution.mjs",
     "scripts/build-distribution.test.mjs",
     "scripts/audit-dependencies.test.mjs",
-    "scripts/braces-security-check.test.mjs",
     "scripts/ci-changes.mjs",
     "scripts/ci-changes.test.mjs",
     "scripts/ci-policy.mjs",

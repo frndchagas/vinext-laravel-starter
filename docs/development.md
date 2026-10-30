@@ -58,13 +58,11 @@ Tests never call a real external provider. The starter has no AI provider in the
 
 The root overrides pin `@modelcontextprotocol/sdk` to 1.32.1 for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h) and `fflate` to 0.7.5 for [GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98). The SDK is a dependency of shadcn and an optional Orval peer; the application does not implement an MCP OAuth client. `fflate` comes through the Vinext image-rendering dependencies. Keep it on the patched 0.7.x line while those dependencies pin 0.7.3. Remove each override when its parent dependencies resolve a patched version without it, then validate a frozen install, audit, contract generation and production build in both the source and generated application.
 
-### Temporary braces mitigation
+### Dependency audit
 
-`braces@3.0.3` has no published fix for [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). Bun applies the committed patch in `patches/braces@3.0.3.patch` on installation. It caps brace and parenthesis nesting at 256 and validates AST depth before the recursive compile, expand and stringify operations. Deeper inputs and child-node cycles raise a controlled `SyntaxError`; ordinary pattern behavior remains covered by the Node regression check.
+`bun run audit` checks that the lockfile is deduplicated, runs the native Bun audit without an ignore list and then `composer audit --locked`. High and critical findings block; low and moderate findings are listed without failing. Unknown audit formats fail closed.
 
-`bun run audit` runs the native Bun audit without an ignore list. It reports this finding as mitigated only after verifying the patch registration, locked version, patch checksum, every installed copy's code checksums and the Node regression proof. Other high and critical findings still fail the gate. Unknown audit formats fail closed; moderate findings remain visible without changing the existing high-severity threshold. The production smoke runs the same regression proof inside the standalone Node container.
-
-The evidence in `scripts/braces-mitigation.json` expires at **2026-11-05 00:00 UTC**. After expiry the audit fails. Replace this patch with an upstream fixed release, rerun fresh-install and production checks, then remove the mitigation-specific evidence and audit handling. Raw `bun audit` continues to report the upstream version as vulnerable: this is a local backport, not an upstream release.
+The local `braces@3.0.3` patch and its expiring audit exception were removed on 29 October 2026. GitHub withdrew [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) on 23 October 2026, and `bun audit` no longer reports it. Applications generated before this change keep a mitigation that expires at 2026-11-05 00:00 UTC; remove it the same way before that date.
 
 Dependabot checks Bun, Composer, GitHub Actions and every Dockerfile or Compose manifest each week. Major updates remain manual. Minor updates to PHP, Go, Composer, Bun and Caddy also require a coordinated change; other Docker minor and patch updates must pass the production gate.
 
