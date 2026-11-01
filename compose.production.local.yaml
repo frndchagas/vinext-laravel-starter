@@ -1,4 +1,16 @@
+# Smoke-only overlay. The real production composition is compose.production.yaml.
+x-smoke-healthcheck: &smoke-healthcheck
+  interval: 2s
+  # A 2 s interval would shrink the 60 s failure window of the image defaults
+  # (10 s x 6 retries) to 12 s, so the start period preserves that tolerance.
+  start_period: 60s
+
 services:
   proxy:
     ports:
       - "${PRODUCTION_PORT:-14000}:8080"
+    healthcheck: *smoke-healthcheck
+  api:
+    healthcheck: *smoke-healthcheck
+  api-php:
+    healthcheck: *smoke-healthcheck

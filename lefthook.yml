@@ -4,7 +4,7 @@ pre-commit:
     format:
       run: bun run format:check
     secrets:
-      run: command -v gitleaks >/dev/null 2>&1 && gitleaks protect --staged --redact || echo "gitleaks not installed locally; CI enforces it"
+      run: if command -v gitleaks >/dev/null 2>&1; then gitleaks protect --staged --redact; else echo "gitleaks not installed locally; CI enforces it"; fi
 
 pre-push:
   commands:
