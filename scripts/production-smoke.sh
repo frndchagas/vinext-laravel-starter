@@ -49,7 +49,7 @@ compose=(
 
 cleanup() {
     set +e
-    "${compose[@]}" down --volumes --remove-orphans
+    "${compose[@]}" down --volumes --remove-orphans --timeout 1
     rm -f "$cookie_jar"
     rm -f \
         "$backup_file" \
@@ -65,36 +65,49 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-docker build \
-    --file infra/docker/api/Dockerfile \
-    --tag "vinext-laravel-starter-api:$image_tag" \
-    .
+# Without SMOKE_BUILDX_CACHE this is a plain local build. In CI, "gha" reads and
+# writes the GitHub Actions layer cache, and "gha-refresh" only writes it, so the
+# scheduled image scan never inherits stale package upgrades from the cache.
+build_image() {
+    local image=$1
+    shift
+    local build_arguments=(
+        "$@"
+        --file "infra/docker/$image/Dockerfile"
+        --tag "vinext-laravel-starter-$image:$image_tag"
+    )
+    local scope="smoke-${GITHUB_JOB:-local}-$image"
 
-docker build \
-    --file infra/docker/api-nginx/Dockerfile \
-    --tag "vinext-laravel-starter-api-nginx:$image_tag" \
-    .
+    case "${SMOKE_BUILDX_CACHE:-}" in
+        "")
+            docker build "${build_arguments[@]}" .
+            ;;
+        gha)
+            docker buildx build "${build_arguments[@]}" \
+                --load --provenance=false --sbom=false \
+                --cache-from "type=gha,scope=$scope" \
+                --cache-to "type=gha,scope=$scope,mode=min,ignore-error=true" \
+                .
+            ;;
+        gha-refresh)
+            docker buildx build "${build_arguments[@]}" \
+                --load --provenance=false --sbom=false \
+                --cache-to "type=gha,scope=$scope,mode=min,ignore-error=true" \
+                .
+            ;;
+        *)
+            echo "Unsupported SMOKE_BUILDX_CACHE value: $SMOKE_BUILDX_CACHE." >&2
+            return 1
+            ;;
+    esac
+}
 
-docker build \
-    --file infra/docker/proxy/Dockerfile \
-    --tag "vinext-laravel-starter-proxy:$image_tag" \
-    .
-
-docker build \
-    --build-arg "NEXT_PUBLIC_REVERB_APP_KEY=$REVERB_APP_KEY" \
-    --file infra/docker/web/Dockerfile \
-    --tag "vinext-laravel-starter-web:$image_tag" \
-    .
-
-docker build \
-    --file infra/docker/postgres/Dockerfile \
-    --tag "vinext-laravel-starter-postgres:$image_tag" \
-    .
-
-docker build \
-    --file infra/docker/redis/Dockerfile \
-    --tag "vinext-laravel-starter-redis:$image_tag" \
-    .
+build_image api
+build_image api-nginx
+build_image proxy
+build_image web --build-arg "NEXT_PUBLIC_REVERB_APP_KEY=$REVERB_APP_KEY"
+build_image postgres
+build_image redis
 
 "${compose[@]}" up --detach --no-build --wait
 

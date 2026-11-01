@@ -19,6 +19,7 @@ concurrency:
 jobs:
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       integration: ${{ steps.classify.outputs.integration }}
       e2e: ${{ steps.classify.outputs.e2e }}
@@ -35,8 +36,6 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: 1.4.4
-
-      - run: bun ci
 
       - name: Test path classification
         run: >-
@@ -61,6 +60,7 @@ jobs:
 
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -75,11 +75,16 @@ jobs:
           coverage: none
           tools: composer:2.10.3
 
+      - name: Locate the Composer cache
+        id: composer-cache
+        run: printf 'dir=%s\n' "$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.composer/cache
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ runner.os }}-${{ hashFiles('apps/api/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
@@ -115,6 +120,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.integration == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -162,11 +168,16 @@ jobs:
           coverage: none
           tools: composer:2.10.3
 
+      - name: Locate the Composer cache
+        id: composer-cache
+        run: printf 'dir=%s\n' "$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.composer/cache
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ runner.os }}-${{ hashFiles('apps/api/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
 
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
 
@@ -186,7 +197,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.e2e == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -201,21 +212,40 @@ jobs:
           coverage: none
           tools: composer:2.10.3
 
+      - name: Locate the Composer cache
+        id: composer-cache
+        run: printf 'dir=%s\n' "$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.composer/cache
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ runner.os }}-${{ hashFiles('apps/api/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Read the Playwright version
+        id: playwright
+        run: |
+          version=$(jq --exit-status --raw-output '.devDependencies["@playwright/test"]' apps/web/package.json)
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browser
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json', 'bun.lock') }}
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
-      - run: bun run --filter web test:e2e:install
+      - name: Install the Playwright browser
+        run: |
+          for attempt in 1 2; do
+            if timeout --kill-after=15s 300s bun run --filter web test:e2e:install; then
+              exit 0
+            fi
+            echo "::warning::Playwright install attempt $attempt failed or exceeded 300 seconds."
+          done
+          exit 1
 
       - name: Prepare application key
         working-directory: apps/api
@@ -286,11 +316,16 @@ jobs:
           coverage: none
           tools: composer:2.10.3
 
+      - name: Locate the Composer cache
+        id: composer-cache
+        run: printf 'dir=%s\n' "$(composer config --global cache-files-dir)" >> "$GITHUB_OUTPUT"
+
       - name: Cache Composer packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.composer/cache
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: template-composer-${{ runner.os }}-${{ hashFiles('apps/api/composer.lock') }}
+          restore-keys: template-composer-${{ runner.os }}-
 
       - name: Fresh template
         run: bun run test:template
@@ -316,7 +351,14 @@ jobs:
 
       - run: bun ci
       - run: composer install --working-dir apps/api --no-interaction --prefer-dist
-      - run: bun run test:distribution
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: crazy-max/ghaction-github-runtime@04d248b84655b509d8c44dc1d6f990c879747487 # v4.0.0
+
+      - name: Distribution topology
+        env:
+          SMOKE_BUILDX_CACHE: ${{ github.event_name == 'schedule' && 'gha-refresh' || 'gha' }}
+        run: bun run test:distribution
 
   production-smoke:
     needs: changes
@@ -335,16 +377,36 @@ jobs:
           php-version: "8.3"
           coverage: none
 
+      - name: Read the Playwright version
+        id: playwright
+        run: |
+          version=$(jq --exit-status --raw-output '.devDependencies["@playwright/test"]' apps/web/package.json)
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browser
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json', 'bun.lock') }}
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
 
       - run: bun ci
-      - run: bun run --filter web test:e2e:install
+      - name: Install the Playwright browser
+        run: |
+          for attempt in 1 2; do
+            if timeout --kill-after=15s 300s bun run --filter web test:e2e:install; then
+              exit 0
+            fi
+            echo "::warning::Playwright install attempt $attempt failed or exceeded 300 seconds."
+          done
+          exit 1
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: crazy-max/ghaction-github-runtime@04d248b84655b509d8c44dc1d6f990c879747487 # v4.0.0
 
       - name: Production topology
+        env:
+          SMOKE_BUILDX_CACHE: ${{ github.event_name == 'schedule' && 'gha-refresh' || 'gha' }}
         run: bun run test:production:browser
 
       - name: Preserve production browser diagnostics
@@ -435,6 +497,7 @@ jobs:
 
   gitleaks:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -447,6 +510,7 @@ jobs:
     needs: changes
     if: github.event_name == 'pull_request' && needs.changes.outputs.breaking == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -480,6 +544,7 @@ jobs:
   dependency-review:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
@@ -498,6 +563,7 @@ jobs:
       - breaking-changes
       - dependency-review
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
