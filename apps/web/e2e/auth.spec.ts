@@ -22,7 +22,10 @@ test("hide registration when the deployment disables it", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Create account" })).toHaveCount(0);
 
   await page.goto("/register");
-  await expect(page.getByRole("heading", { name: "Registration unavailable" })).toBeVisible();
+  // First real client render of the run: the development server compiles the module graph on demand.
+  await expect(page.getByRole("heading", { name: "Registration unavailable" })).toBeVisible({
+    timeout: 20_000,
+  });
   await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
 });
 
