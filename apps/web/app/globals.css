@@ -4,42 +4,258 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Design system (docs/design-system.md, decision in docs/adr/0018-design-system.md).
+ *
+ * Neutral-first interface: near-black ink, cool greys, #FAFAFA canvas, white cards. Surfaces are
+ * always white (dark grey in the dark theme) and pills share one grey (--pill): colour shows up only
+ * as a dot, an icon, a number, text or a thin border, never as a tinted block. Two colour families
+ * with fixed roles that never mix:
+ *   - AI: a small violet icon (--ai-ink) and a thin violet stroke on the left border (--ai-mark).
+ *     The violet → pink gradient (--hero-gradient) is reserved for the bars of the hero chart.
+ *   - Semantic: positive, negative/late, attention and neutral (--positive, --negative, --attention).
+ */
 :root {
   color-scheme: light;
-  --font-app-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-app-display: "Newsreader Variable", ui-serif, Georgia, serif;
-  --background: #fffaf2;
-  --foreground: #050403;
-  --card: #fffaf2;
-  --card-foreground: #050403;
-  --popover: #fffaf2;
-  --popover-foreground: #050403;
-  --primary: #6f1f0b;
+  /* Single font: Figtree (self-hosted through next/font, weights 300–900). */
+  --font-app-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  /* Surfaces and text */
+  --paper: #fafafa;
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #18181b;
   --primary-foreground: #ffffff;
-  --secondary: #f1e8dc;
-  --secondary-foreground: #050403;
-  --muted: #f1e8dc;
-  --muted-foreground: #554a40;
-  --accent: #6f1f0b;
-  --accent-foreground: #ffffff;
-  --destructive: #9f1239;
-  --border: #c9bcae;
-  --input: #c9bcae;
-  --ring: #6f1f0b;
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.25rem;
-  --sidebar: oklch(0.955 0.016 82);
-  --sidebar-foreground: oklch(0.14 0.012 72);
-  --sidebar-primary: oklch(0.43 0.16 38);
-  --sidebar-primary-foreground: oklch(0.98 0.01 82);
-  --sidebar-accent: oklch(0.93 0.018 80);
-  --sidebar-accent-foreground: oklch(0.14 0.012 72);
-  --sidebar-border: oklch(0.79 0.022 78);
-  --sidebar-ring: oklch(0.43 0.16 38);
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b73;
+  --subtle-foreground: #a1a1aa;
+  --accent: #f1f1f3;
+  --accent-foreground: #18181b;
+  --destructive: #c81e1e;
+  --border: #ebebee;
+  --border-strong: #dedee2;
+  --input: #e4e4e8;
+  --ring: #8b5cf6;
+  /* Links and text actions: neutral ink. */
+  --pen: #18181b;
+
+  /* Semantic */
+  --positive: #15803d;
+  --negative: #c81e1e;
+  --attention: #8a5a00;
+  --attention-fill: #fabe09;
+  /* Amber dot and bar (3.4:1 on the card, 3.1:1 on the pill), pulled towards yellow like --attention. */
+  --attention-mark: #b58300;
+  /* Single background for pills, badges and counters (state comes from the dot, icon or text). */
+  --pill: #f4f4f5;
+
+  /* AI: icon (--ai-ink) and thin stroke (--ai-mark). The gradient belongs to the hero chart only. */
+  --ai-from: #8b5cf6;
+  --ai-to: #ec4899;
+  --hero-gradient: linear-gradient(180deg, var(--ai-from) 0%, var(--ai-to) 100%);
+  --ai-ink: #6d28d9;
+  --ai-mark: #8b5cf6;
+  --ai-border: #ddd6fe;
+  --hero-1: #7c3aed;
+  --hero-2: #db2777;
+  /* Hero chart categories (validated for colour blindness, every pair); "Other" = --hero-other. */
+  --hero-cat-1: #6d28d9;
+  --hero-cat-2: #db2777;
+  --hero-cat-3: #c084fc;
+  --hero-other: #a1a1aa;
+
+  /* Up × down series (validated together for colour blindness) and ramps, largest → smallest. */
+  --revenue: #22a55a;
+  --expense: #b42318;
+  --revenue-1: #14532d;
+  --revenue-2: #15803d;
+  --revenue-3: #22a55a;
+  --revenue-4: #5dbe85;
+  --expense-1: #7f1d1d;
+  --expense-2: #b42318;
+  --expense-3: #e5484d;
+  --expense-4: #f28b8b;
+  /*
+   * Donut ramp: one hue, 7 ordinal steps (1 = largest slice), validated with the dataviz validator
+   * (ΔL ≥ 0.06, lightest step ≥ 2:1 on the surface). From the 8th slice on, "Other" in --chart-muted.
+   */
+  --expense-slice-1: #740510;
+  --expense-slice-2: #940015;
+  --expense-slice-3: #b20e1f;
+  --expense-slice-4: #cc272e;
+  --expense-slice-5: #dc4c4a;
+  --expense-slice-6: #e66e68;
+  --expense-slice-7: #ef8d86;
+
+  /* Accent set: stable identities for user-created things (saved views, tags, workspaces), outside the
+     AI and semantic hues (no green, violet or red). */
+  --accent-1: #e8590c;
+  --accent-2: #0b7fab;
+  --accent-3: #d6336c;
+  --accent-4: #c08a00;
+  --accent-5: #0e9f8e;
+
+  /* Charts */
+  --chart-grid: #efeff1;
+  --chart-axis: #d4d4d8;
+  --chart-muted: #a1a1aa;
+  --chart-wash: rgb(0 163 224 / 10%);
+  --status-good: #15803d;
+  --status-warning: #fabe09;
+  --status-serious: #e04f1a;
+  --status-critical: #c81e1e;
+  --chart-1: #00a3e0;
+  --chart-2: #7ac425;
+  --chart-3: #e04f1a;
+  --chart-4: #eda100;
+  --chart-5: #71717a;
+
+  /* Shape */
+  --radius: 0.625rem;
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgb(24 24 27 / 3%);
+  --shadow-raised: 0 1px 2px rgb(24 24 27 / 4%), 0 6px 16px -4px rgb(24 24 27 / 6%);
+  --shadow-popover: 0 1px 2px rgb(24 24 27 / 5%), 0 12px 32px -8px rgb(24 24 27 / 14%);
+
+  /* The compact scale, the only one: spacing and heights. Controls never below 32px on desktop. */
+  --space-page: 1.5rem;
+  --space-card: 1.25rem;
+  --space-stack: 1rem;
+  --row-height: 2.5rem;
+  --control-height: 2rem;
+  /*
+   * Height of whatever is fixed at the top of the page: on phones and tablets, the app header (32px
+   * Menu button, 12px above and below, 1px border); from `lg` on the menu is a sidebar and nothing is
+   * fixed at the top. Sticky bands and table headers (`DataTable stickyHeader`) stick right below it.
+   */
+  --app-sticky-top: calc(var(--control-height) + 1.5rem + 1px);
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #ebebee;
+  --sidebar-ring: #8b5cf6;
+}
+
+.dark {
+  color-scheme: dark;
+  --paper: #0f0f11;
+  --background: #0f0f11;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --popover: #1f1f23;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #232327;
+  --secondary-foreground: #fafafa;
+  --muted: #232327;
+  --muted-foreground: #a1a1aa;
+  --subtle-foreground: #71717a;
+  --accent: #26262b;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --border: #27272a;
+  --border-strong: #34343a;
+  --input: #2e2e33;
+  --ring: #a78bfa;
+  --pen: #fafafa;
+
+  --positive: #4ade80;
+  --negative: #f87171;
+  --attention: #f7c948;
+  --attention-fill: #fabe09;
+  --attention-mark: #f59e0b;
+  --pill: #26262b;
+
+  --ai-from: #8b5cf6;
+  --ai-to: #d946a8;
+  --ai-ink: #c4b5fd;
+  --ai-mark: #a78bfa;
+  --ai-border: rgb(167 139 250 / 35%);
+  --hero-1: #8b5cf6;
+  --hero-2: #d946a8;
+  --hero-cat-1: #6d3be0;
+  --hero-cat-2: #d9468f;
+  --hero-cat-3: #9c7ceb;
+  --hero-other: #71717a;
+  --revenue: #2baf62;
+  --expense: #c7302b;
+  --revenue-1: #a7e3bf;
+  --revenue-2: #5dbe85;
+  --revenue-3: #22a55a;
+  --revenue-4: #15803d;
+  --expense-1: #f8b4b4;
+  --expense-2: #f07171;
+  --expense-3: #d83a35;
+  --expense-4: #9f1d1a;
+  --expense-slice-1: #ffc4bd;
+  --expense-slice-2: #ffa69e;
+  --expense-slice-3: #fa8880;
+  --expense-slice-4: #f16862;
+  --expense-slice-5: #e24947;
+  --expense-slice-6: #ca3134;
+  --expense-slice-7: #ac262a;
+
+  --accent-1: #ff8a3d;
+  --accent-2: #3bb4e5;
+  --accent-3: #f06595;
+  --accent-4: #f2b705;
+  --accent-5: #2bc4b0;
+
+  --chart-grid: #232327;
+  --chart-axis: #3f3f46;
+  --chart-muted: #52525b;
+  --chart-wash: rgb(14 149 206 / 14%);
+  --status-good: #4ade80;
+  --status-critical: #f87171;
+  --chart-1: #0e95ce;
+  --chart-2: #66a61b;
+  --chart-3: #c24418;
+  --chart-4: #c98500;
+  --chart-5: #71717a;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 16px -4px rgb(0 0 0 / 40%);
+  --shadow-popover: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px -8px rgb(0 0 0 / 60%);
+
+  --sidebar: #141416;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #18181b;
+  --sidebar-accent: #232327;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #a78bfa;
+}
+
+/* Neutral ordinal ramp (aging bands, severity tiers): darker in light, lighter in dark; the weakest
+   step still has 2:1 on the card. */
+:root {
+  --aging-1: #a1a1aa;
+  --aging-2: #85858e;
+  --aging-3: #6b6b73;
+  --aging-4: #4a4a52;
+  --aging-5: #27272a;
+}
+
+.dark {
+  --aging-1: #52525b;
+  --aging-2: #6b6b73;
+  --aging-3: #8e8e96;
+  --aging-4: #b4b4bb;
+  --aging-5: #dcdce0;
 }
 
 body {
@@ -47,14 +263,59 @@ body {
 }
 
 ::selection {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--ai-border);
+  color: var(--foreground);
 }
 
 @theme inline {
-  --font-display: var(--font-app-display);
-  --font-heading: var(--font-app-display);
   --font-sans: var(--font-app-sans);
+  /* Compatibility aliases for the previous starter theme (one font now). Prefer `font-sans`. */
+  --font-display: var(--font-app-sans);
+  --font-heading: var(--font-app-sans);
+  --color-paper: var(--paper);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border-strong: var(--border-strong);
+  --color-attention-fill: var(--attention-fill);
+  --color-attention-mark: var(--attention-mark);
+  --color-hero-cat-1: var(--hero-cat-1);
+  --color-hero-cat-2: var(--hero-cat-2);
+  --color-hero-cat-3: var(--hero-cat-3);
+  --color-hero-other: var(--hero-other);
+  --color-revenue: var(--revenue);
+  --color-expense: var(--expense);
+  --color-pill: var(--pill);
+  --color-ai-from: var(--ai-from);
+  --color-ai-to: var(--ai-to);
+  --color-ai-ink: var(--ai-ink);
+  --color-ai-mark: var(--ai-mark);
+  --color-ai-border: var(--ai-border);
+  --color-hero-1: var(--hero-1);
+  --color-hero-2: var(--hero-2);
+  --color-accent-1: var(--accent-1);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-4: var(--accent-4);
+  --color-accent-5: var(--accent-5);
+  --radius-card: var(--radius-card);
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
+  --shadow-popover: var(--shadow-popover);
+  --spacing-page: var(--space-page);
+  --spacing-card: var(--space-card);
+  --spacing-stack: var(--space-stack);
+  --spacing-row: var(--row-height);
+  --spacing-control: var(--control-height);
+  --color-pen: var(--pen);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-attention: var(--attention);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-chart-muted: var(--chart-muted);
+  --color-status-good: var(--status-good);
+  --color-status-warning: var(--status-warning);
+  --color-status-serious: var(--status-serious);
+  --color-status-critical: var(--status-critical);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -95,39 +356,82 @@ body {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-.dark {
-  color-scheme: dark;
-  --background: oklch(0.2 0.012 72);
-  --foreground: oklch(0.94 0.014 82);
-  --card: oklch(0.23 0.014 72);
-  --card-foreground: oklch(0.94 0.014 82);
-  --popover: oklch(0.23 0.014 72);
-  --popover-foreground: oklch(0.94 0.014 82);
-  --primary: oklch(0.68 0.16 38);
-  --primary-foreground: oklch(0.19 0.012 72);
-  --secondary: oklch(0.27 0.016 72);
-  --secondary-foreground: oklch(0.94 0.014 82);
-  --muted: oklch(0.27 0.016 72);
-  --muted-foreground: oklch(0.71 0.018 78);
-  --accent: oklch(0.68 0.16 38);
-  --accent-foreground: oklch(0.19 0.012 72);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.68 0.16 38);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/*
+ * Compact type scale, the only one (Figtree). Body 13, tables 12, titles 16–18, KPIs 24, labels and
+ * captions 11–12.
+ * Weights: 400 body, 500 labels and numbers, 600 titles. Numbers use `tabular-nums`; big ones use the
+ * `figure` utility (negative tracking).
+ */
+@theme {
+  --text-caption: 0.6875rem;
+  --text-caption--line-height: 0.875rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-table: 0.75rem;
+  --text-table--line-height: 1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-body: 0.8125rem;
+  --text-body--line-height: 1.25rem;
+  --text-heading: 1rem;
+  --text-heading--line-height: 1.375rem;
+  --text-heading--font-weight: 600;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.5rem;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.01em;
+  --text-display: 1.125rem;
+  --text-display--line-height: 1.5rem;
+  --text-display--font-weight: 600;
+  --text-display--letter-spacing: -0.015em;
+  --text-kpi: 1.5rem;
+  --text-kpi--line-height: 1.75rem;
+  --text-kpi--letter-spacing: -0.02em;
+  --text-hero: 1.875rem;
+  --text-hero--line-height: 2.25rem;
+  --text-hero--letter-spacing: -0.025em;
+
+  /* Thin bar of `RefreshRegion`: fades in after 200ms and runs left to right. */
+  --animate-refresh-in: refresh-in 150ms ease-out 200ms both;
+  --animate-refresh-bar: refresh-bar 1.2s ease-in-out infinite;
+  /* Target of an in-page link (`useTargetHighlight`): violet outline and wash that fade out. */
+  --animate-target-flash: target-flash 1.8s ease-out;
+
+  /* `from` only: the animation returns to the element's own background and shadow. */
+  @keyframes target-flash {
+    from {
+      background-color: color-mix(in oklab, var(--ring) 10%, var(--card));
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 55%, transparent);
+    }
+  }
+
+  @keyframes refresh-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes refresh-bar {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(300%);
+    }
+  }
+}
+
+/* Hero chart bars and the showcase swatch. Nowhere else. */
+@utility bg-hero-gradient {
+  background-image: var(--hero-gradient);
+}
+
+/* The same gradient, horizontal (legend swatches of a hero line). */
+@utility bg-hero-gradient-x {
+  background-image: linear-gradient(90deg, var(--ai-from), var(--ai-to));
 }
 
 @layer base {
@@ -145,6 +449,53 @@ body {
     transition-duration: 150ms;
     transition-property: color, background-color, border-color, opacity, transform;
     transition-timing-function: ease-out;
+  }
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Marked by `useTargetHighlight` for 2s; programmatic focus gets no extra outline. */
+  [data-target-flash] {
+    animation: var(--animate-target-flash);
+    outline: none;
+  }
+}
+
+@utility figure {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Discreet scrolling (sidebar in short windows): thin bar that only shows on hover or focus. */
+@utility scrollbar-hover {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &:hover,
+  &:focus-within {
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom toast icon (AI, action): the same springy "pop" as the react-hot-toast icons. */
+@keyframes ds-toast-icon-in {
+  from {
+    opacity: 0.4;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --app-sticky-top: 0px;
   }
 }
 

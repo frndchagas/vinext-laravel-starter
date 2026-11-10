@@ -34,30 +34,37 @@ export default function VerifyEmailPage() {
   }, [meQuery.data?.status, me?.email_verified, router]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="font-[family-name:var(--font-app-display)] text-xl text-foreground">
-        Verify your email
-      </h1>
-      <p className="text-sm text-muted-foreground">
+    <div className="flex flex-col gap-stack">
+      <h1 className="text-title text-balance">Verify your email</h1>
+      <p className="text-body text-muted-foreground">
         We sent a verification link{me ? ` to ${me.email}` : ""}. Click it to unlock the rest of the
         application.
       </p>
       {resendMutation.data?.status === 202 ? (
-        <output className="block rounded-lg bg-primary/10 px-3 py-2 text-sm text-foreground">
+        <output className="block rounded-lg border border-border px-3 py-2 text-body text-pretty text-foreground">
           A new verification link is on its way.
         </output>
       ) : null}
       {rateLimitMessage ? (
-        <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-negative"
+        >
           {rateLimitMessage}
         </p>
       ) : null}
-      <Button size="lg" disabled={resendMutation.isPending} onClick={() => resendMutation.mutate()}>
-        {resendMutation.isPending ? "Sending…" : "Resend verification email"}
+      <Button
+        size="lg"
+        pending={resendMutation.isPending}
+        pendingLabel="Sending…"
+        onClick={() => resendMutation.mutate()}
+      >
+        Resend verification email
       </Button>
       <Button
         variant="ghost"
-        disabled={logoutMutation.isPending}
+        pending={logoutMutation.isPending}
+        pendingLabel="Signing out…"
         onClick={() => logoutMutation.mutate(undefined, { onSuccess: () => router.push("/login") })}
       >
         Sign out

@@ -46,12 +46,13 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
-      <h1 className="font-[family-name:var(--font-app-display)] text-xl text-foreground">
-        Choose a new password
-      </h1>
+    <form onSubmit={submit} className="flex flex-col gap-stack">
+      <h1 className="text-title text-balance">Choose a new password</h1>
       {errors["token"] !== undefined ? (
-        <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-negative"
+        >
           This reset link is invalid or expired. Request a new one.
         </p>
       ) : null}
@@ -80,8 +81,14 @@ export default function ResetPasswordPage() {
         required
         errors={errors["password_confirmation"]}
       />
-      <Button type="submit" size="lg" disabled={!hydrated || resetMutation.isPending}>
-        {resetMutation.isPending ? "Saving…" : "Reset password"}
+      <Button
+        type="submit"
+        size="lg"
+        disabled={!hydrated}
+        pending={resetMutation.isPending}
+        pendingLabel="Saving…"
+      >
+        Reset password
       </Button>
     </form>
   );

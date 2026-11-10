@@ -46,12 +46,10 @@ export default function TwoFactorChallengePage() {
   }
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={submit}>
+    <form className="flex flex-col gap-stack" onSubmit={submit}>
       <div>
-        <h1 className="font-[family-name:var(--font-app-display)] text-xl text-balance">
-          Two-factor challenge
-        </h1>
-        <p className="mt-1 text-sm text-pretty text-muted-foreground">
+        <h1 className="text-title text-balance">Two-factor challenge</h1>
+        <p className="mt-1 text-body text-pretty text-muted-foreground">
           {useRecoveryCode
             ? "Enter one of your recovery codes."
             : "Enter the current code from your authenticator application."}
@@ -59,7 +57,10 @@ export default function TwoFactorChallengePage() {
       </div>
 
       {rateLimitMessage ? (
-        <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-negative"
+        >
           {rateLimitMessage}
         </p>
       ) : null}
@@ -84,8 +85,14 @@ export default function TwoFactorChallengePage() {
         />
       )}
 
-      <Button disabled={!hydrated || challengeMutation.isPending} size="lg" type="submit">
-        {challengeMutation.isPending ? "Checking…" : "Continue"}
+      <Button
+        disabled={!hydrated}
+        pending={challengeMutation.isPending}
+        pendingLabel="Checking…"
+        size="lg"
+        type="submit"
+      >
+        Continue
       </Button>
       <Button
         onClick={() => setUseRecoveryCode((current) => !current)}

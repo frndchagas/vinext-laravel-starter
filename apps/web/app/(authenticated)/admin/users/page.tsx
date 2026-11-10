@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import {
   getListAdminUsersQueryKey,
   type AdminUser,
@@ -8,15 +8,26 @@ import {
   useListAdminUsers,
   useUpdateAdminUserRole,
 } from "@vinext-laravel-starter/api-client";
+import { Search, UserCog, Users } from "lucide-react";
 import { useState } from "react";
 
 import { useAuthenticatedUser } from "@/components/authenticated-shell";
+import { Initials } from "@/components/ds/avatar";
+import { Card } from "@/components/ds/card";
+import { type DataColumn, DataTable } from "@/components/ds/data-table";
+import { EmptyState } from "@/components/ds/empty-state";
+import { PageHeader } from "@/components/ds/page-header";
+import { StatusPill } from "@/components/ds/pill";
+import { RefreshRegion } from "@/components/ds/refresh-region";
+import { StatusDot } from "@/components/ds/status-dot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { problemDetail } from "@/lib/problem";
 
 const PAGE_SIZE = 20;
+const ROLE_LABELS: Record<AdminUserRole, string> = { admin: "Admin", member: "Member" };
+const createdAtFormat = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
 
 function primaryRole(user: AdminUser): AdminUserRole {
   return user.roles.includes("admin") ? "admin" : "member";
@@ -28,6 +39,107 @@ function adminUserRole(value: string): AdminUserRole | undefined {
   return undefined;
 }
 
+type RoleCellProps = {
+  canManage: boolean;
+  meId: string;
+  onChange: (user: AdminUser, role: AdminUserRole) => void;
+  pending: boolean;
+  pendingUserId: string | undefined;
+  user: AdminUser;
+};
+
+/** Native select so the row works on phones and in the e2e flow; the label names the person. */
+function RoleCell({ canManage, meId, onChange, pending, pendingUserId, user }: RoleCellProps) {
+  const ownAccount = user.id === meId;
+
+  return (
+    <span className="inline-flex items-center gap-2">
+      <Label className="sr-only" htmlFor={`role-${user.id}`}>
+        Role for {user.name}
+      </Label>
+      <select
+        aria-busy={pending && pendingUserId === user.id}
+        className="h-control rounded-lg border border-input bg-card px-3 text-body shadow-card outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={!canManage || ownAccount || pending}
+        id={`role-${user.id}`}
+        onChange={(event) => {
+          const role = adminUserRole(event.target.value);
+          if (role !== undefined) onChange(user, role);
+        }}
+        value={primaryRole(user)}
+      >
+        <option value="member">{ROLE_LABELS.member}</option>
+        <option value="admin">{ROLE_LABELS.admin}</option>
+      </select>
+      {ownAccount ? <StatusPill dot>Current account</StatusPill> : null}
+    </span>
+  );
+}
+
+function userColumns({
+  canManage,
+  changeRole,
+  meId,
+  pending,
+  pendingUserId,
+}: {
+  canManage: boolean;
+  changeRole: (user: AdminUser, role: AdminUserRole) => void;
+  meId: string;
+  pending: boolean;
+  pendingUserId: string | undefined;
+}): ReadonlyArray<DataColumn<AdminUser>> {
+  return [
+    {
+      cell: (user) => (
+        <span className="flex items-center gap-2.5">
+          <Initials name={user.name} size="sm" />
+          <span className="min-w-0">
+            <span className="block font-medium text-foreground">{user.name}</span>
+            <span className="block text-caption text-muted-foreground">{user.email}</span>
+          </span>
+        </span>
+      ),
+      header: "User",
+      key: "user",
+    },
+    {
+      cell: (user) =>
+        user.email_verified ? (
+          <StatusDot tone="positive">Verified</StatusDot>
+        ) : (
+          <StatusDot tone="attention">Unverified</StatusDot>
+        ),
+      header: "Verification",
+      key: "verification",
+    },
+    {
+      cell: (user) => (
+        <span className="text-muted-foreground tabular-nums">
+          {createdAtFormat.format(new Date(user.created_at))}
+        </span>
+      ),
+      header: "Created",
+      hideOnMobile: true,
+      key: "created",
+    },
+    {
+      cell: (user) => (
+        <RoleCell
+          canManage={canManage}
+          meId={meId}
+          onChange={changeRole}
+          pending={pending}
+          pendingUserId={pendingUserId}
+          user={user}
+        />
+      ),
+      header: "Role",
+      key: "role",
+    },
+  ];
+}
+
 export default function AdminUsersPage() {
   const me = useAuthenticatedUser();
   const queryClient = useQueryClient();
@@ -35,11 +147,16 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState<string>();
   const [message, setMessage] = useState<string>();
-  const usersQuery = useListAdminUsers({
-    ...(cursor ? { cursor } : {}),
-    per_page: PAGE_SIZE,
-    ...(search ? { search } : {}),
-  });
+  // Searching or changing page changes the query key: the previous page dims until the new one arrives.
+  const usersQuery = useListAdminUsers(
+    {
+      ...(cursor ? { cursor } : {}),
+      per_page: PAGE_SIZE,
+      ...(search ? { search } : {}),
+    },
+    { query: { placeholderData: keepPreviousData } },
+  );
+  const updating = usersQuery.isPlaceholderData;
   const roleMutation = useUpdateAdminUserRole();
   const canManage = me.permissions.includes("users.manage");
   const page = usersQuery.data?.status === 200 ? usersQuery.data.data : undefined;
@@ -72,28 +189,31 @@ export default function AdminUsersPage() {
 
   if (!me.permissions.includes("users.view")) {
     return (
-      <section aria-labelledby="users-forbidden-heading" className="rounded-xl border p-6">
-        <h1
-          id="users-forbidden-heading"
-          className="font-[family-name:var(--font-app-display)] text-3xl"
-        >
+      <Card aria-labelledby="users-forbidden-heading">
+        <h1 className="text-title" id="users-forbidden-heading">
           User access required
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="text-body text-muted-foreground">
           Laravel did not grant the users.view permission for this session.
         </p>
-      </section>
+      </Card>
     );
   }
 
+  const columns = userColumns({
+    canManage,
+    changeRole,
+    meId: me.id,
+    pending: roleMutation.isPending,
+    pendingUserId: roleMutation.variables?.id,
+  });
+
   return (
     <>
-      <header className="border-b border-border pb-6">
-        <h1 className="font-[family-name:var(--font-app-display)] text-4xl text-balance">Users</h1>
-        <p className="mt-2 max-w-2xl text-sm text-pretty text-muted-foreground">
-          Find users and manage their roles.
-        </p>
-      </header>
+      <PageHeader icon={UserCog} title="Users" />
+      <p className="-mt-2 max-w-2xl text-body text-pretty text-muted-foreground">
+        Find users and manage their roles. Permissions stay decided by Laravel.
+      </p>
 
       <search>
         <form className="flex max-w-xl items-end gap-2" onSubmit={submitSearch}>
@@ -109,7 +229,10 @@ export default function AdminUsersPage() {
               value={searchInput}
             />
           </div>
-          <Button type="submit">Search</Button>
+          <Button type="submit" variant="outline">
+            <Search aria-hidden="true" />
+            Search
+          </Button>
         </form>
       </search>
 
@@ -118,8 +241,8 @@ export default function AdminUsersPage() {
           aria-live="polite"
           className={
             roleMutation.data !== undefined && roleMutation.data.status !== 200
-              ? "text-sm text-destructive"
-              : "text-sm text-primary"
+              ? "text-body text-negative"
+              : "text-body text-positive"
           }
         >
           {message}
@@ -127,89 +250,45 @@ export default function AdminUsersPage() {
       ) : null}
 
       {usersQuery.isPending ? (
-        <output className="text-sm text-muted-foreground">Loading users…</output>
+        <output className="text-body text-muted-foreground">Loading users…</output>
       ) : usersQuery.isError ||
         (usersQuery.data !== undefined && usersQuery.data.status !== 200) ? (
-        <div className="rounded-xl border border-destructive/30 p-5">
-          <h2 className="font-semibold">Users unavailable</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+        <Card aria-labelledby="users-unavailable-heading">
+          <h2 className="text-heading" id="users-unavailable-heading">
+            Users unavailable
+          </h2>
+          <p className="text-body text-muted-foreground">
             {usersQuery.data !== undefined
               ? problemDetail(usersQuery.data.data, "The user list could not be loaded.")
               : "The user list could not be loaded."}
           </p>
-          <Button className="mt-4" onClick={() => void usersQuery.refetch()} variant="outline">
+          <Button
+            className="self-start"
+            onClick={() => void usersQuery.refetch()}
+            variant="outline"
+          >
             Try again
           </Button>
-        </div>
+        </Card>
       ) : page?.data.length === 0 ? (
-        <p className="rounded-xl border border-border p-5 text-sm text-muted-foreground">
-          No users match this search.
-        </p>
+        <EmptyState
+          description="Try another name or email."
+          icon={Users}
+          title="No users match this search"
+        />
       ) : (
-        <div className="relative overflow-x-auto rounded-xl border border-border">
-          <table className="w-full min-w-2xl border-collapse text-left text-sm">
-            <caption className="sr-only">Users and their assigned roles</caption>
-            <thead className="bg-muted/60 text-xs tracking-wide text-muted-foreground uppercase">
-              <tr>
-                <th className="px-4 py-3 font-semibold" scope="col">
-                  User
-                </th>
-                <th className="px-4 py-3 font-semibold" scope="col">
-                  Verification
-                </th>
-                <th className="px-4 py-3 font-semibold" scope="col">
-                  Created
-                </th>
-                <th className="px-4 py-3 font-semibold" scope="col">
-                  Role
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {page?.data.map((user) => {
-                const ownAccount = user.id === me.id;
-
-                return (
-                  <tr key={user.id}>
-                    <th className="px-4 py-3 font-normal" scope="row">
-                      <span className="block font-medium text-foreground">{user.name}</span>
-                      <span className="block text-xs text-muted-foreground">{user.email}</span>
-                    </th>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {user.email_verified ? "Verified" : "Unverified"}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                      {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(
-                        new Date(user.created_at),
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Label className="sr-only" htmlFor={`role-${user.id}`}>
-                        Role for {user.name}
-                      </Label>
-                      <select
-                        className="h-9 rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={!canManage || ownAccount || roleMutation.isPending}
-                        id={`role-${user.id}`}
-                        onChange={(event) => {
-                          const role = adminUserRole(event.target.value);
-                          if (role !== undefined) changeRole(user, role);
-                        }}
-                        value={primaryRole(user)}
-                      >
-                        <option value="member">Member</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                      {ownAccount ? (
-                        <span className="ml-2 text-xs text-muted-foreground">Current account</span>
-                      ) : null}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <RefreshRegion
+          announcement={`${page?.data.length ?? 0} ${page?.data.length === 1 ? "user" : "users"} on this page`}
+          busy={updating}
+          className="rounded-card border border-border bg-card p-2 shadow-card"
+        >
+          <DataTable
+            caption="Users and their assigned roles"
+            columns={columns}
+            rowKey={(user) => user.id}
+            rows={page?.data ?? []}
+          />
+        </RefreshRegion>
       )}
 
       {page ? (
@@ -221,7 +300,7 @@ export default function AdminUsersPage() {
           >
             Previous
           </Button>
-          <span className="text-xs text-muted-foreground">Up to {PAGE_SIZE} users per page</span>
+          <span className="text-label text-muted-foreground">Up to {PAGE_SIZE} users per page</span>
           <Button
             disabled={page.meta.next_cursor === null || usersQuery.isFetching}
             onClick={() => setCursor(page.meta.next_cursor ?? undefined)}

@@ -53,22 +53,28 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
-      <h1 className="font-[family-name:var(--font-app-display)] text-xl text-balance text-foreground">
-        Sign in
-      </h1>
+    <form onSubmit={submit} className="flex flex-col gap-stack">
+      <div>
+        <h1 className="text-title text-balance">Sign in</h1>
+        <p className="mt-1 text-body text-muted-foreground">
+          Use the email and password of your account.
+        </p>
+      </div>
       {searchParams.get("password_updated") === "1" ? (
-        <output className="rounded-lg bg-muted px-3 py-2 text-sm text-pretty text-foreground">
+        <output className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-foreground">
           Password updated. Sign in again.
         </output>
       ) : null}
       {searchParams.get("account_deleted") === "1" ? (
-        <output className="rounded-lg bg-muted px-3 py-2 text-sm text-pretty text-foreground">
+        <output className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-foreground">
           Account deleted.
         </output>
       ) : null}
       {rateLimitMessage ? (
-        <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-lg border border-border px-3 py-2 text-body text-pretty text-negative"
+        >
           {rateLimitMessage}
         </p>
       ) : null}
@@ -88,15 +94,27 @@ export default function LoginPage() {
         required
         errors={errors["password"]}
       />
-      <Button type="submit" size="lg" disabled={!hydrated || loginMutation.isPending}>
-        {loginMutation.isPending ? "Signing in…" : "Sign in"}
+      <Button
+        type="submit"
+        size="lg"
+        disabled={!hydrated}
+        pending={loginMutation.isPending}
+        pendingLabel="Signing in…"
+      >
+        Sign in
       </Button>
-      <div className="flex items-center justify-between text-sm">
-        <Link href="/forgot-password" className="text-primary hover:underline">
+      <div className="flex items-center justify-between text-body">
+        <Link
+          href="/forgot-password"
+          className="font-medium text-foreground underline decoration-border-strong underline-offset-4 hover:decoration-current"
+        >
           Forgot password?
         </Link>
         {registrationEnabled ? (
-          <Link href="/register" className="text-primary hover:underline">
+          <Link
+            href="/register"
+            className="font-medium text-foreground underline decoration-border-strong underline-offset-4 hover:decoration-current"
+          >
             Create account
           </Link>
         ) : null}

@@ -60,7 +60,15 @@ export async function registerVerifiedUser(
   const verificationLink = await findVerificationLink(email);
   await page.goto(verificationLink);
   await expect(page).toHaveURL(/\/dashboard\?verified=1$/, { timeout: 20_000 });
-  await expect(page.getByRole("link", { name: "Settings" })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole("link", { name: "Settings", exact: true })).toBeVisible({
+    timeout: 20_000,
+  });
+}
+
+/** Signs out from the authenticated shell: the "Sign out" item lives in the account menu. */
+export async function signOutFromShell(page: Page): Promise<void> {
+  await page.getByRole("button", { name: /^Account: / }).click();
+  await page.getByRole("menuitem", { name: "Sign out" }).click();
 }
 
 export function grantAdmin(email: string): void {

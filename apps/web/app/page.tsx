@@ -67,7 +67,7 @@ export default function Home() {
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5 sm:px-8 lg:px-10">
             <a
               aria-label="Vinext Laravel Starter home"
-              className="font-display text-3xl leading-none"
+              className="text-3xl leading-none font-semibold tracking-[-0.03em]"
               href="#main-content"
             >
               V<span className="text-primary">L</span>
@@ -104,7 +104,7 @@ export default function Home() {
           <div>
             <h1
               aria-label="Vinext Laravel Starter"
-              className="max-w-3xl font-display text-6xl leading-none text-balance sm:text-7xl lg:text-8xl"
+              className="max-w-3xl text-6xl leading-none font-semibold tracking-[-0.03em] text-balance sm:text-7xl lg:text-8xl"
             >
               Vinext Laravel<span className="block">Starter</span>
             </h1>
@@ -197,7 +197,7 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-7xl px-6 py-12 sm:px-8 sm:py-16 lg:px-10" id="decisions">
-          <h2 className="max-w-3xl font-display text-4xl leading-tight text-balance sm:text-5xl">
+          <h2 className="max-w-3xl text-4xl leading-tight font-semibold tracking-[-0.02em] text-balance sm:text-5xl">
             The baseline settles the recurring decisions.
           </h2>
           <div className="mt-8 divide-y divide-border">

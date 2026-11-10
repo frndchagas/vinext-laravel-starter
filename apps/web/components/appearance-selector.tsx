@@ -2,39 +2,29 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { type SegmentOption, SegmentedControl } from "@/components/ds/segmented-control";
 import { type Appearance, useAppearance } from "@/lib/appearance";
 
-const options: Array<{
-  icon: typeof Sun;
-  label: string;
-  value: Appearance;
-}> = [
-  { icon: Monitor, label: "System", value: "system" },
-  { icon: Sun, label: "Light", value: "light" },
-  { icon: Moon, label: "Dark", value: "dark" },
+const options: ReadonlyArray<SegmentOption<Appearance>> = [
+  { icon: <Monitor aria-hidden="true" className="size-3.5" />, label: "System", value: "system" },
+  { icon: <Sun aria-hidden="true" className="size-3.5" />, label: "Light", value: "light" },
+  { icon: <Moon aria-hidden="true" className="size-3.5" />, label: "Dark", value: "dark" },
 ];
 
+/**
+ * This browser's theme as a single choice (`SegmentedControl`, as in the showcase): the selected
+ * option sits white on the grey track, with no black button competing with the "Save" of the other
+ * cards.
+ */
 export function AppearanceSelector() {
   const { appearance, updateAppearance } = useAppearance();
 
   return (
-    <fieldset>
-      <legend className="sr-only">Appearance</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map(({ icon: Icon, label, value }) => (
-          <Button
-            aria-pressed={appearance === value}
-            key={value}
-            onClick={() => updateAppearance(value)}
-            type="button"
-            variant={appearance === value ? "default" : "outline"}
-          >
-            <Icon aria-hidden="true" className="size-4" />
-            {label}
-          </Button>
-        ))}
-      </div>
-    </fieldset>
+    <SegmentedControl
+      ariaLabel="Appearance"
+      onValueChange={updateAppearance}
+      options={options}
+      value={appearance}
+    />
   );
 }

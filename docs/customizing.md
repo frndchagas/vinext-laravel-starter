@@ -33,6 +33,17 @@ Copy the root `.env.example` and change ports there. The development command pro
 
 Production secrets do not belong in either example file. Generate unique Laravel and Reverb keys in the deployment environment.
 
+## Theme and tokens
+
+The interface follows the [design system](design-system.md): neutral surfaces, Figtree as the single font, one compact scale and colour only where it carries meaning. Everything is a token in `apps/web/app/globals.css`, so a product changes values, not components.
+
+- **Brand colour.** Keep the neutral interface and give the brand a role instead of painting surfaces: the primary button is `--primary`, the focus ring is `--ring`, and a brand hue for data goes in `--chart-1` or the accent set `--accent-1..5`. Any new series colour must pass the palette validator (luminance band, colour-blindness separation, contrast) in both themes.
+- **Dark theme.** Change the values under `.dark` and keep the roles; `lib/appearance.ts` applies the class from a cookie before the first paint.
+- **Font.** `app/layout.tsx` loads Figtree through `next/font/google` and exposes it as `--font-figtree`. Swap the import and the variable to change the font; keep `tabular-nums` on numbers.
+- **Scale.** `--text-*`, `--space-*`, `--row-height` and `--control-height` live in `@theme` and `:root`. Change them there; `lib/utils.ts` registers the class groups in tailwind-merge, so add any new size or spacing to `cn()` too.
+- **Formatting.** `apps/web/components/ds/format.ts` defaults to `en-US` and `USD`. Change the locale constant and pass `currency` where the product needs another one.
+- **Showcase.** `/design-system` (sidebar: Developer) is a reference for review. Delete `apps/web/app/(authenticated)/design-system/` and the sidebar item when the product does not want it; the components stay.
+
 ## Add product features
 
 The starter includes identity, Account settings and User administration. Define product resources in the application domain; there is no bundled Tasks CRUD or background-processing example.

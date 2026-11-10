@@ -6,7 +6,9 @@ export type ResolvedAppearance = "light" | "dark";
 export type Appearance = ResolvedAppearance | "system";
 
 const listeners = new Set<() => void>();
-let currentAppearance: Appearance = "system";
+/** Design-system default: light. "system" follows the operating system when chosen. */
+export const DEFAULT_APPEARANCE: Appearance = "light";
+let currentAppearance: Appearance = DEFAULT_APPEARANCE;
 let initialized = false;
 
 function prefersDark(): boolean {
@@ -18,10 +20,10 @@ function isAppearance(value: string | null): value is Appearance {
 }
 
 function readAppearance(): Appearance {
-  if (typeof window === "undefined") return "system";
+  if (typeof window === "undefined") return DEFAULT_APPEARANCE;
 
   const stored = window.localStorage.getItem("appearance");
-  return isAppearance(stored) ? stored : "system";
+  return isAppearance(stored) ? stored : DEFAULT_APPEARANCE;
 }
 
 function resolveAppearance(appearance: Appearance): ResolvedAppearance {
@@ -71,7 +73,7 @@ export function useAppearance() {
   const appearance = useSyncExternalStore(
     subscribe,
     () => currentAppearance,
-    () => "system" as const,
+    () => DEFAULT_APPEARANCE,
   );
 
   return {
