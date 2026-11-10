@@ -361,6 +361,16 @@ try {
       "Laravel application settings live in `apps/api/.env`; never commit either file.",
       "Laravel application settings live in the root `.env`; never commit it.",
     ],
+    [
+      "The interface follows the [design system](design-system.md):",
+      "The interface follows the starter design system:",
+    ],
+  ]);
+  replace("apps/web/README.md", [
+    [
+      "The interface follows the [design system](../../docs/design-system.md):",
+      "The interface follows the starter design system:",
+    ],
   ]);
   replace("docs/deployment.md", [
     [
