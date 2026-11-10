@@ -2,6 +2,8 @@
 
 This application contains the Vinext interface and consumes Laravel through the generated API client.
 
+The interface follows the [design system](../../docs/design-system.md): tokens in `app/globals.css`, components in `components/ds/`, charts in `components/ds/charts/` and shadcn/ui primitives (Base UI) in `components/ui/`. The authenticated showcase at `/design-system` renders every component with fictional data.
+
 Run focused checks from this directory:
 
 ```bash

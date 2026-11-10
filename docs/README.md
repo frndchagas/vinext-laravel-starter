@@ -15,6 +15,7 @@ Use this page to find the shortest path for the work you are doing.
 - [API conventions](api-conventions.md): rules for public HTTP changes.
 - [Queues and realtime](async-workflow.md): configured infrastructure and rules for application features.
 - [Development](development.md): commands, contracts, quality gates and agent instructions.
+- [Design system](design-system.md): tokens, components, loading patterns and the writing rules behind the interface.
 - [Deployment](deployment.md): production containers, smoke test and Coolify setup.
 - [Distribution](distribution.md): GitHub template, Laravel installer and Packagist release path.
 

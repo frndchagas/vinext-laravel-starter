@@ -68,13 +68,11 @@ export function PasswordActionDialog({
         {triggerLabel}
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
-        <AlertDialog.Backdrop className="fixed inset-0 z-40 bg-foreground/30" />
+        <AlertDialog.Backdrop className="fixed inset-0 z-40 bg-black/10 supports-backdrop-filter:backdrop-blur-xs" />
         <AlertDialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center p-4 [padding-top:max(1rem,env(safe-area-inset-top))] [padding-bottom:max(1rem,env(safe-area-inset-bottom))]">
-          <AlertDialog.Popup className="w-full max-w-md rounded-xl border border-border bg-background p-6 shadow-lg">
-            <AlertDialog.Title className="text-xl font-semibold text-balance">
-              {title}
-            </AlertDialog.Title>
-            <AlertDialog.Description className="mt-2 text-sm leading-6 text-pretty text-muted-foreground">
+          <AlertDialog.Popup className="w-full max-w-md rounded-card bg-popover p-card text-popover-foreground shadow-popover ring-1 ring-border">
+            <AlertDialog.Title className="text-title text-balance">{title}</AlertDialog.Title>
+            <AlertDialog.Description className="mt-2 text-body text-pretty text-muted-foreground">
               {description}
             </AlertDialog.Description>
 
@@ -97,11 +95,12 @@ export function PasswordActionDialog({
                   Cancel
                 </AlertDialog.Close>
                 <Button
-                  disabled={pending}
+                  pending={pending}
+                  pendingLabel="Working…"
                   type="submit"
                   variant={destructive ? "destructive" : "default"}
                 >
-                  {pending ? "Working…" : actionLabel}
+                  {actionLabel}
                 </Button>
               </div>
             </form>

@@ -10,7 +10,7 @@ The showcase is a real deployment with public registration disabled.
 
 ![Vinext Laravel Starter home page](apps/web/app/opengraph-image.jpg)
 
-The starter provides same-origin sessions, profile and password settings, optional TOTP, explicit HTTP and realtime contracts, a generated TypeScript client, working role-based administration, Redis queues and Reverb. It is designed for agent-assisted development, but does not bundle an AI provider.
+The starter provides same-origin sessions, profile and password settings, optional TOTP, explicit HTTP and realtime contracts, a generated TypeScript client, working role-based administration, Redis queues, Reverb and a neutral-first [design system](docs/design-system.md) with a component library, charts, toasts and a `/design-system` showcase. It is designed for agent-assisted development, but does not bundle an AI provider.
 
 Vinext is still in beta and the React Compiler integration is experimental. CI verifies local setup, browser behavior, a fresh source snapshot and the production container topology.
 
@@ -64,6 +64,7 @@ See [Source development](docs/getting-started.md) for the expected services, shu
 
 - [Documentation index](docs/README.md)
 - [Customize the starter](docs/customizing.md)
+- [Design system](docs/design-system.md)
 - [Architecture](docs/architecture.md)
 - [Deployment](docs/deployment.md)
 - [Laravel and Packagist distribution](docs/distribution.md)
