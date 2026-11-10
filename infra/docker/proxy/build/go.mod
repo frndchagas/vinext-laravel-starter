@@ -2,7 +2,7 @@ module github.com/frndchagas/vinext-laravel-starter/caddy
 
 go 1.26.6
 
-require github.com/caddyserver/caddy/v2 v2.11.7
+require github.com/caddyserver/caddy/v2 v2.11.9
 
 require (
 	cel.dev/cel-go v0.32.0 // indirect
@@ -151,7 +151,7 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20261020153306-9f2b28d4331a // indirect
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20261030153154-30a33513ff6d // indirect
 	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
 	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
