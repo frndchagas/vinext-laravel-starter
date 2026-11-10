@@ -10,3 +10,6 @@ coverage/
 test-results/
 playwright-report/
 *.auth-state.json
+
+# Local Go build output of the proxy module
+/infra/docker/proxy/build/caddy

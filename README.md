@@ -4,7 +4,7 @@
 
 A Laravel and Vinext foundation for coding agents.
 
-[Showcase](https://vinext-laravel-starter.dev-0.fortetecnologias.com.br) · [Deployment guide](docs/deployment.md)
+[Showcase](https://vinext.fortetecnologias.com.br) · [Deployment guide](docs/deployment.md)
 
 The showcase is a real deployment with public registration disabled.
 
