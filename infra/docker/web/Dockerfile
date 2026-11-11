@@ -1,4 +1,4 @@
-FROM node:24.22.1-alpine3.24 AS build
+FROM node:24.22.2-alpine3.24 AS build
 
 COPY --from=oven/bun:1.4.4-alpine /usr/local/bin/bun /usr/local/bin/bun
 
@@ -20,7 +20,7 @@ ENV NEXT_PUBLIC_REVERB_APP_KEY=$NEXT_PUBLIC_REVERB_APP_KEY
 
 RUN bun run --filter web build
 
-FROM node:24.22.1-alpine3.24 AS runtime
+FROM node:24.22.2-alpine3.24 AS runtime
 
 RUN apk upgrade --no-cache \
     && rm -r \
