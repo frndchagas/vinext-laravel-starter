@@ -532,7 +532,7 @@ jobs:
             base/contracts/http/openapi/openapi.yaml contracts/http/openapi/openapi.yaml \
             .openapi-compat/base.json .openapi-compat/revision.json
       - name: Detect breaking API changes
-        uses: oasdiff/oasdiff-action/breaking@9ce3a29eb0e6478dd0140932a678c7fb59d08f22 # v0.1.20
+        uses: oasdiff/oasdiff-action/breaking@8a211b41745fcecdfa4a86531ffbf08934fb14f6 # v0.1.23
         with:
           base: .openapi-compat/base.json
           revision: .openapi-compat/revision.json
